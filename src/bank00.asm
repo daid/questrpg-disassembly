@@ -40,7 +40,7 @@ SECTION "entry", ROM0[$0100]
 
 entry:
     nop                                                ;; 00:0100 $00
-    jp   .jp_00_0150                                   ;; 00:0101 $c3 $50 $01
+    jp   start                                         ;; 00:0101 $c3 $50 $01
     ds   $30                                           ;; 00:0104
     db   "QUESTRPG", $00, $00, $00, $41, $51, $52, $45 ;; 00:0134
     db   CART_COMPATIBLE_DMG_GBC                       ;; 00:0143
@@ -51,7 +51,8 @@ entry:
     ds   3                                             ;; 00:014d
 
 SECTION "bank00_0150", ROM0[$0150]
-.jp_00_0150:
+
+start:
     and  A, A                                          ;; 00:0150 $a7
     cp   A, $11                                        ;; 00:0151 $fe $11
     ld   A, $00                                        ;; 00:0153 $3e $00
@@ -309,7 +310,10 @@ call_00_030f:
     db   $00, $ff, $ff, $00, $ff, $01, $ff, $01        ;; 00:036e ????????
     db   $00, $01, $01, $00, $01, $ff, $01, $18        ;; 00:0376 ????????
     db   $aa, $18, $c5, $18, $e0, $18, $fd, $19        ;; 00:037e ????????
-    db   $00, $19, $03, $19, $06, $00, $0a, $00        ;; 00:0386 ?????..?
+    db   $00, $19, $03, $19, $06                       ;; 00:0386 ?????
+
+something_038b:
+    db   $00, $0a, $00                                 ;; 00:038b ..?
     dw   $0001                                         ;; 00:038e wW
     db   $c8, $00, $ce, $00                            ;; 00:0390 w..?
     dw   $0002                                         ;; 00:0394 wW
@@ -713,7 +717,7 @@ call_00_05ea:
     xor  A, E                                          ;; 00:05f0 $ab
     ret                                                ;; 00:05f1 $c9
 
-call_00_05f2:
+is_BC_DE_equal:
     ld   A, C                                          ;; 00:05f2 $79
     sub  A, E                                          ;; 00:05f3 $93
     ld   A, B                                          ;; 00:05f4 $78
@@ -1313,7 +1317,7 @@ call_00_0936:
     ld   [HL+], A                                      ;; 00:09c6 $22
     ld   [HL], C                                       ;; 00:09c7 $71
     pop  HL                                            ;; 00:09c8 $e1
-    call call_00_05f2                                  ;; 00:09c9 $cd $f2 $05
+    call is_BC_DE_equal                                ;; 00:09c9 $cd $f2 $05
     jp   C, .jp_00_096e                                ;; 00:09cc $da $6e $09
     push HL                                            ;; 00:09cf $e5
     ld   HL, wD5A9                                     ;; 00:09d0 $21 $a9 $d5
@@ -1330,7 +1334,7 @@ call_00_0936:
     ld   [HL+], A                                      ;; 00:09e1 $22
     ld   [HL], C                                       ;; 00:09e2 $71
     pop  HL                                            ;; 00:09e3 $e1
-    call call_00_05f2                                  ;; 00:09e4 $cd $f2 $05
+    call is_BC_DE_equal                                ;; 00:09e4 $cd $f2 $05
     jp   C, .jp_00_0967                                ;; 00:09e7 $da $67 $09
     ret                                                ;; 00:09ea $c9
 
@@ -2716,7 +2720,7 @@ call_00_1255:
     ret                                                ;; 00:1281 $c9
 
 call_00_1282:
-    ld   A, [wD590]                                    ;; 00:1282 $fa $90 $d5
+    ld   A, [wMapHeaderStart]                          ;; 00:1282 $fa $90 $d5
     and  A, A                                          ;; 00:1285 $a7
     ret  Z                                             ;; 00:1286 $c8
     ld   A, [wC45B]                                    ;; 00:1287 $fa $5b $c4
@@ -2727,7 +2731,7 @@ call_00_1282:
     ret                                                ;; 00:1291 $c9
 
 call_00_1292:
-    ld   A, [wD590]                                    ;; 00:1292 $fa $90 $d5
+    ld   A, [wMapHeaderStart]                          ;; 00:1292 $fa $90 $d5
     and  A, A                                          ;; 00:1295 $a7
     ret  Z                                             ;; 00:1296 $c8
     ld   A, [wD58B]                                    ;; 00:1297 $fa $8b $d5
@@ -6215,7 +6219,7 @@ call_00_2bc4:
     ld   A, [HL+]                                      ;; 00:2c0d $2a
     ld   E, [HL]                                       ;; 00:2c0e $5e
     ld   D, A                                          ;; 00:2c0f $57
-    ld   HL, $38b                                      ;; 00:2c10 $21 $8b $03
+    ld   HL, something_038b ;@=ptr                     ;; 00:2c10 $21 $8b $03
     ld   B, $0b                                        ;; 00:2c13 $06 $0b
 .jr_00_2c15:
     push BC                                            ;; 00:2c15 $c5
@@ -6223,7 +6227,7 @@ call_00_2bc4:
     ld   B, A                                          ;; 00:2c17 $47
     ld   A, [HL+]                                      ;; 00:2c18 $2a
     ld   C, A                                          ;; 00:2c19 $4f
-    call call_00_05f2                                  ;; 00:2c1a $cd $f2 $05
+    call is_BC_DE_equal                                ;; 00:2c1a $cd $f2 $05
     jr   NZ, .jr_00_2c3a                               ;; 00:2c1d $20 $1b
     push HL                                            ;; 00:2c1f $e5
     inc  HL                                            ;; 00:2c20 $23
@@ -6282,7 +6286,7 @@ call_00_2bc4:
     ld   [wD2BD], A                                    ;; 00:2c7a $ea $bd $d2
     ld   [wD5DF], A                                    ;; 00:2c7d $ea $df $d5
 .jr_00_2c80:
-    ld   DE, wD590                                     ;; 00:2c80 $11 $90 $d5
+    ld   DE, wMapHeaderStart                           ;; 00:2c80 $11 $90 $d5
     ld   B, $24                                        ;; 00:2c83 $06 $24
     call memcopySmall                                  ;; 00:2c85 $cd $91 $05
     ld   A, $23                                        ;; 00:2c88 $3e $23
@@ -6306,11 +6310,11 @@ call_00_2bc4:
     ld   HL, wShadowOAM                                ;; 00:2caf $21 $00 $c0
     ld   B, $a0                                        ;; 00:2cb2 $06 $a0
     call memzeroSmall                                  ;; 00:2cb4 $cd $8b $05
-    ld   A, [wD59A]                                    ;; 00:2cb7 $fa $9a $d5
+    ld   A, [wRoomGraphicsBank]                        ;; 00:2cb7 $fa $9a $d5
     ld   [wD5B5], A                                    ;; 00:2cba $ea $b5 $d5
     ld   [wD5B7], A                                    ;; 00:2cbd $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2cc0 $ea $00 $20
-    ld   HL, wD5A3                                     ;; 00:2cc3 $21 $a3 $d5
+    ld   HL, wRoomGraphicsPointer                      ;; 00:2cc3 $21 $a3 $d5
     ld   A, [HL+]                                      ;; 00:2cc6 $2a
     ld   L, [HL]                                       ;; 00:2cc7 $6e
     ld   H, A                                          ;; 00:2cc8 $67
@@ -6752,7 +6756,7 @@ call_00_2f87:
     jr   Z, .jr_00_30e2                                ;; 00:3096 $28 $4a
     ld   A, $01                                        ;; 00:3098 $3e $01
     ldh  [rVBK], A                                     ;; 00:309a $e0 $4f
-    ld   A, [wD59A]                                    ;; 00:309c $fa $9a $d5
+    ld   A, [wRoomGraphicsBank]                        ;; 00:309c $fa $9a $d5
     ld   [wD5B5], A                                    ;; 00:309f $ea $b5 $d5
     ld   [wD5B7], A                                    ;; 00:30a2 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:30a5 $ea $00 $20
@@ -6768,7 +6772,7 @@ call_00_2f87:
     ld   BC, $1c0                                      ;; 00:30bb $01 $c0 $01
     ld   E, $32                                        ;; 00:30be $1e $32
     call memset                                        ;; 00:30c0 $cd $57 $04
-    ld   A, [wD59A]                                    ;; 00:30c3 $fa $9a $d5
+    ld   A, [wRoomGraphicsBank]                        ;; 00:30c3 $fa $9a $d5
     ld   [wD5B5], A                                    ;; 00:30c6 $ea $b5 $d5
     ld   [wD5B7], A                                    ;; 00:30c9 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:30cc $ea $00 $20
@@ -6782,7 +6786,7 @@ call_00_2f87:
     ld   A, $00                                        ;; 00:30de $3e $00
     ldh  [rVBK], A                                     ;; 00:30e0 $e0 $4f
 .jr_00_30e2:
-    ld   A, [wD59A]                                    ;; 00:30e2 $fa $9a $d5
+    ld   A, [wRoomGraphicsBank]                        ;; 00:30e2 $fa $9a $d5
     ld   [wD5B5], A                                    ;; 00:30e5 $ea $b5 $d5
     ld   [wD5B7], A                                    ;; 00:30e8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:30eb $ea $00 $20
@@ -6798,7 +6802,7 @@ call_00_2f87:
     ld   BC, $1c0                                      ;; 00:3101 $01 $c0 $01
     ld   E, $32                                        ;; 00:3104 $1e $32
     call memset                                        ;; 00:3106 $cd $57 $04
-    ld   A, [wD59A]                                    ;; 00:3109 $fa $9a $d5
+    ld   A, [wRoomGraphicsBank]                        ;; 00:3109 $fa $9a $d5
     ld   [wD5B5], A                                    ;; 00:310c $ea $b5 $d5
     ld   [wD5B7], A                                    ;; 00:310f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3112 $ea $00 $20
@@ -8235,7 +8239,8 @@ call_00_3cca:
     ld   [wD5B7], A                                    ;; 00:3cce $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3cd1 $ea $00 $20
     jp   HL                                            ;; 00:3cd4 $e9
-.jp_00_3cd5:
+
+function_3cd5:
     ld   A, [wD4FC]                                    ;; 00:3cd5 $fa $fc $d4
     ld   [wD5B7], A                                    ;; 00:3cd8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3cdb $ea $00 $20

@@ -2148,7 +2148,7 @@ wD58D:
 wD58E:
     ds 2                                               ;; d58e
 
-wD590:
+wMapHeaderStart:
     ds 1                                               ;; d590
 
 wD591:
@@ -2166,7 +2166,7 @@ wD598:
 wD599:
     ds 1                                               ;; d599
 
-wD59A:
+wRoomGraphicsBank:
     ds 2                                               ;; d59a
 
 wD59C:
@@ -2181,7 +2181,7 @@ wD59F:
 wD5A1:
     ds 2                                               ;; d5a1
 
-wD5A3:
+wRoomGraphicsPointer:
     ds 2                                               ;; d5a3
 
 wD5A5:
