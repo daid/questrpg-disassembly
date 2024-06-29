@@ -990,7 +990,7 @@ wCDA5:
 wCDE5:
     ds 64                                              ;; cde5
 
-wCE25:
+wBackgroundPalette:
     ds 64                                              ;; ce25
 
 wCE65:
@@ -2153,13 +2153,13 @@ wMapHeaderStart:
 wD591:
     ds 3                                               ;; d591
 
-wD594:
+wRoomTilemapBank:
     ds 2                                               ;; d594
 
-wD596:
+wRoomAttrmapBank:
     ds 2                                               ;; d596
 
-wD598:
+wRoomCollisionBank:
     ds 1                                               ;; d598
 
 wD599:
@@ -2168,22 +2168,22 @@ wD599:
 wRoomGraphicsBank:
     ds 2                                               ;; d59a
 
-wD59C:
+wRoomPaletteBank:
     ds 1                                               ;; d59c
 
-wD59D:
+wRoomTilemapPointer:
     ds 2                                               ;; d59d
 
-wD59F:
+wRoomAttrmapPointer:
     ds 2                                               ;; d59f
 
-wD5A1:
+wRoomCollisionPointer:
     ds 2                                               ;; d5a1
 
 wRoomGraphicsPointer:
     ds 2                                               ;; d5a3
 
-wD5A5:
+wRoomPalettePointer:
     ds 2                                               ;; d5a5
 
 wD5A7:

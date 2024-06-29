@@ -891,11 +891,11 @@ call_00_06ce:
     add  HL, DE                                        ;; 00:06e1 $19
     ld   D, H                                          ;; 00:06e2 $54
     ld   E, L                                          ;; 00:06e3 $5d
-    ld   A, [wD598]                                    ;; 00:06e4 $fa $98 $d5
+    ld   A, [wRoomCollisionBank]                       ;; 00:06e4 $fa $98 $d5
     ld   [wBackupRomBank], A                           ;; 00:06e7 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:06ea $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:06ed $ea $00 $20
-    ld   HL, wD5A1                                     ;; 00:06f0 $21 $a1 $d5
+    ld   HL, wRoomCollisionPointer                     ;; 00:06f0 $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:06f3 $2a
     ld   L, [HL]                                       ;; 00:06f4 $6e
     ld   H, A                                          ;; 00:06f5 $67
@@ -1251,11 +1251,11 @@ call_00_0936:
     xor  A, A                                          ;; 00:094e $af
     ld   [wCEC8], A                                    ;; 00:094f $ea $c8 $ce
     ld   [wCEC9], A                                    ;; 00:0952 $ea $c9 $ce
-    ld   A, [wD598]                                    ;; 00:0955 $fa $98 $d5
+    ld   A, [wRoomCollisionBank]                       ;; 00:0955 $fa $98 $d5
     ld   [wBackupRomBank], A                           ;; 00:0958 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:095b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:095e $ea $00 $20
-    ld   HL, wD5A1                                     ;; 00:0961 $21 $a1 $d5
+    ld   HL, wRoomCollisionPointer                     ;; 00:0961 $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:0964 $2a
     ld   L, [HL]                                       ;; 00:0965 $6e
     ld   H, A                                          ;; 00:0966 $67
@@ -1297,7 +1297,7 @@ call_00_0936:
     ld   A, $ff                                        ;; 00:099f $3e $ff
     ld   [wC55F], A                                    ;; 00:09a1 $ea $5f $c5
     call call_00_09eb                                  ;; 00:09a4 $cd $eb $09
-    ld   A, [wD598]                                    ;; 00:09a7 $fa $98 $d5
+    ld   A, [wRoomCollisionBank]                       ;; 00:09a7 $fa $98 $d5
     ld   [wBackupRomBank], A                           ;; 00:09aa $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:09ad $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:09b0 $ea $00 $20
@@ -2420,7 +2420,7 @@ call_00_1040:
 
 call_00_105f:
     ld   B, $00                                        ;; 00:105f $06 $00
-    ld   A, [wD598]                                    ;; 00:1061 $fa $98 $d5
+    ld   A, [wRoomCollisionBank]                       ;; 00:1061 $fa $98 $d5
     ld   [wBackupRomBank], A                           ;; 00:1064 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:1067 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:106a $ea $00 $20
@@ -2452,7 +2452,7 @@ call_00_105f:
     add  HL, DE                                        ;; 00:109a $19
     ld   D, H                                          ;; 00:109b $54
     ld   E, L                                          ;; 00:109c $5d
-    ld   HL, wD5A1                                     ;; 00:109d $21 $a1 $d5
+    ld   HL, wRoomCollisionPointer                     ;; 00:109d $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:10a0 $2a
     ld   L, [HL]                                       ;; 00:10a1 $6e
     ld   H, A                                          ;; 00:10a2 $67
@@ -3023,7 +3023,7 @@ call_00_1415:
     and  A, C                                          ;; 00:14b1 $a1
     ld   [wCEC7], A                                    ;; 00:14b2 $ea $c7 $ce
     ld   C, A                                          ;; 00:14b5 $4f
-    ld   HL, wD59D                                     ;; 00:14b6 $21 $9d $d5
+    ld   HL, wRoomTilemapPointer                       ;; 00:14b6 $21 $9d $d5
     ld   A, [HL+]                                      ;; 00:14b9 $2a
     ld   L, [HL]                                       ;; 00:14ba $6e
     ld   H, A                                          ;; 00:14bb $67
@@ -3032,7 +3032,7 @@ call_00_1415:
     ld   [wCECE], A                                    ;; 00:14be $ea $ce $ce
     ld   A, L                                          ;; 00:14c1 $7d
     ld   [wCECF], A                                    ;; 00:14c2 $ea $cf $ce
-    ld   HL, wD5A1                                     ;; 00:14c5 $21 $a1 $d5
+    ld   HL, wRoomCollisionPointer                     ;; 00:14c5 $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:14c8 $2a
     ld   L, [HL]                                       ;; 00:14c9 $6e
     ld   H, A                                          ;; 00:14ca $67
@@ -3041,7 +3041,7 @@ call_00_1415:
     ld   [wCED2], A                                    ;; 00:14cd $ea $d2 $ce
     ld   A, L                                          ;; 00:14d0 $7d
     ld   [wCED3], A                                    ;; 00:14d1 $ea $d3 $ce
-    ld   HL, wD59F                                     ;; 00:14d4 $21 $9f $d5
+    ld   HL, wRoomAttrmapPointer                       ;; 00:14d4 $21 $9f $d5
     ld   A, [HL+]                                      ;; 00:14d7 $2a
     ld   L, [HL]                                       ;; 00:14d8 $6e
     ld   H, A                                          ;; 00:14d9 $67
@@ -3064,7 +3064,7 @@ call_00_14e4:
     ld   E, [HL]                                       ;; 00:14f1 $5e
     ld   D, A                                          ;; 00:14f2 $57
     call call_00_1749                                  ;; 00:14f3 $cd $49 $17
-    ld   A, [wD594]                                    ;; 00:14f6 $fa $94 $d5
+    ld   A, [wRoomTilemapBank]                         ;; 00:14f6 $fa $94 $d5
     ld   [wBackupRomBank], A                           ;; 00:14f9 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:14fc $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:14ff $ea $00 $20
@@ -3086,7 +3086,7 @@ call_00_14e4:
     ldh  A, [hIsGBC]                                   ;; 00:1518 $f0 $fe
     and  A, A                                          ;; 00:151a $a7
     jr   Z, .jr_00_153f                                ;; 00:151b $28 $22
-    ld   A, [wD596]                                    ;; 00:151d $fa $96 $d5
+    ld   A, [wRoomAttrmapBank]                         ;; 00:151d $fa $96 $d5
     ld   [wBackupRomBank], A                           ;; 00:1520 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:1523 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1526 $ea $00 $20
@@ -3278,7 +3278,7 @@ call_00_15a6:
     and  A, C                                          ;; 00:1655 $a1
     ld   [wCEC9], A                                    ;; 00:1656 $ea $c9 $ce
     ld   C, A                                          ;; 00:1659 $4f
-    ld   HL, wD59D                                     ;; 00:165a $21 $9d $d5
+    ld   HL, wRoomTilemapPointer                       ;; 00:165a $21 $9d $d5
     ld   A, [HL+]                                      ;; 00:165d $2a
     ld   L, [HL]                                       ;; 00:165e $6e
     ld   H, A                                          ;; 00:165f $67
@@ -3287,7 +3287,7 @@ call_00_15a6:
     ld   [wCECE], A                                    ;; 00:1662 $ea $ce $ce
     ld   A, L                                          ;; 00:1665 $7d
     ld   [wCECF], A                                    ;; 00:1666 $ea $cf $ce
-    ld   HL, wD5A1                                     ;; 00:1669 $21 $a1 $d5
+    ld   HL, wRoomCollisionPointer                     ;; 00:1669 $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:166c $2a
     ld   L, [HL]                                       ;; 00:166d $6e
     ld   H, A                                          ;; 00:166e $67
@@ -3296,7 +3296,7 @@ call_00_15a6:
     ld   [wCED2], A                                    ;; 00:1671 $ea $d2 $ce
     ld   A, L                                          ;; 00:1674 $7d
     ld   [wCED3], A                                    ;; 00:1675 $ea $d3 $ce
-    ld   HL, wD59F                                     ;; 00:1678 $21 $9f $d5
+    ld   HL, wRoomAttrmapPointer                       ;; 00:1678 $21 $9f $d5
     ld   A, [HL+]                                      ;; 00:167b $2a
     ld   L, [HL]                                       ;; 00:167c $6e
     ld   H, A                                          ;; 00:167d $67
@@ -3319,7 +3319,7 @@ call_00_1688:
     ld   E, [HL]                                       ;; 00:1695 $5e
     ld   D, A                                          ;; 00:1696 $57
     call call_00_1749                                  ;; 00:1697 $cd $49 $17
-    ld   A, [wD594]                                    ;; 00:169a $fa $94 $d5
+    ld   A, [wRoomTilemapBank]                         ;; 00:169a $fa $94 $d5
     ld   [wBackupRomBank], A                           ;; 00:169d $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:16a0 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:16a3 $ea $00 $20
@@ -3341,7 +3341,7 @@ call_00_1688:
     ldh  A, [hIsGBC]                                   ;; 00:16bc $f0 $fe
     and  A, A                                          ;; 00:16be $a7
     jr   Z, .jr_00_16e3                                ;; 00:16bf $28 $22
-    ld   A, [wD596]                                    ;; 00:16c1 $fa $96 $d5
+    ld   A, [wRoomAttrmapBank]                         ;; 00:16c1 $fa $96 $d5
     ld   [wBackupRomBank], A                           ;; 00:16c4 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:16c7 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:16ca $ea $00 $20
@@ -3435,7 +3435,7 @@ call_00_1749:
     ld   A, [wD5D7]                                    ;; 00:1749 $fa $d7 $d5
     cp   A, $0a                                        ;; 00:174c $fe $0a
     ret  NC                                            ;; 00:174e $d0
-    ld   A, [wD598]                                    ;; 00:174f $fa $98 $d5
+    ld   A, [wRoomCollisionBank]                       ;; 00:174f $fa $98 $d5
     ld   [wBackupRomBank], A                           ;; 00:1752 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:1755 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1758 $ea $00 $20
@@ -6330,7 +6330,7 @@ call_00_2bc4:
     ld   [wCurrentRomBank], A                          ;; 00:2cdd $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2ce0 $ea $00 $20
     ld   HL, $4000                                     ;; 00:2ce3 $21 $00 $40
-    ld   DE, wCE25                                     ;; 00:2ce6 $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 00:2ce6 $11 $25 $ce
     ld   B, $40                                        ;; 00:2ce9 $06 $40
     call memcopySmall                                  ;; 00:2ceb $cd $91 $05
     ld   HL, $4040                                     ;; 00:2cee $21 $40 $40
@@ -6339,15 +6339,15 @@ call_00_2bc4:
     call memcopySmall                                  ;; 00:2cf6 $cd $91 $05
     jr   .jr_00_2d15                                   ;; 00:2cf9 $18 $1a
 .jr_00_2cfb:
-    ld   A, [wD59C]                                    ;; 00:2cfb $fa $9c $d5
+    ld   A, [wRoomPaletteBank]                         ;; 00:2cfb $fa $9c $d5
     ld   [wBackupRomBank], A                           ;; 00:2cfe $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:2d01 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2d04 $ea $00 $20
-    ld   HL, wD5A5                                     ;; 00:2d07 $21 $a5 $d5
+    ld   HL, wRoomPalettePointer                       ;; 00:2d07 $21 $a5 $d5
     ld   A, [HL+]                                      ;; 00:2d0a $2a
     ld   L, [HL]                                       ;; 00:2d0b $6e
     ld   H, A                                          ;; 00:2d0c $67
-    ld   DE, wCE25                                     ;; 00:2d0d $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 00:2d0d $11 $25 $ce
     ld   B, $40                                        ;; 00:2d10 $06 $40
     call memcopySmall                                  ;; 00:2d12 $cd $91 $05
 .jr_00_2d15:
@@ -6818,7 +6818,7 @@ call_00_2f87:
     ld   A, [HL+]                                      ;; 00:3127 $2a
     ld   L, [HL]                                       ;; 00:3128 $6e
     ld   H, A                                          ;; 00:3129 $67
-    ld   DE, wCE25                                     ;; 00:312a $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 00:312a $11 $25 $ce
     ld   B, $38                                        ;; 00:312d $06 $38
     call memcopySmall                                  ;; 00:312f $cd $91 $05
     ld   A, $08                                        ;; 00:3132 $3e $08

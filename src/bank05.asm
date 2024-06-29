@@ -1762,7 +1762,7 @@ call_05_4bd5:
     jr   Z, .jr_05_4bfa                                ;; 05:4bea $28 $0e
     ld   HL, wCE65                                     ;; 05:4bec $21 $65 $ce
     call setSpritePaletteData                          ;; 05:4bef $cd $ad $04
-    ld   HL, wCE25                                     ;; 05:4bf2 $21 $25 $ce
+    ld   HL, wBackgroundPalette                        ;; 05:4bf2 $21 $25 $ce
     call setBackgroundPaletteData                      ;; 05:4bf5 $cd $9f $04
     jr   .jr_05_4c09                                   ;; 05:4bf8 $18 $0f
 .jr_05_4bfa:
@@ -2110,7 +2110,7 @@ jp_05_4dfe:
     ld   DE, wCE65                                     ;; 05:4e03 $11 $65 $ce
     ld   HL, wCDE5                                     ;; 05:4e06 $21 $e5 $cd
     call call_05_4cc3                                  ;; 05:4e09 $cd $c3 $4c
-    ld   DE, wCE25                                     ;; 05:4e0c $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 05:4e0c $11 $25 $ce
     ld   HL, wCDA5                                     ;; 05:4e0f $21 $a5 $cd
     call call_05_4cc3                                  ;; 05:4e12 $cd $c3 $4c
     jr   .jr_05_4e2e                                   ;; 05:4e15 $18 $17
@@ -2132,7 +2132,7 @@ jp_05_4dfe:
     ld   [wD317], A                                    ;; 05:4e35 $ea $17 $d3
     ld   HL, wCE65                                     ;; 05:4e38 $21 $65 $ce
     call setSpritePaletteData                          ;; 05:4e3b $cd $ad $04
-    ld   HL, wCE25                                     ;; 05:4e3e $21 $25 $ce
+    ld   HL, wBackgroundPalette                        ;; 05:4e3e $21 $25 $ce
     call setBackgroundPaletteData                      ;; 05:4e41 $cd $9f $04
 .jr_05_4e44:
     xor  A, A                                          ;; 05:4e44 $af

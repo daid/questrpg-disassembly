@@ -1871,7 +1871,7 @@ call_04_567f:
     call call_04_5774                                  ;; 04:56e0 $cd $74 $57
     jp   .jp_04_56f8                                   ;; 04:56e3 $c3 $f8 $56
 .jr_04_56e6:
-    ld   DE, wCE25                                     ;; 04:56e6 $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 04:56e6 $11 $25 $ce
     ld   HL, wCDA5                                     ;; 04:56e9 $21 $a5 $cd
     call call_04_57c9                                  ;; 04:56ec $cd $c9 $57
     ld   DE, wCE65                                     ;; 04:56ef $11 $65 $ce
@@ -2154,7 +2154,7 @@ call_04_5852:
     call call_04_5947                                  ;; 04:58af $cd $47 $59
     jp   .jp_04_58c7                                   ;; 04:58b2 $c3 $c7 $58
 .jr_04_58b5:
-    ld   DE, wCE25                                     ;; 04:58b5 $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 04:58b5 $11 $25 $ce
     ld   HL, wCDA5                                     ;; 04:58b8 $21 $a5 $cd
     call call_04_5995                                  ;; 04:58bb $cd $95 $59
     ld   DE, wCE65                                     ;; 04:58be $11 $65 $ce

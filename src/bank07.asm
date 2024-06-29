@@ -48,7 +48,7 @@ call_07_4021:
     and  A, A                                          ;; 07:4046 $a7
     jr   Z, .jr_07_4073                                ;; 07:4047 $28 $2a
     ld   BC, $40                                       ;; 07:4049 $01 $40 $00
-    ld   DE, wCE25                                     ;; 07:404c $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 07:404c $11 $25 $ce
     ld   HL, data_07_4fbd                              ;; 07:404f $21 $bd $4f
     call memcopy                                       ;; 07:4052 $cd $4e $04
     call call_07_472c                                  ;; 07:4055 $cd $2c $47
@@ -132,7 +132,7 @@ call_07_40ef:
     and  A, A                                          ;; 07:40fb $a7
     jr   Z, .jr_07_4128                                ;; 07:40fc $28 $2a
     ld   BC, $40                                       ;; 07:40fe $01 $40 $00
-    ld   DE, wCE25                                     ;; 07:4101 $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 07:4101 $11 $25 $ce
     ld   HL, data_07_4fbd                              ;; 07:4104 $21 $bd $4f
     call memcopy                                       ;; 07:4107 $cd $4e $04
     call call_07_472c                                  ;; 07:410a $cd $2c $47
@@ -332,7 +332,7 @@ call_07_4292:
     ld   [wD4FA], A                                    ;; 07:4299 $ea $fa $d4
     ld   A, $00                                        ;; 07:429c $3e $00
     ld   B, $10                                        ;; 07:429e $06 $10
-    ld   DE, wCE25                                     ;; 07:42a0 $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 07:42a0 $11 $25 $ce
     ld   HL, wCDA5                                     ;; 07:42a3 $21 $a5 $cd
     call call_07_47e0                                  ;; 07:42a6 $cd $e0 $47
     jr   .jr_07_42ae                                   ;; 07:42a9 $18 $03

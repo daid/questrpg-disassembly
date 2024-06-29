@@ -1287,14 +1287,14 @@ call_06_4a86:
     ld   B, $40                                        ;; 06:4ae2 $06 $40
     call memcopySmall                                  ;; 06:4ae4 $cd $91 $05
     ld   HL, data_06_7956                              ;; 06:4ae7 $21 $56 $79
-    ld   DE, wCE25                                     ;; 06:4aea $11 $25 $ce
+    ld   DE, wBackgroundPalette                        ;; 06:4aea $11 $25 $ce
     ld   B, $40                                        ;; 06:4aed $06 $40
     call memcopySmall                                  ;; 06:4aef $cd $91 $05
     ld   HL, data_06_7956                              ;; 06:4af2 $21 $56 $79
     ld   DE, wCE65                                     ;; 06:4af5 $11 $65 $ce
     ld   B, $40                                        ;; 06:4af8 $06 $40
     call memcopySmall                                  ;; 06:4afa $cd $91 $05
-    ld   HL, wCE25                                     ;; 06:4afd $21 $25 $ce
+    ld   HL, wBackgroundPalette                        ;; 06:4afd $21 $25 $ce
     call setBackgroundPaletteData                      ;; 06:4b00 $cd $9f $04
     ld   HL, wCE65                                     ;; 06:4b03 $21 $65 $ce
     call setSpritePaletteData                          ;; 06:4b06 $cd $ad $04
