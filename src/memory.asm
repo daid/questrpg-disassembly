@@ -195,22 +195,19 @@ wC140:
 wC141:
     ds 1                                               ;; c141
 
-wC142:
+wCurrentMap:
     ds 1                                               ;; c142
-
-wC143:
+.low:
     ds 1                                               ;; c143
 
-wC144:
+wPlayerX:
     ds 1                                               ;; c144
-
-wC145:
+.low:
     ds 1                                               ;; c145
 
-wC146:
+wPlayerY:
     ds 1                                               ;; c146
-
-wC147:
+.low:
     ds 1                                               ;; c147
 
 wC148:
@@ -2121,7 +2118,9 @@ wVBlankDone:
 wIEBackup:
     ds 1                                               ;; d585
 
-wD586:
+;0=load map
+;1=on map
+wMainGameState:
     ds 1                                               ;; d586
 
 wSCY:
@@ -2145,7 +2144,7 @@ wD58C:
 wD58D:
     ds 1                                               ;; d58d
 
-wD58E:
+wStackPointerBackup:
     ds 2                                               ;; d58e
 
 wMapHeaderStart:
@@ -2220,10 +2219,10 @@ wD5B2:
 wD5B3:
     ds 2                                               ;; d5b3
 
-wD5B5:
+wBackupRomBank:
     ds 2                                               ;; d5b5
 
-wD5B7:
+wCurrentRomBank:
     ds 1                                               ;; d5b7
 
 wD5B8:

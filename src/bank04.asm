@@ -40,7 +40,7 @@ call_04_4000:
     ld   A, [wD5D7]                                    ;; 04:402f $fa $d7 $d5
     ld   C, A                                          ;; 04:4032 $4f
     ld   HL, wCF36                                     ;; 04:4033 $21 $36 $cf
-    call call_00_067a                                  ;; 04:4036 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:4036 $cd $7a $06
     ld   A, [wD5D7]                                    ;; 04:4039 $fa $d7 $d5
     inc  A                                             ;; 04:403c $3c
     ld   [wD5D7], A                                    ;; 04:403d $ea $d7 $d5
@@ -120,7 +120,7 @@ call_04_4000:
     ld   C, [HL]                                       ;; 04:40b7 $4e
     inc  [HL]                                          ;; 04:40b8 $34
     ld   HL, wCF36                                     ;; 04:40b9 $21 $36 $cf
-    call call_00_067a                                  ;; 04:40bc $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:40bc $cd $7a $06
     ld   A, $01                                        ;; 04:40bf $3e $01
     ld   [HL+], A                                      ;; 04:40c1 $22
     ld   A, [wD838]                                    ;; 04:40c2 $fa $38 $d8
@@ -261,7 +261,7 @@ call_04_41a1:
 .jr_04_41a9:
     push BC                                            ;; 04:41a9 $c5
     ld   HL, wCF36                                     ;; 04:41aa $21 $36 $cf
-    call call_00_067a                                  ;; 04:41ad $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:41ad $cd $7a $06
     inc  HL                                            ;; 04:41b0 $23
     inc  HL                                            ;; 04:41b1 $23
     ld   A, [HL+]                                      ;; 04:41b2 $2a
@@ -321,7 +321,7 @@ call_04_41a1:
 call_04_41fe:
     push BC                                            ;; 04:41fe $c5
     ld   HL, wCF36                                     ;; 04:41ff $21 $36 $cf
-    call call_00_067a                                  ;; 04:4202 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:4202 $cd $7a $06
     ld   A, [HL+]                                      ;; 04:4205 $2a
     cp   A, $01                                        ;; 04:4206 $fe $01
     jr   C, .jr_04_4223                                ;; 04:4208 $38 $19
@@ -346,7 +346,7 @@ call_04_41fe:
 .jr_04_4223:
     ld   C, [HL]                                       ;; 04:4223 $4e
     ld   HL, $323                                      ;; 04:4224 $21 $23 $03
-    call call_00_067a                                  ;; 04:4227 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:4227 $cd $7a $06
     ld   [HL], $00                                     ;; 04:422a $36 $00
     pop  BC                                            ;; 04:422c $c1
     ret                                                ;; 04:422d $c9
@@ -359,7 +359,7 @@ call_04_422e:
 .jr_04_4235:
     push BC                                            ;; 04:4235 $c5
     ld   HL, wCF36                                     ;; 04:4236 $21 $36 $cf
-    call call_00_067a                                  ;; 04:4239 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:4239 $cd $7a $06
     ld   BC, $03                                       ;; 04:423c $01 $03 $00
     add  HL, BC                                        ;; 04:423f $09
     ld   A, [HL]                                       ;; 04:4240 $7e
@@ -489,7 +489,7 @@ call_04_42cb:
     jp   Z, .jp_04_4379                                ;; 04:42d6 $ca $79 $43
     push BC                                            ;; 04:42d9 $c5
     ld   HL, $321                                      ;; 04:42da $21 $21 $03
-    call call_00_067a                                  ;; 04:42dd $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:42dd $cd $7a $06
     ld   A, [HL]                                       ;; 04:42e0 $7e
     cp   A, $40                                        ;; 04:42e1 $fe $40
     jp   Z, .jp_04_4378                                ;; 04:42e3 $ca $78 $43
@@ -512,24 +512,24 @@ call_04_42cb:
     ld   A, $00                                        ;; 04:42f9 $3e $00
     adc  A, D                                          ;; 04:42fb $8a
     ld   D, A                                          ;; 04:42fc $57
-    call call_00_06b4                                  ;; 04:42fd $cd $b4 $06
+    call divide_DE_8                                   ;; 04:42fd $cd $b4 $06
     ld   HL, wD5BC                                     ;; 04:4300 $21 $bc $d5
     ld   A, [HL+]                                      ;; 04:4303 $2a
     ld   L, [HL]                                       ;; 04:4304 $6e
     ld   H, A                                          ;; 04:4305 $67
-    call call_00_06a7                                  ;; 04:4306 $cd $a7 $06
+    call divide_HL_8                                   ;; 04:4306 $cd $a7 $06
     ld   A, L                                          ;; 04:4309 $7d
     cp   A, E                                          ;; 04:430a $bb
     jr   Z, .jr_04_4326                                ;; 04:430b $28 $19
     jp   NC, .jp_04_4377                               ;; 04:430d $d2 $77 $43
-    call call_00_06c1                                  ;; 04:4310 $cd $c1 $06
+    call divide_BC_8                                   ;; 04:4310 $cd $c1 $06
     ld   HL, wD5BC                                     ;; 04:4313 $21 $bc $d5
     ld   A, [HL+]                                      ;; 04:4316 $2a
     ld   L, [HL]                                       ;; 04:4317 $6e
     ld   H, A                                          ;; 04:4318 $67
     ld   DE, $0f                                       ;; 04:4319 $11 $0f $00
     add  HL, DE                                        ;; 04:431c $19
-    call call_00_06a7                                  ;; 04:431d $cd $a7 $06
+    call divide_HL_8                                   ;; 04:431d $cd $a7 $06
     ld   A, L                                          ;; 04:4320 $7d
     cp   A, C                                          ;; 04:4321 $b9
     jr   Z, .jr_04_4326                                ;; 04:4322 $28 $02
@@ -544,24 +544,24 @@ call_04_42cb:
     ld   A, $00                                        ;; 04:432d $3e $00
     adc  A, D                                          ;; 04:432f $8a
     ld   D, A                                          ;; 04:4330 $57
-    call call_00_06b4                                  ;; 04:4331 $cd $b4 $06
+    call divide_DE_8                                   ;; 04:4331 $cd $b4 $06
     ld   HL, wD5BE                                     ;; 04:4334 $21 $be $d5
     ld   A, [HL+]                                      ;; 04:4337 $2a
     ld   L, [HL]                                       ;; 04:4338 $6e
     ld   H, A                                          ;; 04:4339 $67
-    call call_00_06a7                                  ;; 04:433a $cd $a7 $06
+    call divide_HL_8                                   ;; 04:433a $cd $a7 $06
     ld   A, L                                          ;; 04:433d $7d
     cp   A, E                                          ;; 04:433e $bb
     jr   Z, .jr_04_4359                                ;; 04:433f $28 $18
     jr   NC, .jp_04_4378                               ;; 04:4341 $30 $35
-    call call_00_06c1                                  ;; 04:4343 $cd $c1 $06
+    call divide_BC_8                                   ;; 04:4343 $cd $c1 $06
     ld   HL, wD5BE                                     ;; 04:4346 $21 $be $d5
     ld   A, [HL+]                                      ;; 04:4349 $2a
     ld   L, [HL]                                       ;; 04:434a $6e
     ld   H, A                                          ;; 04:434b $67
     ld   DE, $0f                                       ;; 04:434c $11 $0f $00
     add  HL, DE                                        ;; 04:434f $19
-    call call_00_06a7                                  ;; 04:4350 $cd $a7 $06
+    call divide_HL_8                                   ;; 04:4350 $cd $a7 $06
     ld   A, L                                          ;; 04:4353 $7d
     cp   A, C                                          ;; 04:4354 $b9
     jr   Z, .jr_04_4359                                ;; 04:4355 $28 $02
@@ -578,7 +578,7 @@ call_04_42cb:
     dec  A                                             ;; 04:4365 $3d
     ld   C, A                                          ;; 04:4366 $4f
     ld   HL, $323                                      ;; 04:4367 $21 $23 $03
-    call call_00_067a                                  ;; 04:436a $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:436a $cd $7a $06
     ld   DE, $0d                                       ;; 04:436d $11 $0d $00
     add  HL, DE                                        ;; 04:4370 $19
     inc  [HL]                                          ;; 04:4371 $34
@@ -691,8 +691,8 @@ call_04_43cf:
     jp   .jp_04_4503                                   ;; 04:4419 $c3 $03 $45
 .jr_04_441c:
     ld   A, $04                                        ;; 04:441c $3e $04
-    ld   [wD5B5], A                                    ;; 04:441e $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 04:4421 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 04:441e $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 04:4421 $ea $b7 $d5
     ld   [$2000], A                                    ;; 04:4424 $ea $00 $20
     ld   A, [wCC53]                                    ;; 04:4427 $fa $53 $cc
     ld   B, A                                          ;; 04:442a $47
@@ -701,7 +701,7 @@ call_04_43cf:
     add  A, B                                          ;; 04:442f $80
     ld   C, A                                          ;; 04:4430 $4f
     ld   HL, data_04_4a2a                              ;; 04:4431 $21 $2a $4a
-    call call_00_067a                                  ;; 04:4434 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:4434 $cd $7a $06
     push HL                                            ;; 04:4437 $e5
     ld   HL, data_04_4a22                              ;; 04:4438 $21 $22 $4a
     add  HL, BC                                        ;; 04:443b $09
@@ -717,7 +717,7 @@ call_04_43cf:
     jp   call_00_11a8                                  ;; 04:444c $c3 $a8 $11
 .jr_04_444f:
     inc  [HL]                                          ;; 04:444f $34
-    ld   A, [wD586]                                    ;; 04:4450 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 04:4450 $fa $86 $d5
     cp   A, $01                                        ;; 04:4453 $fe $01
     jr   Z, .jr_04_44a0                                ;; 04:4455 $28 $49
     ld   A, $21                                        ;; 04:4457 $3e $21
@@ -821,8 +821,8 @@ call_04_43cf:
     call call_00_11a8                                  ;; 04:4500 $cd $a8 $11
 .jp_04_4503:
     ld   A, $04                                        ;; 04:4503 $3e $04
-    ld   [wD5B5], A                                    ;; 04:4505 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 04:4508 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 04:4505 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 04:4508 $ea $b7 $d5
     ld   [$2000], A                                    ;; 04:450b $ea $00 $20
     ld   A, [wCC53]                                    ;; 04:450e $fa $53 $cc
     ld   B, A                                          ;; 04:4511 $47
@@ -1891,7 +1891,7 @@ call_04_567f:
     ld   A, [wD58D]                                    ;; 04:570b $fa $8d $d5
     ld   [wD58B], A                                    ;; 04:570e $ea $8b $d5
     ld   A, [wD58C]                                    ;; 04:5711 $fa $8c $d5
-    ld   [wD586], A                                    ;; 04:5714 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 04:5714 $ea $86 $d5
     ret                                                ;; 04:5717 $c9
 
 call_04_5718:
@@ -2174,7 +2174,7 @@ call_04_5852:
     ld   A, [wD58D]                                    ;; 04:58da $fa $8d $d5
     ld   [wD58B], A                                    ;; 04:58dd $ea $8b $d5
     ld   A, [wD58C]                                    ;; 04:58e0 $fa $8c $d5
-    ld   [wD586], A                                    ;; 04:58e3 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 04:58e3 $ea $86 $d5
     ret                                                ;; 04:58e6 $c9
 
 call_04_58e7:
@@ -3001,7 +3001,7 @@ call_04_60a7:
     ret                                                ;; 04:6139 $c9
 
 call_04_613a:
-    ld   HL, wC144                                     ;; 04:613a $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 04:613a $21 $44 $c1
     ld   A, [HL+]                                      ;; 04:613d $2a
     ld   L, [HL]                                       ;; 04:613e $6e
     ld   H, A                                          ;; 04:613f $67
@@ -3031,7 +3031,7 @@ call_04_613a:
     ld   [wCEB2], A                                    ;; 04:616e $ea $b2 $ce
 .jr_04_6171:
     call call_00_21d5                                  ;; 04:6171 $cd $d5 $21
-    ld   HL, wC146                                     ;; 04:6174 $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 04:6174 $21 $46 $c1
     ld   A, [HL+]                                      ;; 04:6177 $2a
     ld   L, [HL]                                       ;; 04:6178 $6e
     ld   H, A                                          ;; 04:6179 $67
@@ -3112,7 +3112,7 @@ call_04_61ea:
 .jr_04_6212:
     push BC                                            ;; 04:6212 $c5
     ld   HL, $323                                      ;; 04:6213 $21 $23 $03
-    call call_00_067a                                  ;; 04:6216 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:6216 $cd $7a $06
     ld   A, [HL]                                       ;; 04:6219 $7e
     cp   A, $40                                        ;; 04:621a $fe $40
     jr   Z, .jr_04_6262                                ;; 04:621c $28 $44
@@ -3161,7 +3161,7 @@ call_04_61ea:
 
 call_04_6268:
     ld   A, $01                                        ;; 04:6268 $3e $01
-    ld   [wD586], A                                    ;; 04:626a $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 04:626a $ea $86 $d5
     ld   [wD58C], A                                    ;; 04:626d $ea $8c $d5
     xor  A, A                                          ;; 04:6270 $af
     ld   [wD58B], A                                    ;; 04:6271 $ea $8b $d5
@@ -3557,7 +3557,7 @@ call_04_6aa9:
     ld   A, $10                                        ;; 04:6ab4 $3e $10
     ld   [wD5D7], A                                    ;; 04:6ab6 $ea $d7 $d5
     ld   HL, wCF36                                     ;; 04:6ab9 $21 $36 $cf
-    call call_00_067a                                  ;; 04:6abc $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 04:6abc $cd $7a $06
     ld   BC, $1d                                       ;; 04:6abf $01 $1d $00
 .jr_04_6ac2:
     ld   [HL], $ff                                     ;; 04:6ac2 $36 $ff

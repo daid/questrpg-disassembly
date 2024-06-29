@@ -104,7 +104,7 @@ call_08_4142:
     inc  A                                             ;; 08:4194 $3c
     ld   [wC59E], A                                    ;; 08:4195 $ea $9e $c5
     ld   HL, $33d                                      ;; 08:4198 $21 $3d $03
-    call call_00_067a                                  ;; 08:419b $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 08:419b $cd $7a $06
     ld   A, H                                          ;; 08:419e $7c
     ld   [wC568], A                                    ;; 08:419f $ea $68 $c5
     ld   A, L                                          ;; 08:41a2 $7d
@@ -193,7 +193,7 @@ call_08_4142:
     ld   A, [HL+]                                      ;; 08:4253 $2a
     ld   L, [HL]                                       ;; 08:4254 $6e
     ld   H, A                                          ;; 08:4255 $67
-    jp   jp_00_3720                                    ;; 08:4256 $c3 $20 $37
+    jp   jump_hl_in_bank_0F                            ;; 08:4256 $c3 $20 $37
 
 call_08_4259:
     ld   A, [HL+]                                      ;; 08:4259 $2a
@@ -219,7 +219,7 @@ call_08_4271:
     ld   A, [wC588]                                    ;; 08:4272 $fa $88 $c5
     ld   C, A                                          ;; 08:4275 $4f
     ld   HL, $33d                                      ;; 08:4276 $21 $3d $03
-    call call_00_067a                                  ;; 08:4279 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 08:4279 $cd $7a $06
     ld   A, $01                                        ;; 08:427c $3e $01
     ld   [HL+], A                                      ;; 08:427e $22
     ld   A, D                                          ;; 08:427f $7a
@@ -332,12 +332,12 @@ call_08_4313:
     ld   A, [wD5D7]                                    ;; 08:4313 $fa $d7 $d5
     ld   C, A                                          ;; 08:4316 $4f
     ld   HL, wCF36                                     ;; 08:4317 $21 $36 $cf
-    call call_00_0683                                  ;; 08:431a $cd $83 $06
+    call ld_DE_from_HL_add_2C                          ;; 08:431a $cd $83 $06
     push DE                                            ;; 08:431d $d5
     ld   A, [wC588]                                    ;; 08:431e $fa $88 $c5
     ld   C, A                                          ;; 08:4321 $4f
     ld   HL, $33d                                      ;; 08:4322 $21 $3d $03
-    call call_00_067a                                  ;; 08:4325 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 08:4325 $cd $7a $06
     ld   A, $03                                        ;; 08:4328 $3e $03
     ld   [DE], A                                       ;; 08:432a $12
     inc  DE                                            ;; 08:432b $13
@@ -579,7 +579,7 @@ call_08_4442:
     ld   A, [wC5A6]                                    ;; 08:4472 $fa $a6 $c5
     ld   L, A                                          ;; 08:4475 $6f
     ld   H, $00                                        ;; 08:4476 $26 $00
-    call call_00_06a1                                  ;; 08:4478 $cd $a1 $06
+    call multiply_HL_32                                ;; 08:4478 $cd $a1 $06
     ld   A, [wC5A7]                                    ;; 08:447b $fa $a7 $c5
     add  A, L                                          ;; 08:447e $85
     ld   L, A                                          ;; 08:447f $6f
@@ -593,7 +593,7 @@ call_08_4442:
     ld   A, [wC5A8]                                    ;; 08:448c $fa $a8 $c5
     ld   L, A                                          ;; 08:448f $6f
     ld   H, $00                                        ;; 08:4490 $26 $00
-    call call_00_06a1                                  ;; 08:4492 $cd $a1 $06
+    call multiply_HL_32                                ;; 08:4492 $cd $a1 $06
     ld   A, [wC5A7]                                    ;; 08:4495 $fa $a7 $c5
     add  A, L                                          ;; 08:4498 $85
     ld   L, A                                          ;; 08:4499 $6f
@@ -611,7 +611,7 @@ call_08_4442:
     inc  A                                             ;; 08:44b0 $3c
     ld   L, A                                          ;; 08:44b1 $6f
     ld   H, $00                                        ;; 08:44b2 $26 $00
-    call call_00_06a1                                  ;; 08:44b4 $cd $a1 $06
+    call multiply_HL_32                                ;; 08:44b4 $cd $a1 $06
     ld   A, [wC5A9]                                    ;; 08:44b7 $fa $a9 $c5
     add  A, L                                          ;; 08:44ba $85
     ld   L, A                                          ;; 08:44bb $6f

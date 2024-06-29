@@ -1076,7 +1076,7 @@ call_18_5fd1:
     sub  A, $0a                                        ;; 18:6027 $d6 $0a
     ld   C, A                                          ;; 18:6029 $4f
     ld   HL, data_18_6406                              ;; 18:602a $21 $06 $64
-    call call_00_067a                                  ;; 18:602d $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 18:602d $cd $7a $06
     jp   jp_00_368c                                    ;; 18:6030 $c3 $8c $36
 .jr_18_6033:
     ld   B, A                                          ;; 18:6033 $47
@@ -1176,8 +1176,8 @@ call_18_5fd1:
 .jp_18_60ed:
     call call_18_6298                                  ;; 18:60ed $cd $98 $62
     ld   A, $18                                        ;; 18:60f0 $3e $18
-    ld   [wD5B5], A                                    ;; 18:60f2 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 18:60f5 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 18:60f2 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 18:60f5 $ea $b7 $d5
     ld   [$2000], A                                    ;; 18:60f8 $ea $00 $20
     ld   A, [wCA1D]                                    ;; 18:60fb $fa $1d $ca
     ld   C, A                                          ;; 18:60fe $4f
@@ -1188,7 +1188,7 @@ call_18_5fd1:
     push HL                                            ;; 18:6106 $e5
     ld   C, A                                          ;; 18:6107 $4f
     ld   HL, data_18_6412                              ;; 18:6108 $21 $12 $64
-    call call_00_067a                                  ;; 18:610b $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 18:610b $cd $7a $06
     ld   DE, wCA25                                     ;; 18:610e $11 $25 $ca
 .jr_18_6111:
     ld   A, [HL+]                                      ;; 18:6111 $2a
@@ -1204,7 +1204,7 @@ call_18_5fd1:
     pop  HL                                            ;; 18:611e $e1
     ld   C, [HL]                                       ;; 18:611f $4e
     ld   HL, data_18_6412                              ;; 18:6120 $21 $12 $64
-    call call_00_067a                                  ;; 18:6123 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 18:6123 $cd $7a $06
 .jr_18_6126:
     ld   A, [HL+]                                      ;; 18:6126 $2a
     cp   A, $f9                                        ;; 18:6127 $fe $f9

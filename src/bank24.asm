@@ -1455,7 +1455,7 @@ jp_24_6c46:
 .jr_24_6c59:
     push BC                                            ;; 24:6c59 $c5
     ld   HL, wCF36                                     ;; 24:6c5a $21 $36 $cf
-    call call_00_067a                                  ;; 24:6c5d $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6c5d $cd $7a $06
     ld   [HL], $04                                     ;; 24:6c60 $36 $04
     ld   DE, $0f                                       ;; 24:6c62 $11 $0f $00
     add  HL, DE                                        ;; 24:6c65 $19
@@ -1519,7 +1519,7 @@ call_24_6cc2:
 .jp_24_6cc5:
     push BC                                            ;; 24:6cc5 $c5
     ld   HL, wCF36                                     ;; 24:6cc6 $21 $36 $cf
-    call call_00_067a                                  ;; 24:6cc9 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6cc9 $cd $7a $06
     ld   DE, $0d                                       ;; 24:6ccc $11 $0d $00
     add  HL, DE                                        ;; 24:6ccf $19
     ld   A, [HL]                                       ;; 24:6cd0 $7e
@@ -1611,7 +1611,7 @@ jp_24_6d16:
 .jr_24_6d4d:
     push BC                                            ;; 24:6d4d $c5
     ld   HL, wCF36                                     ;; 24:6d4e $21 $36 $cf
-    call call_00_067a                                  ;; 24:6d51 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6d51 $cd $7a $06
     ld   BC, $11                                       ;; 24:6d54 $01 $11 $00
     add  HL, BC                                        ;; 24:6d57 $09
     ld   A, [HL]                                       ;; 24:6d58 $7e
@@ -1648,7 +1648,7 @@ jp_24_6d16:
     add  A, [HL]                                       ;; 24:6d86 $86
     push AF                                            ;; 24:6d87 $f5
     ld   HL, wCF36                                     ;; 24:6d88 $21 $36 $cf
-    call call_00_067a                                  ;; 24:6d8b $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6d8b $cd $7a $06
     ld   BC, $11                                       ;; 24:6d8e $01 $11 $00
     add  HL, BC                                        ;; 24:6d91 $09
     pop  AF                                            ;; 24:6d92 $f1
@@ -1785,7 +1785,7 @@ jp_24_6d16:
 .jr_24_6ed2:
     push BC                                            ;; 24:6ed2 $c5
     ld   HL, wCF36                                     ;; 24:6ed3 $21 $36 $cf
-    call call_00_067a                                  ;; 24:6ed6 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6ed6 $cd $7a $06
     ld   BC, $10                                       ;; 24:6ed9 $01 $10 $00
     add  HL, BC                                        ;; 24:6edc $09
     ld   A, [DE]                                       ;; 24:6edd $1a
@@ -1851,7 +1851,7 @@ jp_24_6d16:
 .jr_24_6f47:
     push BC                                            ;; 24:6f47 $c5
     ld   HL, wCF36                                     ;; 24:6f48 $21 $36 $cf
-    call call_00_067a                                  ;; 24:6f4b $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6f4b $cd $7a $06
     inc  HL                                            ;; 24:6f4e $23
     ld   [HL], $00                                     ;; 24:6f4f $36 $00
     ld   BC, $0f                                       ;; 24:6f51 $01 $0f $00
@@ -1905,7 +1905,7 @@ jp_24_6d16:
     ld   [wD837], A                                    ;; 24:6fb1 $ea $37 $d8
     push BC                                            ;; 24:6fb4 $c5
     ld   HL, wCF36                                     ;; 24:6fb5 $21 $36 $cf
-    call call_00_067a                                  ;; 24:6fb8 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:6fb8 $cd $7a $06
     inc  HL                                            ;; 24:6fbb $23
     ld   A, [HL+]                                      ;; 24:6fbc $2a
     cp   A, $40                                        ;; 24:6fbd $fe $40
@@ -1998,7 +1998,7 @@ jp_24_6d16:
     jp   .jp_24_70bc                                   ;; 24:704f $c3 $bc $70
 .jr_24_7052:
     ld   HL, wCF36                                     ;; 24:7052 $21 $36 $cf
-    call call_00_067a                                  ;; 24:7055 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:7055 $cd $7a $06
     ld   A, $04                                        ;; 24:7058 $3e $04
     ld   [HL+], A                                      ;; 24:705a $22
     ld   A, [HL]                                       ;; 24:705b $7e
@@ -2086,7 +2086,7 @@ jp_24_6d16:
 .jr_24_70dd:
     push BC                                            ;; 24:70dd $c5
     ld   HL, wCF36                                     ;; 24:70de $21 $36 $cf
-    call call_00_067a                                  ;; 24:70e1 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:70e1 $cd $7a $06
     inc  HL                                            ;; 24:70e4 $23
     ld   [HL], $00                                     ;; 24:70e5 $36 $00
     pop  BC                                            ;; 24:70e7 $c1
@@ -2130,7 +2130,7 @@ jp_24_6d16:
     ld   [wD837], A                                    ;; 24:714d $ea $37 $d8
     push BC                                            ;; 24:7150 $c5
     ld   HL, wCF36                                     ;; 24:7151 $21 $36 $cf
-    call call_00_067a                                  ;; 24:7154 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 24:7154 $cd $7a $06
     inc  HL                                            ;; 24:7157 $23
     ld   A, [HL+]                                      ;; 24:7158 $2a
     cp   A, $40                                        ;; 24:7159 $fe $40

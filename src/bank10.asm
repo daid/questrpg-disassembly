@@ -409,7 +409,7 @@ call_10_4bb7:
     ld   A, [wCA4D]                                    ;; 10:4bdc $fa $4d $ca
     cp   A, $08                                        ;; 10:4bdf $fe $08
     ret  C                                             ;; 10:4be1 $d8
-    ld   A, [wD586]                                    ;; 10:4be2 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 10:4be2 $fa $86 $d5
     cp   A, $03                                        ;; 10:4be5 $fe $03
     jr   Z, .jr_10_4c3c                                ;; 10:4be7 $28 $53
     ld   A, [wCB03]                                    ;; 10:4be9 $fa $03 $cb
@@ -554,7 +554,7 @@ call_10_4bb7:
 .jp_10_4ce8:
     ld   A, $06                                        ;; 10:4ce8 $3e $06
     ld   [wCA4D], A                                    ;; 10:4cea $ea $4d $ca
-    ld   A, [wD586]                                    ;; 10:4ced $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 10:4ced $fa $86 $d5
     cp   A, $03                                        ;; 10:4cf0 $fe $03
     ret  Z                                             ;; 10:4cf2 $c8
     ld   A, $02                                        ;; 10:4cf3 $3e $02
@@ -659,7 +659,7 @@ call_10_4bb7:
     add  A, [HL]                                       ;; 10:4d9b $86
     ld   C, A                                          ;; 10:4d9c $4f
     ld   HL, data_10_6ccd                              ;; 10:4d9d $21 $cd $6c
-    call call_00_067a                                  ;; 10:4da0 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 10:4da0 $cd $7a $06
     inc  HL                                            ;; 10:4da3 $23
     inc  HL                                            ;; 10:4da4 $23
     ld   DE, wC10E                                     ;; 10:4da5 $11 $0e $c1
@@ -704,7 +704,7 @@ call_10_4bb7:
     add  A, [HL]                                       ;; 10:4de3 $86
     ld   C, A                                          ;; 10:4de4 $4f
     ld   HL, data_10_6ccd                              ;; 10:4de5 $21 $cd $6c
-    call call_00_067a                                  ;; 10:4de8 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 10:4de8 $cd $7a $06
     ld   A, [HL+]                                      ;; 10:4deb $2a
     ld   [wD13A], A                                    ;; 10:4dec $ea $3a $d1
     ld   A, [HL+]                                      ;; 10:4def $2a
@@ -784,7 +784,7 @@ call_10_4e37:
     ld   A, C                                          ;; 10:4e79 $79
     ld   [wCB2A], A                                    ;; 10:4e7a $ea $2a $cb
     ld   HL, $345                                      ;; 10:4e7d $21 $45 $03
-    call call_00_067a                                  ;; 10:4e80 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 10:4e80 $cd $7a $06
     ld   A, [wD5DB]                                    ;; 10:4e83 $fa $db $d5
     sub  A, $04                                        ;; 10:4e86 $d6 $04
     ld   [wD837], A                                    ;; 10:4e88 $ea $37 $d8
@@ -817,7 +817,7 @@ call_10_4e37:
     ld   A, C                                          ;; 10:4ebb $79
     ld   [wCB2A], A                                    ;; 10:4ebc $ea $2a $cb
     ld   HL, $345                                      ;; 10:4ebf $21 $45 $03
-    call call_00_067a                                  ;; 10:4ec2 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 10:4ec2 $cd $7a $06
     push HL                                            ;; 10:4ec5 $e5
     ld   HL, wC568                                     ;; 10:4ec6 $21 $68 $c5
     ld   A, [HL+]                                      ;; 10:4ec9 $2a
@@ -896,7 +896,7 @@ call_10_4ef4:
     ld   A, [wCB28]                                    ;; 10:4f3e $fa $28 $cb
     ld   C, A                                          ;; 10:4f41 $4f
     ld   HL, wCF36                                     ;; 10:4f42 $21 $36 $cf
-    call call_00_067a                                  ;; 10:4f45 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 10:4f45 $cd $7a $06
     call call_00_0673                                  ;; 10:4f48 $cd $73 $06
     push HL                                            ;; 10:4f4b $e5
     ld   HL, wCB28                                     ;; 10:4f4c $21 $28 $cb
@@ -964,7 +964,7 @@ call_10_4fa5:
     ld   [wCB2A], A                                    ;; 10:4fb2 $ea $2a $cb
     push BC                                            ;; 10:4fb5 $c5
     ld   HL, $345                                      ;; 10:4fb6 $21 $45 $03
-    call call_00_0683                                  ;; 10:4fb9 $cd $83 $06
+    call ld_DE_from_HL_add_2C                          ;; 10:4fb9 $cd $83 $06
     ld   A, [DE]                                       ;; 10:4fbc $1a
     and  A, A                                          ;; 10:4fbd $a7
     jr   Z, .jr_10_4fce                                ;; 10:4fbe $28 $0e

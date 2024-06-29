@@ -26,7 +26,7 @@ jp_07_4000:
     dw   call_07_4578                                  ;; 07:401f pP $0c
 
 call_07_4021:
-    call call_00_0f39                                  ;; 07:4021 $cd $39 $0f
+    call startHardwareTimer                            ;; 07:4021 $cd $39 $0f
     call disableLCD                                    ;; 07:4024 $cd $23 $04
     call clearVRAM                                     ;; 07:4027 $cd $5f $04
     call call_07_46ef                                  ;; 07:402a $cd $ef $46
@@ -494,7 +494,7 @@ call_07_42c3:
     ret                                                ;; 07:439f $c9
 
 call_07_43a0:
-    call call_00_0f39                                  ;; 07:43a0 $cd $39 $0f
+    call startHardwareTimer                            ;; 07:43a0 $cd $39 $0f
     call disableLCD                                    ;; 07:43a3 $cd $23 $04
     call clearVRAM                                     ;; 07:43a6 $cd $5f $04
     call call_07_46ef                                  ;; 07:43a9 $cd $ef $46
@@ -667,11 +667,11 @@ call_07_4448:
 
 call_07_450d:
     call disableLCD                                    ;; 07:450d $cd $23 $04
-    call call_00_0f39                                  ;; 07:4510 $cd $39 $0f
+    call startHardwareTimer                            ;; 07:4510 $cd $39 $0f
     ld   A, $07                                        ;; 07:4513 $3e $07
     ld   B, $11                                        ;; 07:4515 $06 $11
-    ld   HL, data_07_6147                              ;; 07:4517 $21 $47 $61
-    call call_00_3cca                                  ;; 07:451a $cd $ca $3c
+    ld   HL, data_11_6147 ;@=ptr bank=0x11             ;; 07:4517 $21 $47 $61
+    call jump_hl_in_bank_B                             ;; 07:451a $cd $ca $3c
     xor  A, A                                          ;; 07:451d $af
     ld   [wSCY], A                                     ;; 07:451e $ea $87 $d5
     ld   [wSCX], A                                     ;; 07:4521 $ea $88 $d5
@@ -4116,8 +4116,6 @@ data_07_599d:
     dw   `11133000                                     ;; 07:6141 $f8 $18
     dw   `31133002                                     ;; 07:6143 $f8 $99
     dw   `31113302                                     ;; 07:6145 $fc $8d
-
-data_07_6147:
     dw   `31113322                                     ;; 07:6147 $fc $8f
     dw   `23111332                                     ;; 07:6149 $7e $c7
     dw   `03111133                                     ;; 07:614b $7f $43

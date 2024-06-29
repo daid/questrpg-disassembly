@@ -865,7 +865,7 @@ call_11_59a6:
     jr   Z, .jr_11_59c9                                ;; 11:59ab $28 $1c
     cp   A, $02                                        ;; 11:59ad $fe $02
     ret  NZ                                            ;; 11:59af $c0
-    ld   A, [wC143]                                    ;; 11:59b0 $fa $43 $c1
+    ld   A, [wCurrentMap.low]                          ;; 11:59b0 $fa $43 $c1
     cp   A, $70                                        ;; 11:59b3 $fe $70
     ret  NZ                                            ;; 11:59b5 $c0
     ld   A, [wD1C5]                                    ;; 11:59b6 $fa $c5 $d1
@@ -889,13 +889,13 @@ call_11_59a6:
     ld   A, [wC45B]                                    ;; 11:59d9 $fa $5b $c4
     and  A, A                                          ;; 11:59dc $a7
     ret  NZ                                            ;; 11:59dd $c0
-    ld   A, [wC147]                                    ;; 11:59de $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 11:59de $fa $47 $c1
     and  A, $08                                        ;; 11:59e1 $e6 $08
     ld   B, A                                          ;; 11:59e3 $47
     ld   A, [wD524]                                    ;; 11:59e4 $fa $24 $d5
     cp   A, B                                          ;; 11:59e7 $b8
     jr   NZ, .jr_11_59fb                               ;; 11:59e8 $20 $11
-    ld   A, [wC145]                                    ;; 11:59ea $fa $45 $c1
+    ld   A, [wPlayerX.low]                             ;; 11:59ea $fa $45 $c1
     and  A, $08                                        ;; 11:59ed $e6 $08
     ld   B, A                                          ;; 11:59ef $47
     ld   A, [wD525]                                    ;; 11:59f0 $fa $25 $d5
@@ -1646,6 +1646,8 @@ data_11_6133:
     db   $00, $07, $00, $04, $00, $08, $00, $01        ;; 11:6133 ????????
     db   $00, $05, $00, $09, $01, $08, $01, $07        ;; 11:613b ????????
     db   $01, $06, $01, $09                            ;; 11:6143 ????
+
+data_11_6147:
     call clearVRAM                                     ;; 11:6147 $cd $5f $04
     xor  A, A                                          ;; 11:614a $af
     ld   B, $a0                                        ;; 11:614b $06 $a0

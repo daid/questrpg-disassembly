@@ -51,7 +51,7 @@ call_05_403e:
     ld   [wD2E8], A                                    ;; 05:4060 $ea $e8 $d2
     ld   A, $28                                        ;; 05:4063 $3e $28
     ld   [wD319], A                                    ;; 05:4065 $ea $19 $d3
-    ld   A, [wC143]                                    ;; 05:4068 $fa $43 $c1
+    ld   A, [wCurrentMap.low]                          ;; 05:4068 $fa $43 $c1
     cp   A, $9f                                        ;; 05:406b $fe $9f
     jr   Z, .jr_05_40bb                                ;; 05:406d $28 $4c
     cp   A, $3e                                        ;; 05:406f $fe $3e
@@ -137,9 +137,9 @@ data_05_40d5:
     ld   A, [wD31D]                                    ;; 05:40f7 $fa $1d $d3
     and  A, A                                          ;; 05:40fa $a7
     jp   Z, jp_05_41b3                                 ;; 05:40fb $ca $b3 $41
-    ld   A, [wC144]                                    ;; 05:40fe $fa $44 $c1
+    ld   A, [wPlayerX]                                 ;; 05:40fe $fa $44 $c1
     ld   H, A                                          ;; 05:4101 $67
-    ld   A, [wC145]                                    ;; 05:4102 $fa $45 $c1
+    ld   A, [wPlayerX.low]                             ;; 05:4102 $fa $45 $c1
     ld   L, A                                          ;; 05:4105 $6f
     ld   A, [wD31E]                                    ;; 05:4106 $fa $1e $d3
     and  A, A                                          ;; 05:4109 $a7
@@ -180,9 +180,9 @@ data_05_413d:
     ld   [wC08D], A                                    ;; 05:4144 $ea $8d $c0
 
 jr_05_4147:
-    ld   [wC144], A                                    ;; 05:4147 $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 05:4147 $ea $44 $c1
     ld   A, L                                          ;; 05:414a $7d
-    ld   [wC145], A                                    ;; 05:414b $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 05:414b $ea $45 $c1
     ld   A, [wD31F]                                    ;; 05:414e $fa $1f $d3
     dec  A                                             ;; 05:4151 $3d
     ld   [wD31F], A                                    ;; 05:4152 $ea $1f $d3
@@ -200,9 +200,9 @@ jr_05_4147:
     jr   NZ, .jr_05_41a6                               ;; 05:416d $20 $37
     xor  A, A                                          ;; 05:416f $af
     ld   [wD4F8], A                                    ;; 05:4170 $ea $f8 $d4
-    ld   A, [wC146]                                    ;; 05:4173 $fa $46 $c1
+    ld   A, [wPlayerY]                                 ;; 05:4173 $fa $46 $c1
     ld   H, A                                          ;; 05:4176 $67
-    ld   A, [wC147]                                    ;; 05:4177 $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 05:4177 $fa $47 $c1
     ld   L, A                                          ;; 05:417a $6f
     ld   A, [wD4F7]                                    ;; 05:417b $fa $f7 $d4
     ld   B, A                                          ;; 05:417e $47
@@ -235,9 +235,9 @@ jr_05_4147:
     ld   [wD4F8], A                                    ;; 05:41a7 $ea $f8 $d4
     ret                                                ;; 05:41aa $c9
 .jr_05_41ab:
-    ld   [wC146], A                                    ;; 05:41ab $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 05:41ab $ea $46 $c1
     ld   A, L                                          ;; 05:41ae $7d
-    ld   [wC147], A                                    ;; 05:41af $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 05:41af $ea $47 $c1
     ret                                                ;; 05:41b2 $c9
 
 jp_05_41b3:
@@ -246,9 +246,9 @@ jp_05_41b3:
     jp   Z, jp_05_421b                                 ;; 05:41b7 $ca $1b $42
     cp   A, $02                                        ;; 05:41ba $fe $02
     jr   Z, .jr_05_41f0                                ;; 05:41bc $28 $32
-    ld   A, [wC146]                                    ;; 05:41be $fa $46 $c1
+    ld   A, [wPlayerY]                                 ;; 05:41be $fa $46 $c1
     ld   H, A                                          ;; 05:41c1 $67
-    ld   A, [wC147]                                    ;; 05:41c2 $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 05:41c2 $fa $47 $c1
     ld   L, A                                          ;; 05:41c5 $6f
     ld   A, [wD322]                                    ;; 05:41c6 $fa $22 $d3
     ld   B, A                                          ;; 05:41c9 $47
@@ -273,9 +273,9 @@ jp_05_41b3:
     ld   [wD320], A                                    ;; 05:41ec $ea $20 $d3
     ret                                                ;; 05:41ef $c9
 .jr_05_41f0:
-    ld   A, [wC146]                                    ;; 05:41f0 $fa $46 $c1
+    ld   A, [wPlayerY]                                 ;; 05:41f0 $fa $46 $c1
     ld   H, A                                          ;; 05:41f3 $67
-    ld   A, [wC147]                                    ;; 05:41f4 $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 05:41f4 $fa $47 $c1
     ld   L, A                                          ;; 05:41f7 $6f
     ld   A, [wD322]                                    ;; 05:41f8 $fa $22 $d3
     ld   B, A                                          ;; 05:41fb $47
@@ -979,9 +979,9 @@ jp_05_4693:
 
 jp_05_46c2:
     ld   A, [HL+]                                      ;; 05:46c2 $2a
-    ld   [wC142], A                                    ;; 05:46c3 $ea $42 $c1
+    ld   [wCurrentMap], A                              ;; 05:46c3 $ea $42 $c1
     ld   A, [HL+]                                      ;; 05:46c6 $2a
-    ld   [wC143], A                                    ;; 05:46c7 $ea $43 $c1
+    ld   [wCurrentMap.low], A                          ;; 05:46c7 $ea $43 $c1
     ld   A, [HL+]                                      ;; 05:46ca $2a
     cp   A, $00                                        ;; 05:46cb $fe $00
     jr   NZ, .jr_05_46d6                               ;; 05:46cd $20 $07
@@ -1005,13 +1005,13 @@ jp_05_46c2:
     jr   NZ, .jr_05_4707                               ;; 05:46eb $20 $1a
     inc  HL                                            ;; 05:46ed $23
     ld   A, [HL+]                                      ;; 05:46ee $2a
-    ld   [wC144], A                                    ;; 05:46ef $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 05:46ef $ea $44 $c1
     ld   A, [HL+]                                      ;; 05:46f2 $2a
-    ld   [wC145], A                                    ;; 05:46f3 $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 05:46f3 $ea $45 $c1
     ld   A, [HL+]                                      ;; 05:46f6 $2a
-    ld   [wC146], A                                    ;; 05:46f7 $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 05:46f7 $ea $46 $c1
     ld   A, [HL+]                                      ;; 05:46fa $2a
-    ld   [wC147], A                                    ;; 05:46fb $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 05:46fb $ea $47 $c1
     ld   A, [HL+]                                      ;; 05:46fe $2a
     ld   [wC148], A                                    ;; 05:46ff $ea $48 $c1
     ld   A, $00                                        ;; 05:4702 $3e $00
@@ -1160,9 +1160,9 @@ jp_05_47e5:
     ret                                                ;; 05:4800 $c9
 .jr_05_4801:
     ld   A, [HL+]                                      ;; 05:4801 $2a
-    ld   [wC142], A                                    ;; 05:4802 $ea $42 $c1
+    ld   [wCurrentMap], A                              ;; 05:4802 $ea $42 $c1
     ld   A, [HL]                                       ;; 05:4805 $7e
-    ld   [wC143], A                                    ;; 05:4806 $ea $43 $c1
+    ld   [wCurrentMap.low], A                          ;; 05:4806 $ea $43 $c1
     xor  A, A                                          ;; 05:4809 $af
     ld   [wD58C], A                                    ;; 05:480a $ea $8c $d5
     ld   [wD58B], A                                    ;; 05:480d $ea $8b $d5
@@ -1221,13 +1221,13 @@ jp_05_4839:
 
 jp_05_4866:
     ld   A, [HL+]                                      ;; 05:4866 $2a
-    ld   [wC144], A                                    ;; 05:4867 $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 05:4867 $ea $44 $c1
     ld   A, [HL+]                                      ;; 05:486a $2a
-    ld   [wC145], A                                    ;; 05:486b $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 05:486b $ea $45 $c1
     ld   A, [HL+]                                      ;; 05:486e $2a
-    ld   [wC146], A                                    ;; 05:486f $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 05:486f $ea $46 $c1
     ld   A, [HL+]                                      ;; 05:4872 $2a
-    ld   [wC147], A                                    ;; 05:4873 $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 05:4873 $ea $47 $c1
     ld   A, [HL+]                                      ;; 05:4876 $2a
     ld   [wC460], A                                    ;; 05:4877 $ea $60 $c4
     ld   A, $00                                        ;; 05:487a $3e $00
@@ -1252,7 +1252,7 @@ jp_05_488e:
     ret                                                ;; 05:489a $c9
 
 jp_05_489b:
-    ld   A, [wD586]                                    ;; 05:489b $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 05:489b $fa $86 $d5
     ld   [wD58C], A                                    ;; 05:489e $ea $8c $d5
     ld   A, $05                                        ;; 05:48a1 $3e $05
     ld   [wD58D], A                                    ;; 05:48a3 $ea $8d $d5
@@ -1664,9 +1664,9 @@ jp_05_4b28:
 
 jp_05_4b3f:
     ld   A, [HL+]                                      ;; 05:4b3f $2a
-    ld   [wC142], A                                    ;; 05:4b40 $ea $42 $c1
+    ld   [wCurrentMap], A                              ;; 05:4b40 $ea $42 $c1
     ld   A, [HL+]                                      ;; 05:4b43 $2a
-    ld   [wC143], A                                    ;; 05:4b44 $ea $43 $c1
+    ld   [wCurrentMap.low], A                          ;; 05:4b44 $ea $43 $c1
     ld   A, [HL+]                                      ;; 05:4b47 $2a
     cp   A, $00                                        ;; 05:4b48 $fe $00
     jr   NZ, .jr_05_4b53                               ;; 05:4b4a $20 $07
@@ -1690,13 +1690,13 @@ jp_05_4b3f:
     jr   NZ, .jr_05_4b84                               ;; 05:4b68 $20 $1a
     inc  HL                                            ;; 05:4b6a $23
     ld   A, [HL+]                                      ;; 05:4b6b $2a
-    ld   [wC144], A                                    ;; 05:4b6c $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 05:4b6c $ea $44 $c1
     ld   A, [HL+]                                      ;; 05:4b6f $2a
-    ld   [wC145], A                                    ;; 05:4b70 $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 05:4b70 $ea $45 $c1
     ld   A, [HL+]                                      ;; 05:4b73 $2a
-    ld   [wC146], A                                    ;; 05:4b74 $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 05:4b74 $ea $46 $c1
     ld   A, [HL+]                                      ;; 05:4b77 $2a
-    ld   [wC147], A                                    ;; 05:4b78 $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 05:4b78 $ea $47 $c1
     ld   A, [HL+]                                      ;; 05:4b7b $2a
     ld   [wC148], A                                    ;; 05:4b7c $ea $48 $c1
     ld   A, $00                                        ;; 05:4b7f $3e $00
@@ -1743,7 +1743,7 @@ jp_05_4b3f:
     ld   A, $05                                        ;; 05:4bcb $3e $05
     ld   [wD58B], A                                    ;; 05:4bcd $ea $8b $d5
     xor  A, A                                          ;; 05:4bd0 $af
-    ld   [wD586], A                                    ;; 05:4bd1 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 05:4bd1 $ea $86 $d5
     ret                                                ;; 05:4bd4 $c9
 
 call_05_4bd5:

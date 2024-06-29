@@ -93,22 +93,22 @@ jp_00_015d:
     call clearVRAM                                     ;; 00:0192 $cd $5f $04
     call call_00_3bf7                                  ;; 00:0195 $cd $f7 $3b
     ld   A, $03                                        ;; 00:0198 $3e $03
-    ld   [wD5B5], A                                    ;; 00:019a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:019d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:019a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:019d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:01a0 $ea $00 $20
     ld   HL, $40c8                                     ;; 00:01a3 $21 $c8 $40
     ld   DE, wC100                                     ;; 00:01a6 $11 $00 $c1
     ld   B, $12                                        ;; 00:01a9 $06 $12
     call memcopySmall                                  ;; 00:01ab $cd $91 $05
     ld   A, $01                                        ;; 00:01ae $3e $01
-    ld   [wD5B5], A                                    ;; 00:01b0 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:01b3 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:01b0 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:01b3 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:01b6 $ea $00 $20
     call call_01_4000                                  ;; 00:01b9 $cd $00 $40
     call call_01_4109                                  ;; 00:01bc $cd $09 $41
     ld   A, $22                                        ;; 00:01bf $3e $22
-    ld   [wD5B5], A                                    ;; 00:01c1 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:01c4 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:01c1 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:01c4 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:01c7 $ea $00 $20
     ld   HL, $79b0                                     ;; 00:01ca $21 $b0 $79
     ld   DE, wD5EC                                     ;; 00:01cd $11 $ec $d5
@@ -125,7 +125,7 @@ jp_00_015d:
     xor  A, A                                          ;; 00:01e9 $af
     ld   [$0000], A                                    ;; 00:01ea $ea $00 $00
     ld   A, $05                                        ;; 00:01ed $3e $05
-    ld   [wD586], A                                    ;; 00:01ef $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 00:01ef $ea $86 $d5
     xor  A, A                                          ;; 00:01f2 $af
     ld   [wD51A], A                                    ;; 00:01f3 $ea $1a $d5
     ld   [wD4FA], A                                    ;; 00:01f6 $ea $fa $d4
@@ -162,7 +162,7 @@ jp_00_015d:
     ld   A, $01                                        ;; 00:0234 $3e $01
     ld   [$2000], A                                    ;; 00:0236 $ea $00 $20
     call call_01_4175                                  ;; 00:0239 $cd $75 $41
-    ld   A, [wD5B7]                                    ;; 00:023c $fa $b7 $d5
+    ld   A, [wCurrentRomBank]                          ;; 00:023c $fa $b7 $d5
     ld   [$2000], A                                    ;; 00:023f $ea $00 $20
     jr   .jr_00_0205                                   ;; 00:0242 $18 $c1
 
@@ -177,7 +177,7 @@ vblankInterrupt:
     jp   Z, .jp_00_02b3                                ;; 00:024e $ca $b3 $02
     ld   HL, $295                                      ;; 00:0251 $21 $95 $02
     push HL                                            ;; 00:0254 $e5
-    ld   A, [wD586]                                    ;; 00:0255 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:0255 $fa $86 $d5
     cp   A, $04                                        ;; 00:0258 $fe $04
     jp   Z, jp_00_3bdb                                 ;; 00:025a $ca $db $3b
     cp   A, $05                                        ;; 00:025d $fe $05
@@ -268,7 +268,7 @@ timerInterrupt:
     ld   A, $01                                        ;; 00:02f8 $3e $01
     ld   [$2000], A                                    ;; 00:02fa $ea $00 $20
     call call_01_4175                                  ;; 00:02fd $cd $75 $41
-    ld   A, [wD5B7]                                    ;; 00:0300 $fa $b7 $d5
+    ld   A, [wCurrentRomBank]                          ;; 00:0300 $fa $b7 $d5
     ld   [$2000], A                                    ;; 00:0303 $ea $00 $20
     xor  A, A                                          ;; 00:0306 $af
     ld   [wD5DE], A                                    ;; 00:0307 $ea $de $d5
@@ -280,7 +280,7 @@ timerInterrupt:
     reti                                               ;; 00:030e $d9
 
 call_00_030f:
-    ld   A, [wD586]                                    ;; 00:030f $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:030f $fa $86 $d5
     rst  execJumpTable                                 ;; 00:0312 $c7
 ;@jumptable amount=6
     dw   call_00_2bc4                                  ;; 00:0313 pP $00
@@ -312,18 +312,19 @@ call_00_030f:
     db   $aa, $18, $c5, $18, $e0, $18, $fd, $19        ;; 00:037e ????????
     db   $00, $19, $03, $19, $06                       ;; 00:0386 ?????
 
+;@data format=WWW amount=11
 something_038b:
-    db   $00, $0a, $00                                 ;; 00:038b ..?
-    dw   $0001                                         ;; 00:038e wW
-    db   $c8, $00, $ce, $00                            ;; 00:0390 w..?
-    dw   $0002                                         ;; 00:0394 wW
-    db   $c9, $00, $37, $00, $04, $00, $38, $00        ;; 00:0396 w..????.
-    db   $28, $00, $03, $00, $cb, $00, $2b, $00        ;; 00:039e .????..?
-    db   $04, $00, $2a, $00, $3e, $00, $0b, $00        ;; 00:03a6 ???..???
-    db   $3f, $00, $64, $00, $07, $00, $63, $00        ;; 00:03ae ?..????.
-    db   $43, $00, $0a, $00, $ca, $00, $78, $00        ;; 00:03b6 .????..?
-    db   $08, $00, $cc, $00, $cd, $00, $11, $00        ;; 00:03be ???..???
-    db   $ac, $00, $ce, $00, $11, $00, $00             ;; 00:03c6 ?..????
+    data_WWW $000a, $0001, $00c8                       ;; 00:038b ..?wWw $00
+    data_WWW $00ce, $0002, $00c9                       ;; 00:0391 ..?wWw $01
+    data_WWW $0037, $0004, $0038                       ;; 00:0397 ..???? $02
+    data_WWW $0028, $0003, $00cb                       ;; 00:039d ..???? $03
+    data_WWW $002b, $0004, $002a                       ;; 00:03a3 ..???? $04
+    data_WWW $003e, $000b, $003f                       ;; 00:03a9 ..???? $05
+    data_WWW $0064, $0007, $0063                       ;; 00:03af ..???? $06
+    data_WWW $0043, $000a, $00ca                       ;; 00:03b5 ..???? $07
+    data_WWW $0078, $0008, $00cc                       ;; 00:03bb ..???? $08
+    data_WWW $00cd, $0011, $00ac                       ;; 00:03c1 ..???? $09
+    data_WWW $00ce, $0011, $0000                       ;; 00:03c7 ..???? $0a
 
 updateJoypad:
     ld   A, $20                                        ;; 00:03cd $3e $20
@@ -729,11 +730,11 @@ is_BC_DE_equal:
 
 call_00_05fa:
     ld   A, C                                          ;; 00:05fa $79
-    ld   [wD5B7], A                                    ;; 00:05fb $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:05fb $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:05fe $ea $00 $20
     push HL                                            ;; 00:0601 $e5
     push DE                                            ;; 00:0602 $d5
-    ld   [wD58E], SP                                   ;; 00:0603 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 00:0603 $08 $8e $d5
     ld   A, [HL+]                                      ;; 00:0606 $2a
     ld   L, [HL]                                       ;; 00:0607 $6e
     ld   H, A                                          ;; 00:0608 $67
@@ -756,7 +757,7 @@ call_00_05fa:
     ld   HL, SP+0                                      ;; 00:0619 $f8 $00
     ld   D, H                                          ;; 00:061b $54
     ld   E, L                                          ;; 00:061c $5d
-    ld   HL, wD58E                                     ;; 00:061d $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 00:061d $21 $8e $d5
     ld   A, [HL+]                                      ;; 00:0620 $2a
     ld   H, [HL]                                       ;; 00:0621 $66
     ld   L, A                                          ;; 00:0622 $6f
@@ -769,13 +770,13 @@ call_00_05fa:
     ld   A, D                                          ;; 00:0629 $7a
     ld   [HL+], A                                      ;; 00:062a $22
     ld   [HL], E                                       ;; 00:062b $73
-    ld   A, [wD5B5]                                    ;; 00:062c $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:062f $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:062c $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:062f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0632 $ea $00 $20
     ret                                                ;; 00:0635 $c9
 
 call_00_0636:
-    ld   [wD58E], SP                                   ;; 00:0636 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 00:0636 $08 $8e $d5
     ld   SP, HL                                        ;; 00:0639 $f9
     ld   H, D                                          ;; 00:063a $62
     ld   L, E                                          ;; 00:063b $6b
@@ -787,7 +788,7 @@ call_00_0636:
     ld   [HL+], A                                      ;; 00:0640 $22
     dec  B                                             ;; 00:0641 $05
     jr   NZ, .jr_00_063c                               ;; 00:0642 $20 $f8
-    ld   HL, wD58E                                     ;; 00:0644 $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 00:0644 $21 $8e $d5
     ld   A, [HL+]                                      ;; 00:0647 $2a
     ld   H, [HL]                                       ;; 00:0648 $66
     ld   L, A                                          ;; 00:0649 $6f
@@ -819,7 +820,7 @@ call_00_0673:
     inc  DE                                            ;; 00:0678 $13
     ret                                                ;; 00:0679 $c9
 
-call_00_067a:
+ld_HL_from_HL_add_2C:
     sla  C                                             ;; 00:067a $cb $21
     ld   B, $00                                        ;; 00:067c $06 $00
     add  HL, BC                                        ;; 00:067e $09
@@ -828,7 +829,7 @@ call_00_067a:
     ld   H, A                                          ;; 00:0681 $67
     ret                                                ;; 00:0682 $c9
 
-call_00_0683:
+ld_DE_from_HL_add_2C:
     sla  C                                             ;; 00:0683 $cb $21
     ld   B, $00                                        ;; 00:0685 $06 $00
     add  HL, BC                                        ;; 00:0687 $09
@@ -840,7 +841,7 @@ call_00_0683:
     db   $cb, $3c, $cb, $1d, $cb, $3c, $cb, $1d        ;; 00:0694 ????????
     db   $cb, $3c, $cb, $1d, $c9                       ;; 00:069c ?????
 
-call_00_06a1:
+multiply_HL_32:
     add  HL, HL                                        ;; 00:06a1 $29
     add  HL, HL                                        ;; 00:06a2 $29
     add  HL, HL                                        ;; 00:06a3 $29
@@ -848,7 +849,7 @@ call_00_06a1:
     add  HL, HL                                        ;; 00:06a5 $29
     ret                                                ;; 00:06a6 $c9
 
-call_00_06a7:
+divide_HL_8:
     srl  H                                             ;; 00:06a7 $cb $3c
     rr   L                                             ;; 00:06a9 $cb $1d
     srl  H                                             ;; 00:06ab $cb $3c
@@ -857,7 +858,7 @@ call_00_06a7:
     rr   L                                             ;; 00:06b1 $cb $1d
     ret                                                ;; 00:06b3 $c9
 
-call_00_06b4:
+divide_DE_8:
     srl  D                                             ;; 00:06b4 $cb $3a
     rr   E                                             ;; 00:06b6 $cb $1b
     srl  D                                             ;; 00:06b8 $cb $3a
@@ -866,7 +867,7 @@ call_00_06b4:
     rr   E                                             ;; 00:06be $cb $1b
     ret                                                ;; 00:06c0 $c9
 
-call_00_06c1:
+divide_BC_8:
     srl  B                                             ;; 00:06c1 $cb $38
     rr   C                                             ;; 00:06c3 $cb $19
     srl  B                                             ;; 00:06c5 $cb $38
@@ -878,7 +879,7 @@ call_00_06c1:
 call_00_06ce:
     push DE                                            ;; 00:06ce $d5
     push HL                                            ;; 00:06cf $e5
-    call call_00_06b4                                  ;; 00:06d0 $cd $b4 $06
+    call divide_DE_8                                   ;; 00:06d0 $cd $b4 $06
     ld   HL, wD5A7                                     ;; 00:06d3 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:06d6 $2a
     ld   C, [HL]                                       ;; 00:06d7 $4e
@@ -886,13 +887,13 @@ call_00_06ce:
     call call_00_0555                                  ;; 00:06d9 $cd $55 $05
     pop  DE                                            ;; 00:06dc $d1
     push DE                                            ;; 00:06dd $d5
-    call call_00_06b4                                  ;; 00:06de $cd $b4 $06
+    call divide_DE_8                                   ;; 00:06de $cd $b4 $06
     add  HL, DE                                        ;; 00:06e1 $19
     ld   D, H                                          ;; 00:06e2 $54
     ld   E, L                                          ;; 00:06e3 $5d
     ld   A, [wD598]                                    ;; 00:06e4 $fa $98 $d5
-    ld   [wD5B5], A                                    ;; 00:06e7 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:06ea $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:06e7 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:06ea $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:06ed $ea $00 $20
     ld   HL, wD5A1                                     ;; 00:06f0 $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:06f3 $2a
@@ -916,7 +917,7 @@ call_00_06fd:
     jr   Z, .jr_00_0763                                ;; 00:0708 $28 $59
     push BC                                            ;; 00:070a $c5
     ld   HL, $33b                                      ;; 00:070b $21 $3b $03
-    call call_00_067a                                  ;; 00:070e $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:070e $cd $7a $06
     ld   A, [HL]                                       ;; 00:0711 $7e
     and  A, A                                          ;; 00:0712 $a7
     jp   Z, .jp_00_0762                                ;; 00:0713 $ca $62 $07
@@ -985,14 +986,14 @@ call_00_06fd:
     db   $00, $00, $ff, $f0, $00, $00, $00, $10        ;; 00:0771 Ww..????
 
 call_00_0779:
-    ld   A, [wC144]                                    ;; 00:0779 $fa $44 $c1
+    ld   A, [wPlayerX]                                 ;; 00:0779 $fa $44 $c1
     ld   [wD5BC], A                                    ;; 00:077c $ea $bc $d5
-    ld   A, [wC145]                                    ;; 00:077f $fa $45 $c1
+    ld   A, [wPlayerX.low]                             ;; 00:077f $fa $45 $c1
     ld   [wD5BD], A                                    ;; 00:0782 $ea $bd $d5
-    ld   A, [wC147]                                    ;; 00:0785 $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 00:0785 $fa $47 $c1
     add  A, $08                                        ;; 00:0788 $c6 $08
     ld   [wD5BF], A                                    ;; 00:078a $ea $bf $d5
-    ld   A, [wC146]                                    ;; 00:078d $fa $46 $c1
+    ld   A, [wPlayerY]                                 ;; 00:078d $fa $46 $c1
     adc  A, $00                                        ;; 00:0790 $ce $00
     ld   [wD5BE], A                                    ;; 00:0792 $ea $be $d5
     call call_00_0851                                  ;; 00:0795 $cd $51 $08
@@ -1010,18 +1011,18 @@ call_00_0779:
     ld   B, $04                                        ;; 00:07aa $06 $04
     call memcopySmall                                  ;; 00:07ac $cd $91 $05
     ld   HL, wD83A                                     ;; 00:07af $21 $3a $d8
-    ld   A, [wC147]                                    ;; 00:07b2 $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 00:07b2 $fa $47 $c1
     add  A, [HL]                                       ;; 00:07b5 $86
     ld   E, A                                          ;; 00:07b6 $5f
     ld   HL, wD839                                     ;; 00:07b7 $21 $39 $d8
-    ld   A, [wC146]                                    ;; 00:07ba $fa $46 $c1
+    ld   A, [wPlayerY]                                 ;; 00:07ba $fa $46 $c1
     adc  A, [HL]                                       ;; 00:07bd $8e
     ld   D, A                                          ;; 00:07be $57
     ld   HL, wD837                                     ;; 00:07bf $21 $37 $d8
     ld   A, [HL+]                                      ;; 00:07c2 $2a
     ld   C, [HL]                                       ;; 00:07c3 $4e
     ld   B, A                                          ;; 00:07c4 $47
-    ld   HL, wC144                                     ;; 00:07c5 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:07c5 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:07c8 $2a
     ld   L, [HL]                                       ;; 00:07c9 $6e
     ld   H, A                                          ;; 00:07ca $67
@@ -1038,11 +1039,11 @@ call_00_0779:
     sub  A, $82                                        ;; 00:07df $d6 $82
     ld   C, A                                          ;; 00:07e1 $4f
     ld   A, $14                                        ;; 00:07e2 $3e $14
-    ld   [wD5B5], A                                    ;; 00:07e4 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:07e7 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:07e4 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:07e7 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:07ea $ea $00 $20
     ld   HL, $462f                                     ;; 00:07ed $21 $2f $46
-    call call_00_067a                                  ;; 00:07f0 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:07f0 $cd $7a $06
     ld   A, H                                          ;; 00:07f3 $7c
     ld   [wD13A], A                                    ;; 00:07f4 $ea $3a $d1
     ld   A, L                                          ;; 00:07f7 $7d
@@ -1105,7 +1106,7 @@ call_00_0851:
 .jp_00_0859:
     push BC                                            ;; 00:0859 $c5
     ld   HL, wCF36                                     ;; 00:085a $21 $36 $cf
-    call call_00_067a                                  ;; 00:085d $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:085d $cd $7a $06
     ld   DE, $0c                                       ;; 00:0860 $11 $0c $00
     add  HL, DE                                        ;; 00:0863 $19
     ld   A, [HL+]                                      ;; 00:0864 $2a
@@ -1152,7 +1153,7 @@ call_00_0851:
 
 call_00_0897:
     ld   HL, wCF36                                     ;; 00:0897 $21 $36 $cf
-    call call_00_067a                                  ;; 00:089a $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:089a $cd $7a $06
     ld   A, H                                          ;; 00:089d $7c
     ld   [wD1BD], A                                    ;; 00:089e $ea $bd $d1
     ld   A, L                                          ;; 00:08a1 $7d
@@ -1166,8 +1167,8 @@ call_00_0897:
     ret                                                ;; 00:08b0 $c9
 .jr_00_08b1:
     ld   A, $04                                        ;; 00:08b1 $3e $04
-    ld   [wD5B5], A                                    ;; 00:08b3 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:08b6 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:08b3 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:08b6 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:08b9 $ea $00 $20
     jp   $4725                                         ;; 00:08bc $c3 $25 $47
 .jr_00_08bf:
@@ -1192,7 +1193,7 @@ call_00_0897:
     ld   C, [HL]                                       ;; 00:08e3 $4e
     push HL                                            ;; 00:08e4 $e5
     ld   HL, $323                                      ;; 00:08e5 $21 $23 $03
-    call call_00_067a                                  ;; 00:08e8 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:08e8 $cd $7a $06
     ld   DE, $17                                       ;; 00:08eb $11 $17 $00
     add  HL, DE                                        ;; 00:08ee $19
     ld   A, [HL]                                       ;; 00:08ef $7e
@@ -1217,7 +1218,7 @@ call_00_0897:
     xor  A, A                                          ;; 00:090b $af
     ld   [HL+], A                                      ;; 00:090c $22
     ld   HL, $323                                      ;; 00:090d $21 $23 $03
-    call call_00_067a                                  ;; 00:0910 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:0910 $cd $7a $06
     ld   BC, $07                                       ;; 00:0913 $01 $07 $00
     add  HL, BC                                        ;; 00:0916 $09
     ld   A, [HL+]                                      ;; 00:0917 $2a
@@ -1251,8 +1252,8 @@ call_00_0936:
     ld   [wCEC8], A                                    ;; 00:094f $ea $c8 $ce
     ld   [wCEC9], A                                    ;; 00:0952 $ea $c9 $ce
     ld   A, [wD598]                                    ;; 00:0955 $fa $98 $d5
-    ld   [wD5B5], A                                    ;; 00:0958 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:095b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0958 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:095b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:095e $ea $00 $20
     ld   HL, wD5A1                                     ;; 00:0961 $21 $a1 $d5
     ld   A, [HL+]                                      ;; 00:0964 $2a
@@ -1297,8 +1298,8 @@ call_00_0936:
     ld   [wC55F], A                                    ;; 00:09a1 $ea $5f $c5
     call call_00_09eb                                  ;; 00:09a4 $cd $eb $09
     ld   A, [wD598]                                    ;; 00:09a7 $fa $98 $d5
-    ld   [wD5B5], A                                    ;; 00:09aa $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:09ad $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:09aa $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:09ad $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:09b0 $ea $00 $20
     pop  HL                                            ;; 00:09b3 $e1
 .jr_00_09b4:
@@ -1339,26 +1340,26 @@ call_00_0936:
     ret                                                ;; 00:09ea $c9
 
 call_00_09eb:
-    ld   A, [wD5B5]                                    ;; 00:09eb $fa $b5 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:09eb $fa $b5 $d5
     ld   [wD5C3], A                                    ;; 00:09ee $ea $c3 $d5
     ld   A, [wD5C0]                                    ;; 00:09f1 $fa $c0 $d5
     ld   C, A                                          ;; 00:09f4 $4f
     ld   HL, $323                                      ;; 00:09f5 $21 $23 $03
-    call call_00_067a                                  ;; 00:09f8 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:09f8 $cd $7a $06
     push HL                                            ;; 00:09fb $e5
     ld   A, $03                                        ;; 00:09fc $3e $03
-    ld   [wD5B5], A                                    ;; 00:09fe $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0a01 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:09fe $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0a01 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0a04 $ea $00 $20
     ld   A, [wC55F]                                    ;; 00:0a07 $fa $5f $c5
     cp   A, $ff                                        ;; 00:0a0a $fe $ff
     jr   NZ, .jr_00_0a47                               ;; 00:0a0c $20 $39
-    ld   HL, wC142                                     ;; 00:0a0e $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:0a0e $21 $42 $c1
     ld   A, [HL+]                                      ;; 00:0a11 $2a
     ld   L, [HL]                                       ;; 00:0a12 $6e
     ld   H, A                                          ;; 00:0a13 $67
     add  HL, HL                                        ;; 00:0a14 $29
-    ld   DE, $7477                                     ;; 00:0a15 $11 $77 $74
+    ld   DE, data_03_7477 ;@=ptr bank=3                ;; 00:0a15 $11 $77 $74
     add  HL, DE                                        ;; 00:0a18 $19
     ld   A, [HL+]                                      ;; 00:0a19 $2a
     ld   L, [HL]                                       ;; 00:0a1a $6e
@@ -1392,7 +1393,7 @@ call_00_09eb:
 .jr_00_0a47:
     ld   C, A                                          ;; 00:0a47 $4f
     ld   HL, $7b15                                     ;; 00:0a48 $21 $15 $7b
-    call call_00_067a                                  ;; 00:0a4b $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:0a4b $cd $7a $06
     ld   A, [HL+]                                      ;; 00:0a4e $2a
     ld   [wC55E], A                                    ;; 00:0a4f $ea $5e $c5
     ld   A, [HL+]                                      ;; 00:0a52 $2a
@@ -1413,8 +1414,8 @@ call_00_09eb:
 .jr_00_0a75:
     pop  HL                                            ;; 00:0a75 $e1
     ld   A, $03                                        ;; 00:0a76 $3e $03
-    ld   [wD5B5], A                                    ;; 00:0a78 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0a7b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0a78 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0a7b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0a7e $ea $00 $20
     xor  A, A                                          ;; 00:0a81 $af
     ld   [HL+], A                                      ;; 00:0a82 $22
@@ -1469,8 +1470,8 @@ call_00_09eb:
     ld   A, $01                                        ;; 00:0ad9 $3e $01
     ld   [HL+], A                                      ;; 00:0adb $22
     ld   A, [wD5C3]                                    ;; 00:0adc $fa $c3 $d5
-    ld   [wD5B5], A                                    ;; 00:0adf $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0ae2 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0adf $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0ae2 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0ae5 $ea $00 $20
     ld   HL, wD5D8                                     ;; 00:0ae8 $21 $d8 $d5
     ld   A, [wD5C5]                                    ;; 00:0aeb $fa $c5 $d5
@@ -1493,7 +1494,7 @@ call_00_0afa:
 .jp_00_0b02:
     push BC                                            ;; 00:0b02 $c5
     ld   HL, $323                                      ;; 00:0b03 $21 $23 $03
-    call call_00_067a                                  ;; 00:0b06 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:0b06 $cd $7a $06
     ld   A, [HL]                                       ;; 00:0b09 $7e
     cp   A, $40                                        ;; 00:0b0a $fe $40
     jp   Z, .jp_00_0b73                                ;; 00:0b0c $ca $73 $0b
@@ -1643,7 +1644,7 @@ call_00_0b7a:
     ld   HL, wCF36                                     ;; 00:0bd6 $21 $36 $cf
     ld   A, [wD5D7]                                    ;; 00:0bd9 $fa $d7 $d5
     ld   C, A                                          ;; 00:0bdc $4f
-    call call_00_0683                                  ;; 00:0bdd $cd $83 $06
+    call ld_DE_from_HL_add_2C                          ;; 00:0bdd $cd $83 $06
     pop  HL                                            ;; 00:0be0 $e1
     ld   A, D                                          ;; 00:0be1 $7a
     ld   [HL+], A                                      ;; 00:0be2 $22
@@ -1766,7 +1767,7 @@ call_00_0c68:
     inc  A                                             ;; 00:0c72 $3c
     ld   [wD5CA], A                                    ;; 00:0c73 $ea $ca $d5
     ld   HL, $323                                      ;; 00:0c76 $21 $23 $03
-    call call_00_067a                                  ;; 00:0c79 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:0c79 $cd $7a $06
     ld   A, [HL]                                       ;; 00:0c7c $7e
     cp   A, $40                                        ;; 00:0c7d $fe $40
     jp   Z, .jp_00_0c97                                ;; 00:0c7f $ca $97 $0c
@@ -1875,8 +1876,8 @@ call_00_0ced:
     ld   A, L                                          ;; 00:0d28 $7d
     ld   [wD5BD], A                                    ;; 00:0d29 $ea $bd $d5
     ld   A, $04                                        ;; 00:0d2c $3e $04
-    ld   [wD5B5], A                                    ;; 00:0d2e $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0d31 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0d2e $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0d31 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0d34 $ea $00 $20
     call call_04_42cb                                  ;; 00:0d37 $cd $cb $42
     ld   A, B                                          ;; 00:0d3a $78
@@ -1932,8 +1933,8 @@ call_00_0ced:
     ld   A, L                                          ;; 00:0d87 $7d
     ld   [wD5BD], A                                    ;; 00:0d88 $ea $bd $d5
     ld   A, $04                                        ;; 00:0d8b $3e $04
-    ld   [wD5B5], A                                    ;; 00:0d8d $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0d90 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0d8d $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0d90 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0d93 $ea $00 $20
     call call_04_42cb                                  ;; 00:0d96 $cd $cb $42
     ld   A, B                                          ;; 00:0d99 $78
@@ -1987,8 +1988,8 @@ call_00_0ced:
     ld   A, L                                          ;; 00:0de2 $7d
     ld   [wD5BF], A                                    ;; 00:0de3 $ea $bf $d5
     ld   A, $04                                        ;; 00:0de6 $3e $04
-    ld   [wD5B5], A                                    ;; 00:0de8 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0deb $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0de8 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0deb $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0dee $ea $00 $20
     call call_04_42cb                                  ;; 00:0df1 $cd $cb $42
     ld   A, B                                          ;; 00:0df4 $78
@@ -2043,8 +2044,8 @@ call_00_0ced:
     ld   A, L                                          ;; 00:0e40 $7d
     ld   [wD5BF], A                                    ;; 00:0e41 $ea $bf $d5
     ld   A, $04                                        ;; 00:0e44 $3e $04
-    ld   [wD5B5], A                                    ;; 00:0e46 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0e49 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0e46 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0e49 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0e4c $ea $00 $20
     call call_04_42cb                                  ;; 00:0e4f $cd $cb $42
     ld   A, B                                          ;; 00:0e52 $78
@@ -2100,7 +2101,7 @@ call_00_0e8f:
     inc  A                                             ;; 00:0e99 $3c
     ld   [wD5CA], A                                    ;; 00:0e9a $ea $ca $d5
     ld   HL, $323                                      ;; 00:0e9d $21 $23 $03
-    call call_00_067a                                  ;; 00:0ea0 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:0ea0 $cd $7a $06
     ld   A, [HL]                                       ;; 00:0ea3 $7e
     cp   A, $40                                        ;; 00:0ea4 $fe $40
     jp   Z, .jp_00_0eb4                                ;; 00:0ea6 $ca $b4 $0e
@@ -2226,23 +2227,23 @@ call_00_0f2a:
     ld   [wC462], A                                    ;; 00:0f35 $ea $62 $c4
     ret                                                ;; 00:0f38 $c9
 
-call_00_0f39:
+startHardwareTimer:
     xor  A, A                                          ;; 00:0f39 $af
     ld   [wD5DE], A                                    ;; 00:0f3a $ea $de $d5
     ldh  A, [hIsGBC]                                   ;; 00:0f3d $f0 $fe
     and  A, A                                          ;; 00:0f3f $a7
-    jr   NZ, .jr_00_0f4b                               ;; 00:0f40 $20 $09
+    jr   NZ, .gbc                                      ;; 00:0f40 $20 $09
     ld   HL, rTAC                                      ;; 00:0f42 $21 $07 $ff
     ld   [HL], $03                                     ;; 00:0f45 $36 $03
     set  2, [HL]                                       ;; 00:0f47 $cb $d6
-    jr   .jr_00_0f55                                   ;; 00:0f49 $18 $0a
-.jr_00_0f4b:
+    jr   .done                                         ;; 00:0f49 $18 $0a
+.gbc:
     ld   HL, rTMA                                      ;; 00:0f4b $21 $06 $ff
     ld   A, $80                                        ;; 00:0f4e $3e $80
     ld   [HL+], A                                      ;; 00:0f50 $22
     ld   [HL], $00                                     ;; 00:0f51 $36 $00
     set  2, [HL]                                       ;; 00:0f53 $cb $d6
-.jr_00_0f55:
+.done:
     xor  A, A                                          ;; 00:0f55 $af
     ldh  [rIF], A                                      ;; 00:0f56 $e0 $0f
     ld   A, $04                                        ;; 00:0f58 $3e $04
@@ -2271,13 +2272,13 @@ call_00_0f5d:
     ld   A, [HL+]                                      ;; 00:0f75 $2a
     ld   E, A                                          ;; 00:0f76 $5f
     ld   A, $04                                        ;; 00:0f77 $3e $04
-    ld   [wD5B7], A                                    ;; 00:0f79 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0f79 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0f7c $ea $00 $20
     call call_04_422e                                  ;; 00:0f7f $cd $2e $42
     call call_04_4258                                  ;; 00:0f82 $cd $58 $42
     call call_04_42a1                                  ;; 00:0f85 $cd $a1 $42
-    ld   A, [wD5B5]                                    ;; 00:0f88 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0f8b $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:0f88 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0f8b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0f8e $ea $00 $20
 .jr_00_0f91:
     pop  HL                                            ;; 00:0f91 $e1
@@ -2318,10 +2319,10 @@ call_00_0fac:
 
 call_00_0fc4:
     ld   A, $03                                        ;; 00:0fc4 $3e $03
-    ld   [wD5B5], A                                    ;; 00:0fc6 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:0fc9 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:0fc6 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:0fc9 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:0fcc $ea $00 $20
-    ld   HL, wC142                                     ;; 00:0fcf $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:0fcf $21 $42 $c1
     ld   A, [HL+]                                      ;; 00:0fd2 $2a
     ld   L, [HL]                                       ;; 00:0fd3 $6e
     ld   H, A                                          ;; 00:0fd4 $67
@@ -2420,14 +2421,14 @@ call_00_1040:
 call_00_105f:
     ld   B, $00                                        ;; 00:105f $06 $00
     ld   A, [wD598]                                    ;; 00:1061 $fa $98 $d5
-    ld   [wD5B5], A                                    ;; 00:1064 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1067 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1064 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1067 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:106a $ea $00 $20
-    ld   HL, wC146                                     ;; 00:106d $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:106d $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:1070 $2a
     ld   E, [HL]                                       ;; 00:1071 $5e
     ld   D, A                                          ;; 00:1072 $57
-    call call_00_06b4                                  ;; 00:1073 $cd $b4 $06
+    call divide_DE_8                                   ;; 00:1073 $cd $b4 $06
     ld   HL, wD5A7                                     ;; 00:1076 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:1079 $2a
     ld   C, [HL]                                       ;; 00:107a $4e
@@ -2439,11 +2440,11 @@ call_00_105f:
     ld   [wD5C9], A                                    ;; 00:1084 $ea $c9 $d5
     ld   D, H                                          ;; 00:1087 $54
     ld   E, L                                          ;; 00:1088 $5d
-    ld   HL, wC144                                     ;; 00:1089 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1089 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:108c $2a
     ld   L, [HL]                                       ;; 00:108d $6e
     ld   H, A                                          ;; 00:108e $67
-    call call_00_06a7                                  ;; 00:108f $cd $a7 $06
+    call divide_HL_8                                   ;; 00:108f $cd $a7 $06
     ld   A, H                                          ;; 00:1092 $7c
     ld   [wD5C6], A                                    ;; 00:1093 $ea $c6 $d5
     ld   A, L                                          ;; 00:1096 $7d
@@ -2503,10 +2504,10 @@ call_00_10f1:
     add  A, A                                          ;; 00:10f8 $87
     ld   C, A                                          ;; 00:10f9 $4f
     ld   B, $00                                        ;; 00:10fa $06 $00
-    ld   DE, $6681                                     ;; 00:10fc $11 $81 $66
+    ld   DE, data_03_6681 ;@=ptr bank=3                ;; 00:10fc $11 $81 $66
     call call_00_0fc4                                  ;; 00:10ff $cd $c4 $0f
     add  HL, BC                                        ;; 00:1102 $09
-    ld   DE, wC142                                     ;; 00:1103 $11 $42 $c1
+    ld   DE, wCurrentMap                               ;; 00:1103 $11 $42 $c1
     ld   B, $06                                        ;; 00:1106 $06 $06
     call memcopySmall                                  ;; 00:1108 $cd $91 $05
     ld   A, [wD58B]                                    ;; 00:110b $fa $8b $d5
@@ -2529,12 +2530,12 @@ call_00_10f1:
     jr   .jr_00_113b                                   ;; 00:112b $18 $0e
 .jr_00_112d:
     ld   DE, wC14F                                     ;; 00:112d $11 $4f $c1
-    ld   HL, wC142                                     ;; 00:1130 $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:1130 $21 $42 $c1
     ld   B, $06                                        ;; 00:1133 $06 $06
     call memcopySmall                                  ;; 00:1135 $cd $91 $05
     ld   DE, wC149                                     ;; 00:1138 $11 $49 $c1
 .jr_00_113b:
-    ld   HL, wC142                                     ;; 00:113b $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:113b $21 $42 $c1
     ld   B, $06                                        ;; 00:113e $06 $06
     call memcopySmall                                  ;; 00:1140 $cd $91 $05
 .jr_00_1143:
@@ -2560,7 +2561,7 @@ call_00_1156:
     sub  A, $40                                        ;; 00:1164 $d6 $40
     ld   C, A                                          ;; 00:1166 $4f
     ld   B, $00                                        ;; 00:1167 $06 $00
-    ld   DE, $609a                                     ;; 00:1169 $11 $9a $60
+    ld   DE, data_03_609a ;@=ptr bank=3                ;; 00:1169 $11 $9a $60
     call call_00_0fc4                                  ;; 00:116c $cd $c4 $0f
     add  HL, BC                                        ;; 00:116f $09
     ld   C, [HL]                                       ;; 00:1170 $4e
@@ -2604,7 +2605,7 @@ call_00_11a8:
     ld   A, $01                                        ;; 00:11ab $3e $01
     ld   [$2000], A                                    ;; 00:11ad $ea $00 $20
     call call_01_403b                                  ;; 00:11b0 $cd $3b $40
-    ld   A, [wD5B7]                                    ;; 00:11b3 $fa $b7 $d5
+    ld   A, [wCurrentRomBank]                          ;; 00:11b3 $fa $b7 $d5
     ld   [$2000], A                                    ;; 00:11b6 $ea $00 $20
     ret                                                ;; 00:11b9 $c9
     db   $3e, $01, $ea, $00, $20, $cd, $09, $41        ;; 00:11ba ????????
@@ -2678,21 +2679,21 @@ call_00_11f2:
 
 call_00_122b:
     ld   A, $04                                        ;; 00:122b $3e $04
-    ld   [wD5B7], A                                    ;; 00:122d $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:122d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1230 $ea $00 $20
     call call_04_567f                                  ;; 00:1233 $cd $7f $56
-    ld   A, [wD5B5]                                    ;; 00:1236 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1239 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:1236 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1239 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:123c $ea $00 $20
     ret                                                ;; 00:123f $c9
 
 jp_00_1240:
     ld   A, $04                                        ;; 00:1240 $3e $04
-    ld   [wD5B7], A                                    ;; 00:1242 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1242 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1245 $ea $00 $20
     call call_04_5852 ;@bank 4                         ;; 00:1248 $cd $52 $58
-    ld   A, [wD5B5]                                    ;; 00:124b $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:124e $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:124b $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:124e $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1251 $ea $00 $20
     ret                                                ;; 00:1254 $c9
 
@@ -2765,21 +2766,21 @@ call_00_12b9:
     call call_01_4175 ;@bank 1                         ;; 00:12cf $cd $75 $41
     ld   A, $15                                        ;; 00:12d2 $3e $15
     call call_00_11a8                                  ;; 00:12d4 $cd $a8 $11
-    ld   A, [wD5B5]                                    ;; 00:12d7 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:12da $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:12d7 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:12da $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:12dd $ea $00 $20
     ret                                                ;; 00:12e0 $c9
 
 jp_00_12e1:
     ld   A, $06                                        ;; 00:12e1 $3e $06
-    ld   [wD5B5], A                                    ;; 00:12e3 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:12e6 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:12e3 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:12e6 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:12e9 $ea $00 $20
     ld   A, $01                                        ;; 00:12ec $3e $01
     ld   [wD377], A                                    ;; 00:12ee $ea $77 $d3
     ld   [wD4F9], A                                    ;; 00:12f1 $ea $f9 $d4
     ld   A, $04                                        ;; 00:12f4 $3e $04
-    ld   [wD586], A                                    ;; 00:12f6 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 00:12f6 $ea $86 $d5
     ld   A, $87                                        ;; 00:12f9 $3e $87
     call call_00_11a8                                  ;; 00:12fb $cd $a8 $11
     jp   jp_06_57da                                    ;; 00:12fe $c3 $da $57
@@ -2787,7 +2788,7 @@ jp_00_12e1:
 call_00_1301:
     ld   [wD2C3], A                                    ;; 00:1301 $ea $c3 $d2
     ld   A, $05                                        ;; 00:1304 $3e $05
-    ld   [wD5B7], A                                    ;; 00:1306 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1306 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1309 $ea $00 $20
     call call_05_4000                                  ;; 00:130c $cd $00 $40
     ld   A, $02                                        ;; 00:130f $3e $02
@@ -2801,17 +2802,17 @@ call_00_1301:
     xor  A, A                                          ;; 00:1323 $af
     ld   [wC557], A                                    ;; 00:1324 $ea $57 $c5
     ld   A, $01                                        ;; 00:1327 $3e $01
-    ld   [wD586], A                                    ;; 00:1329 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 00:1329 $ea $86 $d5
     ld   A, $07                                        ;; 00:132c $3e $07
     ld   [wD58B], A                                    ;; 00:132e $ea $8b $d5
-    ld   A, [wD5B5]                                    ;; 00:1331 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1334 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:1331 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1334 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1337 $ea $00 $20
     ret                                                ;; 00:133a $c9
 
 call_00_133b:
     ld   A, $05                                        ;; 00:133b $3e $05
-    ld   [wD5B7], A                                    ;; 00:133d $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:133d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1340 $ea $00 $20
     call call_05_403e ;@bank 5                         ;; 00:1343 $cd $3e $40
     ld   B, $00                                        ;; 00:1346 $06 $00
@@ -2829,18 +2830,18 @@ call_00_133b:
     xor  A, A                                          ;; 00:1363 $af
     ld   [wC557], A                                    ;; 00:1364 $ea $57 $c5
     ld   A, $01                                        ;; 00:1367 $3e $01
-    ld   [wD586], A                                    ;; 00:1369 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 00:1369 $ea $86 $d5
     ld   B, $01                                        ;; 00:136c $06 $01
 .jr_00_136e:
-    ld   A, [wD5B5]                                    ;; 00:136e $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1371 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:136e $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1371 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1374 $ea $00 $20
     ret                                                ;; 00:1377 $c9
 
 call_00_1378:
     ld   A, $07                                        ;; 00:1378 $3e $07
-    ld   [wD5B5], A                                    ;; 00:137a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:137d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:137a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:137d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1380 $ea $00 $20
     jp   jp_07_4000                                    ;; 00:1383 $c3 $00 $40
     db   $3e, $11, $ea, $b5, $d5, $ea, $b7, $d5        ;; 00:1386 ????????
@@ -2848,9 +2849,9 @@ call_00_1378:
 
 call_00_1394:
     ld   A, $03                                        ;; 00:1394 $3e $03
-    ld   [wD5B7], A                                    ;; 00:1396 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1396 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1399 $ea $00 $20
-    ld   HL, wC142                                     ;; 00:139c $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:139c $21 $42 $c1
     ld   A, [HL+]                                      ;; 00:139f $2a
     ld   L, [HL]                                       ;; 00:13a0 $6e
     ld   H, A                                          ;; 00:13a1 $67
@@ -2863,21 +2864,21 @@ call_00_1394:
     ld   B, $00                                        ;; 00:13aa $06 $00
     add  HL, BC                                        ;; 00:13ac $09
     ld   C, [HL]                                       ;; 00:13ad $4e
-    ld   A, [wD5B5]                                    ;; 00:13ae $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:13b1 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:13ae $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:13b1 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:13b4 $ea $00 $20
     ret                                                ;; 00:13b7 $c9
 
 call_00_13b8:
     ld   A, $03                                        ;; 00:13b8 $3e $03
-    ld   [wD5B7], A                                    ;; 00:13ba $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:13ba $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:13bd $ea $00 $20
-    ld   HL, wC142                                     ;; 00:13c0 $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:13c0 $21 $42 $c1
     ld   A, [HL+]                                      ;; 00:13c3 $2a
     ld   L, [HL]                                       ;; 00:13c4 $6e
     ld   H, A                                          ;; 00:13c5 $67
     add  HL, HL                                        ;; 00:13c6 $29
-    ld   DE, $624e                                     ;; 00:13c7 $11 $4e $62
+    ld   DE, data_03_624e                              ;; 00:13c7 $11 $4e $62
     add  HL, DE                                        ;; 00:13ca $19
     ld   A, [HL+]                                      ;; 00:13cb $2a
     ld   L, [HL]                                       ;; 00:13cc $6e
@@ -2888,17 +2889,17 @@ call_00_13b8:
     ld   C, A                                          ;; 00:13d2 $4f
     ld   A, [HL+]                                      ;; 00:13d3 $2a
     ld   B, A                                          ;; 00:13d4 $47
-    ld   A, [wD5B5]                                    ;; 00:13d5 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:13d8 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:13d5 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:13d8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:13db $ea $00 $20
     ret                                                ;; 00:13de $c9
 
 jp_00_13df:
     ld   A, $13                                        ;; 00:13df $3e $13
-    ld   [wD5B5], A                                    ;; 00:13e1 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:13e4 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:13e1 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:13e4 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:13e7 $ea $00 $20
-    ld   [wD58E], SP                                   ;; 00:13ea $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 00:13ea $08 $8e $d5
     ld   HL, wCB1E                                     ;; 00:13ed $21 $1e $cb
     ld   A, [HL+]                                      ;; 00:13f0 $2a
     ld   L, [HL]                                       ;; 00:13f1 $6e
@@ -2925,7 +2926,7 @@ jp_00_13df:
     ld   [HL+], A                                      ;; 00:1409 $22
     dec  B                                             ;; 00:140a $05
     jr   NZ, .jr_00_1400                               ;; 00:140b $20 $f3
-    ld   HL, wD58E                                     ;; 00:140d $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 00:140d $21 $8e $d5
     ld   A, [HL+]                                      ;; 00:1410 $2a
     ld   H, [HL]                                       ;; 00:1411 $66
     ld   L, A                                          ;; 00:1412 $6f
@@ -2937,7 +2938,7 @@ call_00_1415:
     ld   A, [HL+]                                      ;; 00:1418 $2a
     ld   E, [HL]                                       ;; 00:1419 $5e
     ld   D, A                                          ;; 00:141a $57
-    call call_00_06b4                                  ;; 00:141b $cd $b4 $06
+    call divide_DE_8                                   ;; 00:141b $cd $b4 $06
     ld   HL, wCEB6                                     ;; 00:141e $21 $b6 $ce
     ld   A, [HL+]                                      ;; 00:1421 $2a
     ld   L, [HL]                                       ;; 00:1422 $6e
@@ -2951,7 +2952,7 @@ call_00_1415:
     ld   A, [HL+]                                      ;; 00:1430 $2a
     ld   E, [HL]                                       ;; 00:1431 $5e
     ld   D, A                                          ;; 00:1432 $57
-    call call_00_06b4                                  ;; 00:1433 $cd $b4 $06
+    call divide_DE_8                                   ;; 00:1433 $cd $b4 $06
     dec  DE                                            ;; 00:1436 $1b
     ld   HL, wCEC0                                     ;; 00:1437 $21 $c0 $ce
     ld   A, D                                          ;; 00:143a $7a
@@ -2983,7 +2984,7 @@ call_00_1415:
     and  A, $1f                                        ;; 00:146c $e6 $1f
     ld   L, A                                          ;; 00:146e $6f
     ld   H, $00                                        ;; 00:146f $26 $00
-    call call_00_06a1                                  ;; 00:1471 $cd $a1 $06
+    call multiply_HL_32                                ;; 00:1471 $cd $a1 $06
     add  HL, BC                                        ;; 00:1474 $09
     ld   A, H                                          ;; 00:1475 $7c
     ld   [wCED7], A                                    ;; 00:1476 $ea $d7 $ce
@@ -3064,8 +3065,8 @@ call_00_14e4:
     ld   D, A                                          ;; 00:14f2 $57
     call call_00_1749                                  ;; 00:14f3 $cd $49 $17
     ld   A, [wD594]                                    ;; 00:14f6 $fa $94 $d5
-    ld   [wD5B5], A                                    ;; 00:14f9 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:14fc $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:14f9 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:14fc $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:14ff $ea $00 $20
     ld   HL, wCECE                                     ;; 00:1502 $21 $ce $ce
     ld   A, [HL+]                                      ;; 00:1505 $2a
@@ -3086,8 +3087,8 @@ call_00_14e4:
     and  A, A                                          ;; 00:151a $a7
     jr   Z, .jr_00_153f                                ;; 00:151b $28 $22
     ld   A, [wD596]                                    ;; 00:151d $fa $96 $d5
-    ld   [wD5B5], A                                    ;; 00:1520 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1523 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1520 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1523 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1526 $ea $00 $20
     ld   HL, wCED0                                     ;; 00:1529 $21 $d0 $ce
     ld   A, [HL+]                                      ;; 00:152c $2a
@@ -3178,7 +3179,7 @@ call_00_15a6:
     ld   A, [HL+]                                      ;; 00:15a9 $2a
     ld   E, [HL]                                       ;; 00:15aa $5e
     ld   D, A                                          ;; 00:15ab $57
-    call call_00_06b4                                  ;; 00:15ac $cd $b4 $06
+    call divide_DE_8                                   ;; 00:15ac $cd $b4 $06
     dec  DE                                            ;; 00:15af $1b
     ld   HL, wCEBE                                     ;; 00:15b0 $21 $be $ce
     ld   A, D                                          ;; 00:15b3 $7a
@@ -3192,7 +3193,7 @@ call_00_15a6:
     ld   A, [HL+]                                      ;; 00:15bf $2a
     ld   L, [HL]                                       ;; 00:15c0 $6e
     ld   H, A                                          ;; 00:15c1 $67
-    call call_00_06a7                                  ;; 00:15c2 $cd $a7 $06
+    call divide_HL_8                                   ;; 00:15c2 $cd $a7 $06
     add  HL, BC                                        ;; 00:15c5 $09
     ld   A, H                                          ;; 00:15c6 $7c
     ld   [wCEC0], A                                    ;; 00:15c7 $ea $c0 $ce
@@ -3225,7 +3226,7 @@ call_00_15a6:
     and  A, $1f                                        ;; 00:15fc $e6 $1f
     ld   L, A                                          ;; 00:15fe $6f
     ld   H, $00                                        ;; 00:15ff $26 $00
-    call call_00_06a1                                  ;; 00:1601 $cd $a1 $06
+    call multiply_HL_32                                ;; 00:1601 $cd $a1 $06
     push HL                                            ;; 00:1604 $e5
     add  HL, BC                                        ;; 00:1605 $09
     ld   A, H                                          ;; 00:1606 $7c
@@ -3319,8 +3320,8 @@ call_00_1688:
     ld   D, A                                          ;; 00:1696 $57
     call call_00_1749                                  ;; 00:1697 $cd $49 $17
     ld   A, [wD594]                                    ;; 00:169a $fa $94 $d5
-    ld   [wD5B5], A                                    ;; 00:169d $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:16a0 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:169d $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:16a0 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:16a3 $ea $00 $20
     ld   HL, wCECE                                     ;; 00:16a6 $21 $ce $ce
     ld   A, [HL+]                                      ;; 00:16a9 $2a
@@ -3341,8 +3342,8 @@ call_00_1688:
     and  A, A                                          ;; 00:16be $a7
     jr   Z, .jr_00_16e3                                ;; 00:16bf $28 $22
     ld   A, [wD596]                                    ;; 00:16c1 $fa $96 $d5
-    ld   [wD5B5], A                                    ;; 00:16c4 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:16c7 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:16c4 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:16c7 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:16ca $ea $00 $20
     ld   HL, wCED0                                     ;; 00:16cd $21 $d0 $ce
     ld   A, [HL+]                                      ;; 00:16d0 $2a
@@ -3435,8 +3436,8 @@ call_00_1749:
     cp   A, $0a                                        ;; 00:174c $fe $0a
     ret  NC                                            ;; 00:174e $d0
     ld   A, [wD598]                                    ;; 00:174f $fa $98 $d5
-    ld   [wD5B5], A                                    ;; 00:1752 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1755 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1752 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1755 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1758 $ea $00 $20
     ld   HL, wCED2                                     ;; 00:175b $21 $d2 $ce
     ld   A, [HL+]                                      ;; 00:175e $2a
@@ -3445,8 +3446,8 @@ call_00_1749:
     add  HL, DE                                        ;; 00:1761 $19
     ld   E, [HL]                                       ;; 00:1762 $5e
     ld   A, $04                                        ;; 00:1763 $3e $04
-    ld   [wD5B5], A                                    ;; 00:1765 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1768 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1765 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1768 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:176b $ea $00 $20
     ld   A, E                                          ;; 00:176e $7b
     push BC                                            ;; 00:176f $c5
@@ -3552,7 +3553,7 @@ call_00_1858:
     ld   A, C                                          ;; 00:186e $79
     ld   [wC524], A                                    ;; 00:186f $ea $24 $c5
     ld   HL, $37d                                      ;; 00:1872 $21 $7d $03
-    call call_00_067a                                  ;; 00:1875 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:1875 $cd $7a $06
     ld   A, H                                          ;; 00:1878 $7c
     ld   [wC52B], A                                    ;; 00:1879 $ea $2b $c5
     ld   A, L                                          ;; 00:187c $7d
@@ -3694,8 +3695,8 @@ call_00_1980:
 call_00_1a56:
     call call_00_0fac                                  ;; 00:1a56 $cd $ac $0f
     ld   A, $04                                        ;; 00:1a59 $3e $04
-    ld   [wD5B5], A                                    ;; 00:1a5b $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1a5e $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1a5b $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1a5e $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1a61 $ea $00 $20
     call call_04_6d03 ;@bank 4                         ;; 00:1a64 $cd $03 $6d
     ld   A, [wD82C]                                    ;; 00:1a67 $fa $2c $d8
@@ -4178,10 +4179,10 @@ call_00_1d92:
     ld   B, $09                                        ;; 00:1e3c $06 $09
     call memzeroSmall                                  ;; 00:1e3e $cd $8b $05
     ld   A, $1a                                        ;; 00:1e41 $3e $1a
-    ld   [wD5B5], A                                    ;; 00:1e43 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1e46 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1e43 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1e46 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1e49 $ea $00 $20
-    ld   HL, $5c4e                                     ;; 00:1e4c $21 $4e $5c
+    ld   HL, data_1a_5c4e                              ;; 00:1e4c $21 $4e $5c
     ld   DE, wCA4E                                     ;; 00:1e4f $11 $4e $ca
     ld   B, $09                                        ;; 00:1e52 $06 $09
     call memcopySmall                                  ;; 00:1e54 $cd $91 $05
@@ -4232,7 +4233,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:1eb2 $2a
     ld   C, [HL]                                       ;; 00:1eb3 $4e
     ld   B, A                                          ;; 00:1eb4 $47
-    ld   HL, wC144                                     ;; 00:1eb5 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1eb5 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:1eb8 $2a
     ld   L, [HL]                                       ;; 00:1eb9 $6e
     ld   H, A                                          ;; 00:1eba $67
@@ -4243,20 +4244,20 @@ call_00_1d92:
     ld   L, E                                          ;; 00:1ec2 $6b
 .jr_00_1ec3:
     ld   A, H                                          ;; 00:1ec3 $7c
-    ld   [wC144], A                                    ;; 00:1ec4 $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 00:1ec4 $ea $44 $c1
     ld   A, L                                          ;; 00:1ec7 $7d
-    ld   [wC145], A                                    ;; 00:1ec8 $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 00:1ec8 $ea $45 $c1
     xor  A, A                                          ;; 00:1ecb $af
     ld   [wD5CA], A                                    ;; 00:1ecc $ea $ca $d5
-    ld   HL, wC144                                     ;; 00:1ecf $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1ecf $21 $44 $c1
     ld   DE, wD5BC                                     ;; 00:1ed2 $11 $bc $d5
     ld   B, $04                                        ;; 00:1ed5 $06 $04
     call memcopySmall                                  ;; 00:1ed7 $cd $91 $05
     ld   A, [wC45B]                                    ;; 00:1eda $fa $5b $c4
     ld   [wD837], A                                    ;; 00:1edd $ea $37 $d8
     ld   A, $04                                        ;; 00:1ee0 $3e $04
-    ld   [wD5B5], A                                    ;; 00:1ee2 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1ee5 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1ee2 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1ee5 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1ee8 $ea $00 $20
     call call_04_42cb                                  ;; 00:1eeb $cd $cb $42
     ld   A, B                                          ;; 00:1eee $78
@@ -4275,11 +4276,11 @@ call_00_1d92:
     ld   A, [wC46B]                                    ;; 00:1f05 $fa $6b $c4
     and  A, A                                          ;; 00:1f08 $a7
     jr   NZ, .jr_00_1f3f                               ;; 00:1f09 $20 $34
-    ld   HL, wC146                                     ;; 00:1f0b $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:1f0b $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:1f0e $2a
     ld   E, [HL]                                       ;; 00:1f0f $5e
     ld   D, A                                          ;; 00:1f10 $57
-    ld   HL, wC144                                     ;; 00:1f11 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1f11 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:1f14 $2a
     ld   L, [HL]                                       ;; 00:1f15 $6e
     ld   H, A                                          ;; 00:1f16 $67
@@ -4301,7 +4302,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:1f33 $2a
     ld   C, [HL]                                       ;; 00:1f34 $4e
     ld   B, A                                          ;; 00:1f35 $47
-    ld   HL, wC145                                     ;; 00:1f36 $21 $45 $c1
+    ld   HL, wPlayerX.low                              ;; 00:1f36 $21 $45 $c1
     ld   A, [HL]                                       ;; 00:1f39 $7e
     sub  A, C                                          ;; 00:1f3a $91
     ld   [HL-], A                                      ;; 00:1f3b $32
@@ -4309,7 +4310,7 @@ call_00_1d92:
     sbc  A, B                                          ;; 00:1f3d $98
     ld   [HL], A                                       ;; 00:1f3e $77
 .jr_00_1f3f:
-    ld   HL, wC144                                     ;; 00:1f3f $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1f3f $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:1f42 $2a
     ld   L, [HL]                                       ;; 00:1f43 $6e
     ld   H, A                                          ;; 00:1f44 $67
@@ -4343,7 +4344,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:1f81 $2a
     ld   C, [HL]                                       ;; 00:1f82 $4e
     ld   B, A                                          ;; 00:1f83 $47
-    ld   HL, wC144                                     ;; 00:1f84 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1f84 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:1f87 $2a
     ld   L, [HL]                                       ;; 00:1f88 $6e
     ld   H, A                                          ;; 00:1f89 $67
@@ -4359,20 +4360,20 @@ call_00_1d92:
     ld   HL, $00                                       ;; 00:1f95 $21 $00 $00
 .jr_00_1f98:
     ld   A, H                                          ;; 00:1f98 $7c
-    ld   [wC144], A                                    ;; 00:1f99 $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 00:1f99 $ea $44 $c1
     ld   A, L                                          ;; 00:1f9c $7d
-    ld   [wC145], A                                    ;; 00:1f9d $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 00:1f9d $ea $45 $c1
     xor  A, A                                          ;; 00:1fa0 $af
     ld   [wD5CA], A                                    ;; 00:1fa1 $ea $ca $d5
-    ld   HL, wC144                                     ;; 00:1fa4 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1fa4 $21 $44 $c1
     ld   DE, wD5BC                                     ;; 00:1fa7 $11 $bc $d5
     ld   B, $04                                        ;; 00:1faa $06 $04
     call memcopySmall                                  ;; 00:1fac $cd $91 $05
     ld   A, [wC45B]                                    ;; 00:1faf $fa $5b $c4
     ld   [wD837], A                                    ;; 00:1fb2 $ea $37 $d8
     ld   A, $04                                        ;; 00:1fb5 $3e $04
-    ld   [wD5B5], A                                    ;; 00:1fb7 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:1fba $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:1fb7 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:1fba $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1fbd $ea $00 $20
     call call_04_42cb                                  ;; 00:1fc0 $cd $cb $42
     ld   A, B                                          ;; 00:1fc3 $78
@@ -4391,11 +4392,11 @@ call_00_1d92:
     ld   A, [wC46B]                                    ;; 00:1fda $fa $6b $c4
     and  A, A                                          ;; 00:1fdd $a7
     jr   NZ, .jr_00_2010                               ;; 00:1fde $20 $30
-    ld   HL, wC146                                     ;; 00:1fe0 $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:1fe0 $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:1fe3 $2a
     ld   E, [HL]                                       ;; 00:1fe4 $5e
     ld   D, A                                          ;; 00:1fe5 $57
-    ld   HL, wC144                                     ;; 00:1fe6 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:1fe6 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:1fe9 $2a
     ld   L, [HL]                                       ;; 00:1fea $6e
     ld   H, A                                          ;; 00:1feb $67
@@ -4415,7 +4416,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:2004 $2a
     ld   C, [HL]                                       ;; 00:2005 $4e
     ld   B, A                                          ;; 00:2006 $47
-    ld   HL, wC145                                     ;; 00:2007 $21 $45 $c1
+    ld   HL, wPlayerX.low                              ;; 00:2007 $21 $45 $c1
     ld   A, C                                          ;; 00:200a $79
     add  A, [HL]                                       ;; 00:200b $86
     ld   [HL-], A                                      ;; 00:200c $32
@@ -4423,7 +4424,7 @@ call_00_1d92:
     adc  A, [HL]                                       ;; 00:200e $8e
     ld   [HL], A                                       ;; 00:200f $77
 .jr_00_2010:
-    ld   HL, wC144                                     ;; 00:2010 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:2010 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:2013 $2a
     ld   L, [HL]                                       ;; 00:2014 $6e
     ld   H, A                                          ;; 00:2015 $67
@@ -4457,7 +4458,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:2052 $2a
     ld   C, [HL]                                       ;; 00:2053 $4e
     ld   B, A                                          ;; 00:2054 $47
-    ld   HL, wC146                                     ;; 00:2055 $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:2055 $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:2058 $2a
     ld   L, [HL]                                       ;; 00:2059 $6e
     ld   H, A                                          ;; 00:205a $67
@@ -4473,20 +4474,20 @@ call_00_1d92:
     ld   HL, $00                                       ;; 00:2066 $21 $00 $00
 .jr_00_2069:
     ld   A, H                                          ;; 00:2069 $7c
-    ld   [wC146], A                                    ;; 00:206a $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 00:206a $ea $46 $c1
     ld   A, L                                          ;; 00:206d $7d
-    ld   [wC147], A                                    ;; 00:206e $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 00:206e $ea $47 $c1
     xor  A, A                                          ;; 00:2071 $af
     ld   [wD5CA], A                                    ;; 00:2072 $ea $ca $d5
-    ld   HL, wC144                                     ;; 00:2075 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:2075 $21 $44 $c1
     ld   DE, wD5BC                                     ;; 00:2078 $11 $bc $d5
     ld   B, $04                                        ;; 00:207b $06 $04
     call memcopySmall                                  ;; 00:207d $cd $91 $05
     ld   A, [wC45B]                                    ;; 00:2080 $fa $5b $c4
     ld   [wD837], A                                    ;; 00:2083 $ea $37 $d8
     ld   A, $04                                        ;; 00:2086 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2088 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:208b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2088 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:208b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:208e $ea $00 $20
     call call_04_42cb                                  ;; 00:2091 $cd $cb $42
     ld   A, B                                          ;; 00:2094 $78
@@ -4505,11 +4506,11 @@ call_00_1d92:
     ld   A, [wC46B]                                    ;; 00:20ab $fa $6b $c4
     and  A, A                                          ;; 00:20ae $a7
     jr   NZ, .jr_00_20dd                               ;; 00:20af $20 $2c
-    ld   HL, wC146                                     ;; 00:20b1 $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:20b1 $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:20b4 $2a
     ld   E, [HL]                                       ;; 00:20b5 $5e
     ld   D, A                                          ;; 00:20b6 $57
-    ld   HL, wC144                                     ;; 00:20b7 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:20b7 $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:20ba $2a
     ld   L, [HL]                                       ;; 00:20bb $6e
     ld   H, A                                          ;; 00:20bc $67
@@ -4525,7 +4526,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:20d1 $2a
     ld   C, [HL]                                       ;; 00:20d2 $4e
     ld   B, A                                          ;; 00:20d3 $47
-    ld   HL, wC147                                     ;; 00:20d4 $21 $47 $c1
+    ld   HL, wPlayerY.low                              ;; 00:20d4 $21 $47 $c1
     ld   A, C                                          ;; 00:20d7 $79
     add  A, [HL]                                       ;; 00:20d8 $86
     ld   [HL-], A                                      ;; 00:20d9 $32
@@ -4533,7 +4534,7 @@ call_00_1d92:
     adc  A, [HL]                                       ;; 00:20db $8e
     ld   [HL], A                                       ;; 00:20dc $77
 .jr_00_20dd:
-    ld   HL, wC146                                     ;; 00:20dd $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:20dd $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:20e0 $2a
     ld   L, [HL]                                       ;; 00:20e1 $6e
     ld   H, A                                          ;; 00:20e2 $67
@@ -4569,7 +4570,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:2124 $2a
     ld   C, [HL]                                       ;; 00:2125 $4e
     ld   B, A                                          ;; 00:2126 $47
-    ld   HL, wC146                                     ;; 00:2127 $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:2127 $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:212a $2a
     ld   L, [HL]                                       ;; 00:212b $6e
     ld   H, A                                          ;; 00:212c $67
@@ -4580,20 +4581,20 @@ call_00_1d92:
     ld   L, E                                          ;; 00:2134 $6b
 .jr_00_2135:
     ld   A, H                                          ;; 00:2135 $7c
-    ld   [wC146], A                                    ;; 00:2136 $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 00:2136 $ea $46 $c1
     ld   A, L                                          ;; 00:2139 $7d
-    ld   [wC147], A                                    ;; 00:213a $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 00:213a $ea $47 $c1
     xor  A, A                                          ;; 00:213d $af
     ld   [wD5CA], A                                    ;; 00:213e $ea $ca $d5
-    ld   HL, wC144                                     ;; 00:2141 $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:2141 $21 $44 $c1
     ld   DE, wD5BC                                     ;; 00:2144 $11 $bc $d5
     ld   B, $04                                        ;; 00:2147 $06 $04
     call memcopySmall                                  ;; 00:2149 $cd $91 $05
     ld   A, [wC45B]                                    ;; 00:214c $fa $5b $c4
     ld   [wD837], A                                    ;; 00:214f $ea $37 $d8
     ld   A, $04                                        ;; 00:2152 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2154 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2157 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2154 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2157 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:215a $ea $00 $20
     call call_04_42cb                                  ;; 00:215d $cd $cb $42
     ld   A, B                                          ;; 00:2160 $78
@@ -4612,7 +4613,7 @@ call_00_1d92:
     ld   A, [wC46B]                                    ;; 00:2177 $fa $6b $c4
     and  A, A                                          ;; 00:217a $a7
     jr   NZ, .jr_00_21b1                               ;; 00:217b $20 $34
-    ld   HL, wC146                                     ;; 00:217d $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:217d $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:2180 $2a
     ld   E, [HL]                                       ;; 00:2181 $5e
     ld   D, A                                          ;; 00:2182 $57
@@ -4622,7 +4623,7 @@ call_00_1d92:
     ld   A, $00                                        ;; 00:2187 $3e $00
     adc  A, D                                          ;; 00:2189 $8a
     ld   D, A                                          ;; 00:218a $57
-    ld   HL, wC144                                     ;; 00:218b $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:218b $21 $44 $c1
     ld   A, [HL+]                                      ;; 00:218e $2a
     ld   L, [HL]                                       ;; 00:218f $6e
     ld   H, A                                          ;; 00:2190 $67
@@ -4638,7 +4639,7 @@ call_00_1d92:
     ld   A, [HL+]                                      ;; 00:21a5 $2a
     ld   C, [HL]                                       ;; 00:21a6 $4e
     ld   B, A                                          ;; 00:21a7 $47
-    ld   HL, wC147                                     ;; 00:21a8 $21 $47 $c1
+    ld   HL, wPlayerY.low                              ;; 00:21a8 $21 $47 $c1
     ld   A, [HL]                                       ;; 00:21ab $7e
     sub  A, C                                          ;; 00:21ac $91
     ld   [HL-], A                                      ;; 00:21ad $32
@@ -4646,7 +4647,7 @@ call_00_1d92:
     sbc  A, B                                          ;; 00:21af $98
     ld   [HL], A                                       ;; 00:21b0 $77
 .jr_00_21b1:
-    ld   HL, wC146                                     ;; 00:21b1 $21 $46 $c1
+    ld   HL, wPlayerY                                  ;; 00:21b1 $21 $46 $c1
     ld   A, [HL+]                                      ;; 00:21b4 $2a
     ld   L, [HL]                                       ;; 00:21b5 $6e
     ld   H, A                                          ;; 00:21b6 $67
@@ -4666,7 +4667,7 @@ call_00_1d92:
 call_00_21d5:
     ld   A, [wCEB3]                                    ;; 00:21d5 $fa $b3 $ce
     ld   B, A                                          ;; 00:21d8 $47
-    ld   A, [wC145]                                    ;; 00:21d9 $fa $45 $c1
+    ld   A, [wPlayerX.low]                             ;; 00:21d9 $fa $45 $c1
     sub  A, B                                          ;; 00:21dc $90
     add  A, $08                                        ;; 00:21dd $c6 $08
     ld   [wC45D], A                                    ;; 00:21df $ea $5d $c4
@@ -4675,14 +4676,14 @@ call_00_21d5:
 call_00_21e3:
     ld   A, [wCEB5]                                    ;; 00:21e3 $fa $b5 $ce
     ld   B, A                                          ;; 00:21e6 $47
-    ld   A, [wC147]                                    ;; 00:21e7 $fa $47 $c1
+    ld   A, [wPlayerY.low]                             ;; 00:21e7 $fa $47 $c1
     sub  A, B                                          ;; 00:21ea $90
     add  A, $10                                        ;; 00:21eb $c6 $10
     ld   [wC45C], A                                    ;; 00:21ed $ea $5c $c4
     ret                                                ;; 00:21f0 $c9
 
 call_00_21f1:
-    ld   HL, wC145                                     ;; 00:21f1 $21 $45 $c1
+    ld   HL, wPlayerX.low                              ;; 00:21f1 $21 $45 $c1
     ld   A, [HL-]                                      ;; 00:21f4 $3a
     sub  A, $48                                        ;; 00:21f5 $d6 $48
     ld   [wCEB3], A                                    ;; 00:21f7 $ea $b3 $ce
@@ -4693,7 +4694,7 @@ call_00_21f1:
     ret                                                ;; 00:2203 $c9
 
 call_00_2204:
-    ld   HL, wC147                                     ;; 00:2204 $21 $47 $c1
+    ld   HL, wPlayerY.low                              ;; 00:2204 $21 $47 $c1
     ld   A, [HL-]                                      ;; 00:2207 $3a
     sub  A, $40                                        ;; 00:2208 $d6 $40
     ld   [wCEB5], A                                    ;; 00:220a $ea $b5 $ce
@@ -4770,11 +4771,11 @@ call_00_222f:
     ret                                                ;; 00:2273 $c9
 
 call_00_2274:
-    ld   A, [wD5B5]                                    ;; 00:2274 $fa $b5 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:2274 $fa $b5 $d5
     ld   [wD837], A                                    ;; 00:2277 $ea $37 $d8
     ld   A, [wC534]                                    ;; 00:227a $fa $34 $c5
-    ld   [wD5B5], A                                    ;; 00:227d $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2280 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:227d $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2280 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2283 $ea $00 $20
     ld   A, [wC532]                                    ;; 00:2286 $fa $32 $c5
     ld   C, A                                          ;; 00:2289 $4f
@@ -4817,8 +4818,8 @@ call_00_2274:
     and  A, A                                          ;; 00:22c2 $a7
     jr   NZ, .jr_00_22fb                               ;; 00:22c3 $20 $36
     ld   A, [wC538]                                    ;; 00:22c5 $fa $38 $c5
-    ld   [wD5B5], A                                    ;; 00:22c8 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:22cb $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:22c8 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:22cb $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:22ce $ea $00 $20
     ld   A, [wC53B]                                    ;; 00:22d1 $fa $3b $c5
     add  A, A                                          ;; 00:22d4 $87
@@ -4846,15 +4847,15 @@ call_00_2274:
     ld   [wC53B], A                                    ;; 00:22f8 $ea $3b $c5
 .jr_00_22fb:
     ld   A, [wD837]                                    ;; 00:22fb $fa $37 $d8
-    ld   [wD5B5], A                                    ;; 00:22fe $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2301 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:22fe $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2301 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2304 $ea $00 $20
     ret                                                ;; 00:2307 $c9
 
 jp_00_2308:
     ld   A, [wC534]                                    ;; 00:2308 $fa $34 $c5
-    ld   [wD5B5], A                                    ;; 00:230b $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:230e $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:230b $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:230e $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2311 $ea $00 $20
     ld   HL, wC558                                     ;; 00:2314 $21 $58 $c5
     ld   A, [HL+]                                      ;; 00:2317 $2a
@@ -4884,8 +4885,8 @@ jp_00_2308:
     and  A, A                                          ;; 00:2343 $a7
     ret  NZ                                            ;; 00:2344 $c0
     ld   A, [wC538]                                    ;; 00:2345 $fa $38 $c5
-    ld   [wD5B5], A                                    ;; 00:2348 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:234b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2348 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:234b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:234e $ea $00 $20
     ld   HL, wC539                                     ;; 00:2351 $21 $39 $c5
     ld   A, [HL+]                                      ;; 00:2354 $2a
@@ -4905,7 +4906,7 @@ call_00_235e:
 .jr_00_2369:
     push BC                                            ;; 00:2369 $c5
     ld   HL, wCF36                                     ;; 00:236a $21 $36 $cf
-    call call_00_067a                                  ;; 00:236d $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:236d $cd $7a $06
     call call_00_2379                                  ;; 00:2370 $cd $79 $23
     pop  BC                                            ;; 00:2373 $c1
     inc  C                                             ;; 00:2374 $0c
@@ -4946,8 +4947,8 @@ call_00_2379:
     ld   [wCF30], A                                    ;; 00:23a6 $ea $30 $cf
     inc  HL                                            ;; 00:23a9 $23
     ld   A, [HL+]                                      ;; 00:23aa $2a
-    ld   [wD5B5], A                                    ;; 00:23ab $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:23ae $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:23ab $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:23ae $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:23b1 $ea $00 $20
     ld   BC, $08                                       ;; 00:23b4 $01 $08 $00
     add  HL, BC                                        ;; 00:23b7 $09
@@ -4980,8 +4981,8 @@ call_00_2379:
     inc  HL                                            ;; 00:23e5 $23
     ld   A, [HL+]                                      ;; 00:23e6 $2a
     ld   A, A                                          ;; 00:23e7 $7f
-    ld   [wD5B5], A                                    ;; 00:23e8 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:23eb $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:23e8 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:23eb $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:23ee $ea $00 $20
     ld   A, [HL+]                                      ;; 00:23f1 $2a
     ld   D, A                                          ;; 00:23f2 $57
@@ -5000,7 +5001,7 @@ call_00_2379:
     ld   H, D                                          ;; 00:2405 $62
     ld   L, E                                          ;; 00:2406 $6b
     ld   C, A                                          ;; 00:2407 $4f
-    call call_00_0683                                  ;; 00:2408 $cd $83 $06
+    call ld_DE_from_HL_add_2C                          ;; 00:2408 $cd $83 $06
     pop  HL                                            ;; 00:240b $e1
     inc  HL                                            ;; 00:240c $23
     ld   A, [HL]                                       ;; 00:240d $7e
@@ -5149,8 +5150,8 @@ call_00_24c1:
     jp   memzeroSmall                                  ;; 00:24cf $c3 $8b $05
 .jr_00_24d2:
     ld   A, $1a                                        ;; 00:24d2 $3e $1a
-    ld   [wD5B5], A                                    ;; 00:24d4 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:24d7 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:24d4 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:24d7 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:24da $ea $00 $20
     ld   A, [wC460]                                    ;; 00:24dd $fa $60 $c4
     and  A, A                                          ;; 00:24e0 $a7
@@ -5169,7 +5170,7 @@ call_00_24c1:
     ld   A, [HL+]                                      ;; 00:24f9 $2a
     ld   L, [HL]                                       ;; 00:24fa $6e
     ld   H, A                                          ;; 00:24fb $67
-    call call_00_067a                                  ;; 00:24fc $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:24fc $cd $7a $06
     ld   A, [wC462]                                    ;; 00:24ff $fa $62 $c4
     ld   C, A                                          ;; 00:2502 $4f
     add  HL, BC                                        ;; 00:2503 $09
@@ -5230,7 +5231,7 @@ call_00_24c1:
     ld   H, A                                          ;; 00:2561 $67
     ld   A, [wC464]                                    ;; 00:2562 $fa $64 $c4
     ld   B, A                                          ;; 00:2565 $47
-    ld   A, [wD586]                                    ;; 00:2566 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:2566 $fa $86 $d5
     cp   A, $01                                        ;; 00:2569 $fe $01
     jp   NZ, jp_00_2595                                ;; 00:256b $c2 $95 $25
     ldh  A, [hIsGBC]                                   ;; 00:256e $f0 $fe
@@ -5323,8 +5324,8 @@ call_00_25d9:
     cp   A, [HL]                                       ;; 00:25e4 $be
     jp   C, .jp_00_28ca                                ;; 00:25e5 $da $ca $28
     ld   A, [wD139]                                    ;; 00:25e8 $fa $39 $d1
-    ld   [wD5B5], A                                    ;; 00:25eb $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:25ee $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:25eb $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:25ee $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:25f1 $ea $00 $20
     ld   HL, wD13A                                     ;; 00:25f4 $21 $3a $d1
     ld   A, [HL+]                                      ;; 00:25f7 $2a
@@ -5649,7 +5650,7 @@ call_00_25d9:
     sla  B                                             ;; 00:282d $cb $20
     ld   L, B                                          ;; 00:282f $68
     ld   H, $00                                        ;; 00:2830 $26 $00
-    call call_00_06a1                                  ;; 00:2832 $cd $a1 $06
+    call multiply_HL_32                                ;; 00:2832 $cd $a1 $06
     push HL                                            ;; 00:2835 $e5
     ld   A, [wD12F]                                    ;; 00:2836 $fa $2f $d1
     ld   E, A                                          ;; 00:2839 $5f
@@ -5885,8 +5886,8 @@ call_00_25d9:
     ld   A, L                                          ;; 00:29b9 $7d
     ld   [wD1BC], A                                    ;; 00:29ba $ea $bc $d1
     ld   A, $22                                        ;; 00:29bd $3e $22
-    ld   [wD5B5], A                                    ;; 00:29bf $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:29c2 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:29bf $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:29c2 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:29c5 $ea $00 $20
     ld   H, $00                                        ;; 00:29c8 $26 $00
     ld   L, C                                          ;; 00:29ca $69
@@ -5906,7 +5907,7 @@ call_00_25d9:
     ret                                                ;; 00:29e3 $c9
 
 jp_00_29e4:
-    ld   [wD58E], SP                                   ;; 00:29e4 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 00:29e4 $08 $8e $d5
     ld   HL, wD13C                                     ;; 00:29e7 $21 $3c $d1
     ld   SP, HL                                        ;; 00:29ea $f9
     ld   HL, wD134                                     ;; 00:29eb $21 $34 $d1
@@ -5932,7 +5933,7 @@ jp_00_29e4:
     add  HL, DE                                        ;; 00:2a07 $19
     dec  B                                             ;; 00:2a08 $05
     jr   NZ, .jr_00_29f5                               ;; 00:2a09 $20 $ea
-    ld   HL, wD58E                                     ;; 00:2a0b $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 00:2a0b $21 $8e $d5
     ld   A, [HL+]                                      ;; 00:2a0e $2a
     ld   H, [HL]                                       ;; 00:2a0f $66
     ld   L, A                                          ;; 00:2a10 $6f
@@ -5940,7 +5941,7 @@ jp_00_29e4:
     ret                                                ;; 00:2a12 $c9
 
 call_00_2a13:
-    ld   [wD58E], SP                                   ;; 00:2a13 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 00:2a13 $08 $8e $d5
     ld   HL, wD1AB                                     ;; 00:2a16 $21 $ab $d1
     ld   SP, HL                                        ;; 00:2a19 $f9
     ld   HL, wD1BB                                     ;; 00:2a1a $21 $bb $d1
@@ -5971,7 +5972,7 @@ call_00_2a13:
     ld   [HL+], A                                      ;; 00:2a35 $22
     dec  B                                             ;; 00:2a36 $05
     jr   NZ, .jr_00_2a22                               ;; 00:2a37 $20 $e9
-    ld   HL, wD58E                                     ;; 00:2a39 $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 00:2a39 $21 $8e $d5
     ld   A, [HL+]                                      ;; 00:2a3c $2a
     ld   H, [HL]                                       ;; 00:2a3d $66
     ld   L, A                                          ;; 00:2a3e $6f
@@ -5980,8 +5981,8 @@ call_00_2a13:
 
 jp_00_2a41:
     ld   A, [wD139]                                    ;; 00:2a41 $fa $39 $d1
-    ld   [wD5B5], A                                    ;; 00:2a44 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2a47 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2a44 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2a47 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2a4a $ea $00 $20
     ld   HL, wD13A                                     ;; 00:2a4d $21 $3a $d1
     ld   A, [HL+]                                      ;; 00:2a50 $2a
@@ -6084,7 +6085,7 @@ jp_00_2a41:
     pop  DE                                            ;; 00:2aec $d1
     ld   C, [HL]                                       ;; 00:2aed $4e
     ld   HL, $323                                      ;; 00:2aee $21 $23 $03
-    call call_00_067a                                  ;; 00:2af1 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:2af1 $cd $7a $06
     ld   BC, $07                                       ;; 00:2af4 $01 $07 $00
     add  HL, BC                                        ;; 00:2af7 $09
     ld   A, D                                          ;; 00:2af8 $7a
@@ -6141,14 +6142,14 @@ call_00_2b1b:
     ld   A, $00                                        ;; 00:2b48 $3e $00
     ld   [wD1AA], A                                    ;; 00:2b4a $ea $aa $d1
     ld   A, $03                                        ;; 00:2b4d $3e $03
-    ld   [wD5B7], A                                    ;; 00:2b4f $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2b4f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2b52 $ea $00 $20
     ld   HL, $40da                                     ;; 00:2b55 $21 $da $40
     ld   DE, wD126                                     ;; 00:2b58 $11 $26 $d1
     ld   B, $10                                        ;; 00:2b5b $06 $10
     call memcopySmall                                  ;; 00:2b5d $cd $91 $05
-    ld   A, [wD5B5]                                    ;; 00:2b60 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2b63 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:2b60 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2b63 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2b66 $ea $00 $20
     ld   A, [wD58B]                                    ;; 00:2b69 $fa $8b $d5
     cp   A, $05                                        ;; 00:2b6c $fe $05
@@ -6164,8 +6165,8 @@ call_00_2b1b:
 
 call_00_2b7f:
     ld   A, $03                                        ;; 00:2b7f $3e $03
-    ld   [wD5B5], A                                    ;; 00:2b81 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2b84 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2b81 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2b84 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2b87 $ea $00 $20
     ld   DE, $9c00                                     ;; 00:2b8a $11 $00 $9c
     ld   HL, $40a0                                     ;; 00:2b8d $21 $a0 $40
@@ -6190,32 +6191,32 @@ call_00_2b7f:
     ret                                                ;; 00:2bc3 $c9
 
 call_00_2bc4:
-    call call_00_0f39                                  ;; 00:2bc4 $cd $39 $0f
+    call startHardwareTimer                            ;; 00:2bc4 $cd $39 $0f
     call disableLCD                                    ;; 00:2bc7 $cd $23 $04
     call clearVRAM                                     ;; 00:2bca $cd $5f $04
     ld   A, $04                                        ;; 00:2bcd $3e $04
-    ld   [wD5B5], A                                    ;; 00:2bcf $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2bd2 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2bcf $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2bd2 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2bd5 $ea $00 $20
     call call_04_60a7                                  ;; 00:2bd8 $cd $a7 $60
     ld   A, $1a                                        ;; 00:2bdb $3e $1a
-    ld   [wD5B5], A                                    ;; 00:2bdd $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2be0 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2bdd $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2be0 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2be3 $ea $00 $20
-    ld   HL, $5c4e                                     ;; 00:2be6 $21 $4e $5c
+    ld   HL, data_1a_5c4e ;@=ptr bank=0x1A             ;; 00:2be6 $21 $4e $5c
     ld   DE, wCA4E                                     ;; 00:2be9 $11 $4e $ca
     ld   B, $09                                        ;; 00:2bec $06 $09
     call memcopySmall                                  ;; 00:2bee $cd $91 $05
     call call_1a_60ac                                  ;; 00:2bf1 $cd $ac $60
     ld   A, $03                                        ;; 00:2bf4 $3e $03
-    ld   [wD5B5], A                                    ;; 00:2bf6 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2bf9 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2bf6 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2bf9 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2bfc $ea $00 $20
-    ld   HL, $4080                                     ;; 00:2bff $21 $80 $40
+    ld   HL, data_03_4080 ;@=ptr bank=0x03             ;; 00:2bff $21 $80 $40
     ld   DE, wCF36                                     ;; 00:2c02 $11 $36 $cf
     ld   B, $18                                        ;; 00:2c05 $06 $18
     call memcopySmall                                  ;; 00:2c07 $cd $91 $05
-    ld   HL, wC142                                     ;; 00:2c0a $21 $42 $c1
+    ld   HL, wCurrentMap                               ;; 00:2c0a $21 $42 $c1
     ld   A, [HL+]                                      ;; 00:2c0d $2a
     ld   E, [HL]                                       ;; 00:2c0e $5e
     ld   D, A                                          ;; 00:2c0f $57
@@ -6242,9 +6243,9 @@ call_00_2bc4:
     inc  HL                                            ;; 00:2c2d $23
     inc  HL                                            ;; 00:2c2e $23
     ld   A, [HL+]                                      ;; 00:2c2f $2a
-    ld   [wC142], A                                    ;; 00:2c30 $ea $42 $c1
+    ld   [wCurrentMap], A                              ;; 00:2c30 $ea $42 $c1
     ld   A, [HL+]                                      ;; 00:2c33 $2a
-    ld   [wC143], A                                    ;; 00:2c34 $ea $43 $c1
+    ld   [wCurrentMap.low], A                          ;; 00:2c34 $ea $43 $c1
     pop  BC                                            ;; 00:2c37 $c1
     jr   .jr_00_2c42                                   ;; 00:2c38 $18 $08
 .jr_00_2c3a:
@@ -6254,7 +6255,7 @@ call_00_2bc4:
     dec  B                                             ;; 00:2c3f $05
     jr   NZ, .jr_00_2c15                               ;; 00:2c40 $20 $d3
 .jr_00_2c42:
-    ld   DE, $40ea                                     ;; 00:2c42 $11 $ea $40
+    ld   DE, data_03_40ea ;@=ptr bank=3                ;; 00:2c42 $11 $ea $40
     call call_00_0fc4                                  ;; 00:2c45 $cd $c4 $0f
     ld   A, [wD5B9]                                    ;; 00:2c48 $fa $b9 $d5
     and  A, A                                          ;; 00:2c4b $a7
@@ -6290,8 +6291,8 @@ call_00_2bc4:
     ld   B, $24                                        ;; 00:2c83 $06 $24
     call memcopySmall                                  ;; 00:2c85 $cd $91 $05
     ld   A, $23                                        ;; 00:2c88 $3e $23
-    ld   [wD5B5], A                                    ;; 00:2c8a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2c8d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2c8a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2c8d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2c90 $ea $00 $20
     ld   A, [wD5B2]                                    ;; 00:2c93 $fa $b2 $d5
     add  A, A                                          ;; 00:2c96 $87
@@ -6311,8 +6312,8 @@ call_00_2bc4:
     ld   B, $a0                                        ;; 00:2cb2 $06 $a0
     call memzeroSmall                                  ;; 00:2cb4 $cd $8b $05
     ld   A, [wRoomGraphicsBank]                        ;; 00:2cb7 $fa $9a $d5
-    ld   [wD5B5], A                                    ;; 00:2cba $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2cbd $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2cba $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2cbd $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2cc0 $ea $00 $20
     ld   HL, wRoomGraphicsPointer                      ;; 00:2cc3 $21 $a3 $d5
     ld   A, [HL+]                                      ;; 00:2cc6 $2a
@@ -6325,8 +6326,8 @@ call_00_2bc4:
     and  A, A                                          ;; 00:2cd5 $a7
     jr   Z, .jr_00_2cfb                                ;; 00:2cd6 $28 $23
     ld   A, $03                                        ;; 00:2cd8 $3e $03
-    ld   [wD5B5], A                                    ;; 00:2cda $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2cdd $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2cda $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2cdd $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2ce0 $ea $00 $20
     ld   HL, $4000                                     ;; 00:2ce3 $21 $00 $40
     ld   DE, wCE25                                     ;; 00:2ce6 $11 $25 $ce
@@ -6339,8 +6340,8 @@ call_00_2bc4:
     jr   .jr_00_2d15                                   ;; 00:2cf9 $18 $1a
 .jr_00_2cfb:
     ld   A, [wD59C]                                    ;; 00:2cfb $fa $9c $d5
-    ld   [wD5B5], A                                    ;; 00:2cfe $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2d01 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2cfe $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2d01 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2d04 $ea $00 $20
     ld   HL, wD5A5                                     ;; 00:2d07 $21 $a5 $d5
     ld   A, [HL+]                                      ;; 00:2d0a $2a
@@ -6401,8 +6402,8 @@ call_00_2bc4:
     ld   B, $1a                                        ;; 00:2d7a $06 $1a
     call memzeroSmall                                  ;; 00:2d7c $cd $8b $05
     ld   A, $04                                        ;; 00:2d7f $3e $04
-    ld   [wD5B5], A                                    ;; 00:2d81 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2d84 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2d81 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2d84 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2d87 $ea $00 $20
     call call_04_613a                                  ;; 00:2d8a $cd $3a $61
     call call_04_61b1                                  ;; 00:2d8d $cd $b1 $61
@@ -6420,8 +6421,8 @@ call_00_2bc4:
     and  A, A                                          ;; 00:2dae $a7
     jp   Z, .jp_00_2dc2                                ;; 00:2daf $ca $c2 $2d
     ld   A, $04                                        ;; 00:2db2 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2db4 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2db7 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2db4 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2db7 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2dba $ea $00 $20
     call call_04_61ea                                  ;; 00:2dbd $cd $ea $61
     jr   .jr_00_2dc9                                   ;; 00:2dc0 $18 $07
@@ -6462,7 +6463,7 @@ call_00_2bc4:
     ld   A, [HL+]                                      ;; 00:2e07 $2a
     ld   E, [HL]                                       ;; 00:2e08 $5e
     ld   D, A                                          ;; 00:2e09 $57
-    call call_00_06b4                                  ;; 00:2e0a $cd $b4 $06
+    call divide_DE_8                                   ;; 00:2e0a $cd $b4 $06
     dec  DE                                            ;; 00:2e0d $1b
     ld   HL, wCEBA                                     ;; 00:2e0e $21 $ba $ce
     ld   A, D                                          ;; 00:2e11 $7a
@@ -6472,7 +6473,7 @@ call_00_2bc4:
     ld   A, [HL+]                                      ;; 00:2e17 $2a
     ld   E, [HL]                                       ;; 00:2e18 $5e
     ld   D, A                                          ;; 00:2e19 $57
-    call call_00_06b4                                  ;; 00:2e1a $cd $b4 $06
+    call divide_DE_8                                   ;; 00:2e1a $cd $b4 $06
     dec  DE                                            ;; 00:2e1d $1b
     ld   HL, wCEBC                                     ;; 00:2e1e $21 $bc $ce
     ld   A, D                                          ;; 00:2e21 $7a
@@ -6481,13 +6482,13 @@ call_00_2bc4:
     call call_00_235e                                  ;; 00:2e24 $cd $5e $23
     xor  A, A                                          ;; 00:2e27 $af
     ld   [wD5CA], A                                    ;; 00:2e28 $ea $ca $d5
-    ld   HL, wC144                                     ;; 00:2e2b $21 $44 $c1
+    ld   HL, wPlayerX                                  ;; 00:2e2b $21 $44 $c1
     ld   DE, wD5BC                                     ;; 00:2e2e $11 $bc $d5
     ld   B, $04                                        ;; 00:2e31 $06 $04
     call memcopySmall                                  ;; 00:2e33 $cd $91 $05
     ld   A, $04                                        ;; 00:2e36 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2e38 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2e3b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2e38 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2e3b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2e3e $ea $00 $20
     call call_04_42cb                                  ;; 00:2e41 $cd $cb $42
     ld   A, B                                          ;; 00:2e44 $78
@@ -6497,8 +6498,8 @@ call_00_2bc4:
     ld   [wC459], A                                    ;; 00:2e4a $ea $59 $c4
 .jr_00_2e4d:
     ld   A, $04                                        ;; 00:2e4d $3e $04
-    ld   [wD5B5], A                                    ;; 00:2e4f $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2e52 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2e4f $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2e52 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2e55 $ea $00 $20
     call call_04_6268                                  ;; 00:2e58 $cd $68 $62
     xor  A, A                                          ;; 00:2e5b $af
@@ -6526,7 +6527,7 @@ call_00_2e81:
     ld   A, $11                                        ;; 00:2e81 $3e $11
     ld   [$2000], A                                    ;; 00:2e83 $ea $00 $20
     call call_11_59a6                                  ;; 00:2e86 $cd $a6 $59
-    ld   A, [wD5B5]                                    ;; 00:2e89 $fa $b5 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:2e89 $fa $b5 $d5
     ld   [$2000], A                                    ;; 00:2e8c $ea $00 $20
     ld   A, [wC523]                                    ;; 00:2e8f $fa $23 $c5
     and  A, A                                          ;; 00:2e92 $a7
@@ -6558,8 +6559,8 @@ call_00_2e81:
     call call_00_0c68                                  ;; 00:2ec3 $cd $68 $0c
     call call_00_0afa                                  ;; 00:2ec6 $cd $fa $0a
     ld   A, $04                                        ;; 00:2ec9 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2ecb $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2ece $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2ecb $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2ece $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2ed1 $ea $00 $20
     call call_04_41a1                                  ;; 00:2ed4 $cd $a1 $41
     call call_00_24c1                                  ;; 00:2ed7 $cd $c1 $24
@@ -6576,8 +6577,8 @@ call_00_2e81:
     ret                                                ;; 00:2ef3 $c9
 .jr_00_2ef4:
     ld   A, $10                                        ;; 00:2ef4 $3e $10
-    ld   [wD5B5], A                                    ;; 00:2ef6 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2ef9 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2ef6 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2ef9 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2efc $ea $00 $20
     call call_10_4bb7                                  ;; 00:2eff $cd $b7 $4b
     call call_00_24c1                                  ;; 00:2f02 $cd $c1 $24
@@ -6587,16 +6588,16 @@ call_00_2e81:
     ret                                                ;; 00:2f09 $c9
 .jr_00_2f0a:
     ld   A, $05                                        ;; 00:2f0a $3e $05
-    ld   [wD5B5], A                                    ;; 00:2f0c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2f0f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2f0c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2f0f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2f12 $ea $00 $20
     call call_05_40cb                                  ;; 00:2f15 $cd $cb $40
     call call_00_24c1                                  ;; 00:2f18 $cd $c1 $24
     call call_00_0e8f                                  ;; 00:2f1b $cd $8f $0e
     call call_00_0afa                                  ;; 00:2f1e $cd $fa $0a
     ld   A, $04                                        ;; 00:2f21 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2f23 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2f26 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2f23 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2f26 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2f29 $ea $00 $20
     call call_04_41a1                                  ;; 00:2f2c $cd $a1 $41
     call call_00_235e                                  ;; 00:2f2f $cd $5e $23
@@ -6607,8 +6608,8 @@ call_00_2e81:
     ret                                                ;; 00:2f3e $c9
 .jp_00_2f3f:
     ld   A, $04                                        ;; 00:2f3f $3e $04
-    ld   [wD5B5], A                                    ;; 00:2f41 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2f44 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2f41 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2f44 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2f47 $ea $00 $20
     call call_04_43cf ;@bank 4                         ;; 00:2f4a $cd $cf $43
     call call_00_24c1                                  ;; 00:2f4d $cd $c1 $24
@@ -6616,15 +6617,15 @@ call_00_2e81:
     ret                                                ;; 00:2f53 $c9
 .jp_00_2f54:
     ld   A, $05                                        ;; 00:2f54 $3e $05
-    ld   [wD5B5], A                                    ;; 00:2f56 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2f59 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2f56 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2f59 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2f5c $ea $00 $20
     call call_05_40cb                                  ;; 00:2f5f $cd $cb $40
     ret                                                ;; 00:2f62 $c9
 .jp_00_2f63:
     ld   A, $04                                        ;; 00:2f63 $3e $04
-    ld   [wD5B5], A                                    ;; 00:2f65 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2f68 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2f65 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2f68 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2f6b $ea $00 $20
     call call_04_4c43 ;@bank 4                         ;; 00:2f6e $cd $43 $4c
     ret                                                ;; 00:2f71 $c9
@@ -6632,7 +6633,7 @@ call_00_2e81:
     ld   A, $11                                        ;; 00:2f72 $3e $11
     ld   [$2000], A                                    ;; 00:2f74 $ea $00 $20
     call call_11_5a1e ;@bank 17                        ;; 00:2f77 $cd $1e $5a
-    ld   A, [wD5B5]                                    ;; 00:2f7a $fa $b5 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:2f7a $fa $b5 $d5
     ld   [$2000], A                                    ;; 00:2f7d $ea $00 $20
     call call_00_24c1                                  ;; 00:2f80 $cd $c1 $24
     call call_00_235e                                  ;; 00:2f83 $cd $5e $23
@@ -6646,16 +6647,16 @@ call_00_2f87:
     call disableLCD                                    ;; 00:2f8e $cd $23 $04
     call clearVRAM                                     ;; 00:2f91 $cd $5f $04
     ld   A, $03                                        ;; 00:2f94 $3e $03
-    ld   [wD5B5], A                                    ;; 00:2f96 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2f99 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2f96 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2f99 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2f9c $ea $00 $20
     ld   HL, $4080                                     ;; 00:2f9f $21 $80 $40
     ld   DE, wCF36                                     ;; 00:2fa2 $11 $36 $cf
     ld   B, $20                                        ;; 00:2fa5 $06 $20
     call memcopySmall                                  ;; 00:2fa7 $cd $91 $05
     ld   A, $04                                        ;; 00:2faa $3e $04
-    ld   [wD5B5], A                                    ;; 00:2fac $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2faf $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2fac $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2faf $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2fb2 $ea $00 $20
     call call_04_6972 ;@bank 4                         ;; 00:2fb5 $cd $72 $69
     ld   HL, $62cd                                     ;; 00:2fb8 $21 $cd $62
@@ -6671,8 +6672,8 @@ call_00_2f87:
     ld   B, $40                                        ;; 00:2fd5 $06 $40
     call memcopySmall                                  ;; 00:2fd7 $cd $91 $05
     ld   A, $1a                                        ;; 00:2fda $3e $1a
-    ld   [wD5B5], A                                    ;; 00:2fdc $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:2fdf $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:2fdc $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:2fdf $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2fe2 $ea $00 $20
     ld   HL, $5c60                                     ;; 00:2fe5 $21 $60 $5c
     ld   DE, $9200                                     ;; 00:2fe8 $11 $00 $92
@@ -6688,13 +6689,13 @@ call_00_2f87:
     ld   B, $20                                        ;; 00:3005 $06 $20
     call memcopySmall                                  ;; 00:3007 $cd $91 $05
     ld   A, $04                                        ;; 00:300a $3e $04
-    ld   [wD5B5], A                                    ;; 00:300c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:300f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:300c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:300f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3012 $ea $00 $20
     call call_04_69ff ;@bank 4                         ;; 00:3015 $cd $ff $69
     ld   A, $08                                        ;; 00:3018 $3e $08
-    ld   [wD5B5], A                                    ;; 00:301a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:301d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:301a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:301d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3020 $ea $00 $20
     ld   A, [wD318]                                    ;; 00:3023 $fa $18 $d3
     and  A, A                                          ;; 00:3026 $a7
@@ -6702,18 +6703,18 @@ call_00_2f87:
     dec  A                                             ;; 00:3029 $3d
     ld   C, A                                          ;; 00:302a $4f
     ld   HL, $4527                                     ;; 00:302b $21 $27 $45
-    call call_00_067a                                  ;; 00:302e $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:302e $cd $7a $06
     jr   .jr_00_3047                                   ;; 00:3031 $18 $14
 .jr_00_3033:
     ld   A, [wD591]                                    ;; 00:3033 $fa $91 $d5
     ld   C, A                                          ;; 00:3036 $4f
     ld   HL, $4615                                     ;; 00:3037 $21 $15 $46
-    call call_00_067a                                  ;; 00:303a $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:303a $cd $7a $06
     call call_00_064c                                  ;; 00:303d $cd $4c $06
     rlca                                               ;; 00:3040 $07
     and  A, $07                                        ;; 00:3041 $e6 $07
     ld   C, A                                          ;; 00:3043 $4f
-    call call_00_067a                                  ;; 00:3044 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:3044 $cd $7a $06
 .jr_00_3047:
     ld   A, [HL+]                                      ;; 00:3047 $2a
     ld   [wC5AA], A                                    ;; 00:3048 $ea $aa $c5
@@ -6724,7 +6725,7 @@ call_00_2f87:
     push HL                                            ;; 00:3053 $e5
     ld   C, A                                          ;; 00:3054 $4f
     ld   HL, $4010                                     ;; 00:3055 $21 $10 $40
-    call call_00_067a                                  ;; 00:3058 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:3058 $cd $7a $06
     ld   DE, wC5AE                                     ;; 00:305b $11 $ae $c5
     ld   B, $0c                                        ;; 00:305e $06 $0c
     call memcopySmall                                  ;; 00:3060 $cd $91 $05
@@ -6741,8 +6742,8 @@ call_00_2f87:
     ld   A, B                                          ;; 00:3078 $78
     ld   [HL+], A                                      ;; 00:3079 $22
     ld   A, B                                          ;; 00:307a $78
-    ld   [wD5B5], A                                    ;; 00:307b $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:307e $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:307b $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:307e $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3081 $ea $00 $20
     ld   HL, wC5AE                                     ;; 00:3084 $21 $ae $c5
     ld   A, [HL+]                                      ;; 00:3087 $2a
@@ -6757,8 +6758,8 @@ call_00_2f87:
     ld   A, $01                                        ;; 00:3098 $3e $01
     ldh  [rVBK], A                                     ;; 00:309a $e0 $4f
     ld   A, [wRoomGraphicsBank]                        ;; 00:309c $fa $9a $d5
-    ld   [wD5B5], A                                    ;; 00:309f $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:30a2 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:309f $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:30a2 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:30a5 $ea $00 $20
     ld   HL, wC5B2                                     ;; 00:30a8 $21 $b2 $c5
     ld   A, [HL+]                                      ;; 00:30ab $2a
@@ -6773,8 +6774,8 @@ call_00_2f87:
     ld   E, $32                                        ;; 00:30be $1e $32
     call memset                                        ;; 00:30c0 $cd $57 $04
     ld   A, [wRoomGraphicsBank]                        ;; 00:30c3 $fa $9a $d5
-    ld   [wD5B5], A                                    ;; 00:30c6 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:30c9 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:30c6 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:30c9 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:30cc $ea $00 $20
     ld   HL, wC5B2                                     ;; 00:30cf $21 $b2 $c5
     ld   A, [HL+]                                      ;; 00:30d2 $2a
@@ -6787,8 +6788,8 @@ call_00_2f87:
     ldh  [rVBK], A                                     ;; 00:30e0 $e0 $4f
 .jr_00_30e2:
     ld   A, [wRoomGraphicsBank]                        ;; 00:30e2 $fa $9a $d5
-    ld   [wD5B5], A                                    ;; 00:30e5 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:30e8 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:30e5 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:30e8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:30eb $ea $00 $20
     ld   HL, wC5B0                                     ;; 00:30ee $21 $b0 $c5
     ld   A, [HL+]                                      ;; 00:30f1 $2a
@@ -6803,8 +6804,8 @@ call_00_2f87:
     ld   E, $32                                        ;; 00:3104 $1e $32
     call memset                                        ;; 00:3106 $cd $57 $04
     ld   A, [wRoomGraphicsBank]                        ;; 00:3109 $fa $9a $d5
-    ld   [wD5B5], A                                    ;; 00:310c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:310f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:310c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:310f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3112 $ea $00 $20
     ld   HL, wC5B0                                     ;; 00:3115 $21 $b0 $c5
     ld   A, [HL+]                                      ;; 00:3118 $2a
@@ -6821,8 +6822,8 @@ call_00_2f87:
     ld   B, $38                                        ;; 00:312d $06 $38
     call memcopySmall                                  ;; 00:312f $cd $91 $05
     ld   A, $08                                        ;; 00:3132 $3e $08
-    ld   [wD5B5], A                                    ;; 00:3134 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3137 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3134 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3137 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:313a $ea $00 $20
     pop  HL                                            ;; 00:313d $e1
     ld   A, [HL+]                                      ;; 00:313e $2a
@@ -6849,15 +6850,15 @@ call_00_2f87:
     jr   NZ, .jr_00_3145                               ;; 00:3159 $20 $ea
     call call_00_235e                                  ;; 00:315b $cd $5e $23
     ld   A, $04                                        ;; 00:315e $3e $04
-    ld   [wD5B5], A                                    ;; 00:3160 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3163 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3160 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3163 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3166 $ea $00 $20
     call call_04_6a8d ;@bank 4                         ;; 00:3169 $cd $8d $6a
     call call_04_6aa9 ;@bank 4                         ;; 00:316c $cd $a9 $6a
     call call_04_6ac9 ;@bank 4                         ;; 00:316f $cd $c9 $6a
     ld   A, $0f                                        ;; 00:3172 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:3174 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3177 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3174 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3177 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:317a $ea $00 $20
     call call_0f_4f88 ;@bank 15                        ;; 00:317d $cd $88 $4f
     call call_00_24c1                                  ;; 00:3180 $cd $c1 $24
@@ -6867,7 +6868,7 @@ call_00_2f87:
     ld   A, $0f                                        ;; 00:318a $3e $0f
     ld   [wD5D2], A                                    ;; 00:318c $ea $d2 $d5
     ld   A, $03                                        ;; 00:318f $3e $03
-    ld   [wD586], A                                    ;; 00:3191 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 00:3191 $ea $86 $d5
     ld   [wD58C], A                                    ;; 00:3194 $ea $8c $d5
     xor  A, A                                          ;; 00:3197 $af
     ld   [wD58B], A                                    ;; 00:3198 $ea $8b $d5
@@ -6913,32 +6914,32 @@ call_00_31b7:
     and  A, A                                          ;; 00:31e8 $a7
     ret  NZ                                            ;; 00:31e9 $c0
     ld   A, $08                                        ;; 00:31ea $3e $08
-    ld   [wD5B5], A                                    ;; 00:31ec $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:31ef $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:31ec $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:31ef $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:31f2 $ea $00 $20
     call call_08_4142 ;@bank 8                         ;; 00:31f5 $cd $42 $41
     ld   A, $10                                        ;; 00:31f8 $3e $10
-    ld   [wD5B5], A                                    ;; 00:31fa $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:31fd $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:31fa $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:31fd $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3200 $ea $00 $20
     call call_10_4fa5 ;@bank 16                        ;; 00:3203 $cd $a5 $4f
     ld   A, $24                                        ;; 00:3206 $3e $24
-    ld   [wD5B5], A                                    ;; 00:3208 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:320b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3208 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:320b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:320e $ea $00 $20
     call call_24_6c20 ;@bank 36                        ;; 00:3211 $cd $20 $6c
     call call_00_24c1                                  ;; 00:3214 $cd $c1 $24
     call call_00_235e                                  ;; 00:3217 $cd $5e $23
     ld   A, $0f                                        ;; 00:321a $3e $0f
-    ld   [wD5B5], A                                    ;; 00:321c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:321f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:321c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:321f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3222 $ea $00 $20
     call call_0f_4c57 ;@bank 15                        ;; 00:3225 $cd $57 $4c
     call call_0f_5131 ;@bank 15                        ;; 00:3228 $cd $31 $51
     call call_0f_4fa7 ;@bank 15                        ;; 00:322b $cd $a7 $4f
     ld   A, $04                                        ;; 00:322e $3e $04
-    ld   [wD5B5], A                                    ;; 00:3230 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3233 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3230 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3233 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3236 $ea $00 $20
     call call_04_6c15 ;@bank 4                         ;; 00:3239 $cd $15 $6c
     call call_04_6c6b ;@bank 4                         ;; 00:323c $cd $6b $6c
@@ -6949,21 +6950,21 @@ call_00_31b7:
     ret  NZ                                            ;; 00:3244 $c0
     call call_00_25d9                                  ;; 00:3245 $cd $d9 $25
     ld   A, $24                                        ;; 00:3248 $3e $24
-    ld   [wD5B5], A                                    ;; 00:324a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:324d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:324a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:324d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3250 $ea $00 $20
     call call_24_6c20 ;@bank 36                        ;; 00:3253 $cd $20 $6c
     call call_00_24c1                                  ;; 00:3256 $cd $c1 $24
     call call_00_235e                                  ;; 00:3259 $cd $5e $23
     ld   A, $0f                                        ;; 00:325c $3e $0f
-    ld   [wD5B5], A                                    ;; 00:325e $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3261 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:325e $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3261 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3264 $ea $00 $20
     call call_0f_4c57 ;@bank 15                        ;; 00:3267 $cd $57 $4c
     call call_0f_4fa7 ;@bank 15                        ;; 00:326a $cd $a7 $4f
     ld   A, $04                                        ;; 00:326d $3e $04
-    ld   [wD5B5], A                                    ;; 00:326f $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3272 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:326f $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3272 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3275 $ea $00 $20
     call call_04_6c15 ;@bank 4                         ;; 00:3278 $cd $15 $6c
     call call_04_6c6b ;@bank 4                         ;; 00:327b $cd $6b $6c
@@ -6973,26 +6974,26 @@ call_00_31b7:
     and  A, A                                          ;; 00:3282 $a7
     ret  NZ                                            ;; 00:3283 $c0
     ld   A, $10                                        ;; 00:3284 $3e $10
-    ld   [wD5B5], A                                    ;; 00:3286 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3289 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3286 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3289 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:328c $ea $00 $20
     call call_10_4bb7 ;@bank 16                        ;; 00:328f $cd $b7 $4b
     ld   A, $24                                        ;; 00:3292 $3e $24
-    ld   [wD5B5], A                                    ;; 00:3294 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3297 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3294 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3297 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:329a $ea $00 $20
     call call_24_6c20 ;@bank 36                        ;; 00:329d $cd $20 $6c
     call call_00_24c1                                  ;; 00:32a0 $cd $c1 $24
     call call_00_235e                                  ;; 00:32a3 $cd $5e $23
     ld   A, $0f                                        ;; 00:32a6 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:32a8 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:32ab $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:32a8 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:32ab $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:32ae $ea $00 $20
     call call_0f_4c57 ;@bank 15                        ;; 00:32b1 $cd $57 $4c
     call call_0f_4fa7 ;@bank 15                        ;; 00:32b4 $cd $a7 $4f
     ld   A, $04                                        ;; 00:32b7 $3e $04
-    ld   [wD5B5], A                                    ;; 00:32b9 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:32bc $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:32b9 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:32bc $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:32bf $ea $00 $20
     call call_04_6c15 ;@bank 4                         ;; 00:32c2 $cd $15 $6c
     call call_04_6c6b ;@bank 4                         ;; 00:32c5 $cd $6b $6c
@@ -7002,26 +7003,26 @@ call_00_31b7:
     and  A, A                                          ;; 00:32cc $a7
     ret  NZ                                            ;; 00:32cd $c0
     ld   A, $10                                        ;; 00:32ce $3e $10
-    ld   [wD5B5], A                                    ;; 00:32d0 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:32d3 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:32d0 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:32d3 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:32d6 $ea $00 $20
     call call_10_4fa5 ;@bank 16                        ;; 00:32d9 $cd $a5 $4f
     call call_00_3437                                  ;; 00:32dc $cd $37 $34
     ld   A, $24                                        ;; 00:32df $3e $24
-    ld   [wD5B5], A                                    ;; 00:32e1 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:32e4 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:32e1 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:32e4 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:32e7 $ea $00 $20
     call call_24_6c20 ;@bank 36                        ;; 00:32ea $cd $20 $6c
     call call_00_24c1                                  ;; 00:32ed $cd $c1 $24
     call call_00_235e                                  ;; 00:32f0 $cd $5e $23
     ld   A, $0f                                        ;; 00:32f3 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:32f5 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:32f8 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:32f5 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:32f8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:32fb $ea $00 $20
     call call_0f_4fa7 ;@bank 15                        ;; 00:32fe $cd $a7 $4f
     ld   A, $04                                        ;; 00:3301 $3e $04
-    ld   [wD5B5], A                                    ;; 00:3303 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3306 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3303 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3306 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3309 $ea $00 $20
     call call_04_6c15 ;@bank 4                         ;; 00:330c $cd $15 $6c
     ret                                                ;; 00:330f $c9
@@ -7030,39 +7031,39 @@ call_00_31b7:
     and  A, A                                          ;; 00:3313 $a7
     ret  NZ                                            ;; 00:3314 $c0
     ld   A, $18                                        ;; 00:3315 $3e $18
-    ld   [wD5B5], A                                    ;; 00:3317 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:331a $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3317 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:331a $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:331d $ea $00 $20
     call call_18_5fd1 ;@bank 24                        ;; 00:3320 $cd $d1 $5f
     ld   A, $24                                        ;; 00:3323 $3e $24
-    ld   [wD5B5], A                                    ;; 00:3325 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3328 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3325 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3328 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:332b $ea $00 $20
     call call_24_6c20 ;@bank 36                        ;; 00:332e $cd $20 $6c
     call call_00_24c1                                  ;; 00:3331 $cd $c1 $24
     call call_00_235e                                  ;; 00:3334 $cd $5e $23
     ld   A, $0f                                        ;; 00:3337 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:3339 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:333c $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3339 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:333c $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:333f $ea $00 $20
     call call_0f_4c57 ;@bank 15                        ;; 00:3342 $cd $57 $4c
     call call_0f_4fa7 ;@bank 15                        ;; 00:3345 $cd $a7 $4f
     ld   A, $04                                        ;; 00:3348 $3e $04
-    ld   [wD5B5], A                                    ;; 00:334a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:334d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:334a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:334d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3350 $ea $00 $20
     call call_04_6c15 ;@bank 4                         ;; 00:3353 $cd $15 $6c
     call call_04_6c6b ;@bank 4                         ;; 00:3356 $cd $6b $6c
     ret                                                ;; 00:3359 $c9
 .jp_00_335a:
     ld   A, $04                                        ;; 00:335a $3e $04
-    ld   [wD5B5], A                                    ;; 00:335c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:335f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:335c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:335f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3362 $ea $00 $20
     call call_04_43cf ;@bank 4                         ;; 00:3365 $cd $cf $43
     ld   A, $24                                        ;; 00:3368 $3e $24
-    ld   [wD5B5], A                                    ;; 00:336a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:336d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:336a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:336d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3370 $ea $00 $20
     call call_24_6c20 ;@bank 36                        ;; 00:3373 $cd $20 $6c
     call call_00_24c1                                  ;; 00:3376 $cd $c1 $24
@@ -7071,8 +7072,8 @@ call_00_31b7:
 .jp_00_337d:
     call call_00_33b2                                  ;; 00:337d $cd $b2 $33
     ld   A, $24                                        ;; 00:3380 $3e $24
-    ld   [wD5B5], A                                    ;; 00:3382 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3385 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3382 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3385 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3388 $ea $00 $20
     call call_24_6c2e ;@bank 36                        ;; 00:338b $cd $2e $6c
     call call_00_24c1                                  ;; 00:338e $cd $c1 $24
@@ -7153,7 +7154,7 @@ call_00_33b2:
     ret                                                ;; 00:3429 $c9
 .jr_00_342a:
     ld   A, $06                                        ;; 00:342a $3e $06
-    ld   [wD586], A                                    ;; 00:342c $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 00:342c $ea $86 $d5
     xor  A, A                                          ;; 00:342f $af
     ld   [wD569], A                                    ;; 00:3430 $ea $69 $d5
     ld   [wD4FA], A                                    ;; 00:3433 $ea $fa $d4
@@ -7200,25 +7201,25 @@ call_00_3437:
     ret  C                                             ;; 00:3481 $d8
     jr   Z, .jr_00_34a1                                ;; 00:3482 $28 $1d
     ld   A, $04                                        ;; 00:3484 $3e $04
-    ld   [wD5B5], A                                    ;; 00:3486 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3489 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3486 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3489 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:348c $ea $00 $20
     call call_04_4725 ;@bank 4                         ;; 00:348f $cd $25 $47
     ld   A, $04                                        ;; 00:3492 $3e $04
-    ld   [wD5B5], A                                    ;; 00:3494 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3497 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3494 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3497 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:349a $ea $00 $20
     call call_04_43a3 ;@bank 4                         ;; 00:349d $cd $a3 $43
     ret                                                ;; 00:34a0 $c9
 .jr_00_34a1:
     ld   A, $04                                        ;; 00:34a1 $3e $04
-    ld   [wD5B5], A                                    ;; 00:34a3 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:34a6 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:34a3 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:34a6 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:34a9 $ea $00 $20
     ld   A, [wC586]                                    ;; 00:34ac $fa $86 $c5
     ld   C, A                                          ;; 00:34af $4f
     ld   HL, $417d                                     ;; 00:34b0 $21 $7d $41
-    call call_00_067a                                  ;; 00:34b3 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 00:34b3 $cd $7a $06
     ld   A, H                                          ;; 00:34b6 $7c
     ld   [wD13A], A                                    ;; 00:34b7 $ea $3a $d1
     ld   A, L                                          ;; 00:34ba $7d
@@ -7241,8 +7242,8 @@ call_00_3437:
     ld   A, $ff                                        ;; 00:34de $3e $ff
     ld   [wD1E9], A                                    ;; 00:34e0 $ea $e9 $d1
     ld   A, $04                                        ;; 00:34e3 $3e $04
-    ld   [wD5B5], A                                    ;; 00:34e5 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:34e8 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:34e5 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:34e8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:34eb $ea $00 $20
     call call_04_437f ;@bank 4                         ;; 00:34ee $cd $7f $43
     ld   A, $17                                        ;; 00:34f1 $3e $17
@@ -7314,28 +7315,28 @@ call_00_3546:
 call_00_355e:
     push HL                                            ;; 00:355e $e5
     ld   A, $08                                        ;; 00:355f $3e $08
-    ld   [wD5B7], A                                    ;; 00:3561 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3561 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3564 $ea $00 $20
     call call_08_43bd ;@bank 8                         ;; 00:3567 $cd $bd $43
     pop  HL                                            ;; 00:356a $e1
     ld   DE, wC477                                     ;; 00:356b $11 $77 $c4
     call call_08_4442 ;@bank 8                         ;; 00:356e $cd $42 $44
-    ld   A, [wD5B5]                                    ;; 00:3571 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3574 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:3571 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3574 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3577 $ea $00 $20
     ret                                                ;; 00:357a $c9
 
 call_00_357b:
-    ld   A, [wD5B5]                                    ;; 00:357b $fa $b5 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:357b $fa $b5 $d5
     ld   [wD5B8], A                                    ;; 00:357e $ea $b8 $d5
     ld   A, $0f                                        ;; 00:3581 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:3583 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3586 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3583 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3586 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3589 $ea $00 $20
     call call_0f_5179 ;@bank 15                        ;; 00:358c $cd $79 $51
     ld   A, [wD5B8]                                    ;; 00:358f $fa $b8 $d5
-    ld   [wD5B5], A                                    ;; 00:3592 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3595 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3592 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3595 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3598 $ea $00 $20
     ret                                                ;; 00:359b $c9
     db   $3e, $10, $ea, $b5, $d5, $ea, $b7, $d5        ;; 00:359c ????????
@@ -7359,13 +7360,13 @@ jp_00_35ef:
     ld   A, $00                                        ;; 00:35f9 $3e $00
     ld   [wCB29], A                                    ;; 00:35fb $ea $29 $cb
     ld   A, $10                                        ;; 00:35fe $3e $10
-    ld   [wD5B5], A                                    ;; 00:3600 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3603 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3600 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3603 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3606 $ea $00 $20
     call call_10_4e37 ;@bank 16                        ;; 00:3609 $cd $37 $4e
     ld   A, $0f                                        ;; 00:360c $3e $0f
-    ld   [wD5B5], A                                    ;; 00:360e $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3611 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:360e $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3611 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3614 $ea $00 $20
     ret                                                ;; 00:3617 $c9
     db   $21, $1e, $cb, $11, $20, $cb, $06, $10        ;; 00:3618 ????????
@@ -7413,19 +7414,19 @@ jp_00_3636:
 call_00_3675:
     push HL                                            ;; 00:3675 $e5
     ld   A, $04                                        ;; 00:3676 $3e $04
-    ld   [wD5B7], A                                    ;; 00:3678 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3678 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:367b $ea $00 $20
     call call_04_4a9b ;@bank 4                         ;; 00:367e $cd $9b $4a
-    ld   A, [wD5B5]                                    ;; 00:3681 $fa $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3684 $ea $b7 $d5
+    ld   A, [wBackupRomBank]                           ;; 00:3681 $fa $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3684 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3687 $ea $00 $20
     pop  HL                                            ;; 00:368a $e1
     ret                                                ;; 00:368b $c9
 
 jp_00_368c:
     ld   A, $10                                        ;; 00:368c $3e $10
-    ld   [wD5B5], A                                    ;; 00:368e $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3691 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:368e $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3691 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3694 $ea $00 $20
     ld   DE, $06                                       ;; 00:3697 $11 $06 $00
     add  HL, DE                                        ;; 00:369a $19
@@ -7452,8 +7453,8 @@ jp_00_368c:
     ld   A, $05                                        ;; 00:36c9 $3e $05
     ld   [wCA1B], A                                    ;; 00:36cb $ea $1b $ca
     ld   A, $18                                        ;; 00:36ce $3e $18
-    ld   [wD5B5], A                                    ;; 00:36d0 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:36d3 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:36d0 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:36d3 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:36d6 $ea $00 $20
     ret                                                ;; 00:36d9 $c9
 
@@ -7462,7 +7463,7 @@ call_00_36da:
     and  A, A                                          ;; 00:36dc $a7
     ret  Z                                             ;; 00:36dd $c8
     ld   A, $13                                        ;; 00:36de $3e $13
-    ld   [wD5B7], A                                    ;; 00:36e0 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:36e0 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:36e3 $ea $00 $20
     ld   HL, $36ff                                     ;; 00:36e6 $21 $ff $36
     push HL                                            ;; 00:36e9 $e5
@@ -7482,17 +7483,17 @@ call_00_36da:
     db   $b5, $d5, $ea, $b7, $d5, $ea, $00, $20        ;; 00:3717 ????????
     db   $c9                                           ;; 00:371f ?
 
-jp_00_3720:
+jump_hl_in_bank_0F:
     ld   A, $0f                                        ;; 00:3720 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:3722 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3725 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3722 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3725 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3728 $ea $00 $20
     jp   HL                                            ;; 00:372b $e9
 
 call_00_372c:
     ld   A, [wCB1A]                                    ;; 00:372c $fa $1a $cb
-    ld   [wD5B5], A                                    ;; 00:372f $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3732 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:372f $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3732 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3735 $ea $00 $20
     ld   HL, .return ;@=ptr                            ;; 00:3738 $21 $43 $37
     push HL                                            ;; 00:373b $e5
@@ -7504,8 +7505,8 @@ call_00_372c:
 ;@code
 .return:
     ld   A, $10                                        ;; 00:3743 $3e $10
-    ld   [wD5B5], A                                    ;; 00:3745 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3748 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3745 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3748 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:374b $ea $00 $20
     ret                                                ;; 00:374e $c9
 
@@ -7605,13 +7606,13 @@ call_00_37c3:
 jp_00_37ef:
     ldh  A, [hIsGBC]                                   ;; 00:37ef $f0 $fe
     and  A, A                                          ;; 00:37f1 $a7
-    jr   Z, .jr_00_3801                                ;; 00:37f2 $28 $0d
+    jr   Z, .dmg                                       ;; 00:37f2 $28 $0d
     ld   HL, wCDE5                                     ;; 00:37f4 $21 $e5 $cd
     call setSpritePaletteData                          ;; 00:37f7 $cd $ad $04
     ld   HL, wCDA5                                     ;; 00:37fa $21 $a5 $cd
     call setBackgroundPaletteData                      ;; 00:37fd $cd $9f $04
     ret                                                ;; 00:3800 $c9
-.jr_00_3801:
+.dmg:
     ld   A, [wBGP]                                     ;; 00:3801 $fa $d4 $d5
     ldh  [rBGP], A                                     ;; 00:3804 $e0 $47
     ld   A, [wOBP0]                                    ;; 00:3806 $fa $d5 $d5
@@ -7619,7 +7620,7 @@ jp_00_37ef:
     ret                                                ;; 00:380b $c9
 
 jp_00_380c:
-    ld   A, [wD586]                                    ;; 00:380c $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:380c $fa $86 $d5
     cp   A, $03                                        ;; 00:380f $fe $03
     jr   Z, .jr_00_384a                                ;; 00:3811 $28 $37
     ldh  A, [rLCDC]                                    ;; 00:3813 $f0 $40
@@ -7631,8 +7632,8 @@ jp_00_380c:
     and  A, A                                          ;; 00:3822 $a7
     jr   Z, .jr_00_3838                                ;; 00:3823 $28 $13
     ld   A, [wCC2F]                                    ;; 00:3825 $fa $2f $cc
-    ld   [wD5B5], A                                    ;; 00:3828 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:382b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3828 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:382b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:382e $ea $00 $20
     ld   HL, wCC24                                     ;; 00:3831 $21 $24 $cc
     ld   A, [HL+]                                      ;; 00:3834 $2a
@@ -7641,8 +7642,8 @@ jp_00_380c:
     jp   HL                                            ;; 00:3837 $e9
 .jr_00_3838:
     ld   A, $23                                        ;; 00:3838 $3e $23
-    ld   [wD5B5], A                                    ;; 00:383a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:383d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:383a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:383d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3840 $ea $00 $20
     ld   HL, wD5CF                                     ;; 00:3843 $21 $cf $d5
     ld   A, [HL+]                                      ;; 00:3846 $2a
@@ -7651,21 +7652,21 @@ jp_00_380c:
     jp   HL                                            ;; 00:3849 $e9
 .jr_00_384a:
     ld   A, $04                                        ;; 00:384a $3e $04
-    ld   [wD5B5], A                                    ;; 00:384c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:384f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:384c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:384f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3852 $ea $00 $20
     call call_04_6b4f ;@bank 4                         ;; 00:3855 $cd $4f $6b
     ld   A, $0f                                        ;; 00:3858 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:385a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:385d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:385a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:385d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3860 $ea $00 $20
     call call_0f_4c03 ;@bank 15                        ;; 00:3863 $cd $03 $4c
     ld   A, [wCC22]                                    ;; 00:3866 $fa $22 $cc
     and  A, A                                          ;; 00:3869 $a7
     jr   Z, .jr_00_387f                                ;; 00:386a $28 $13
     ld   A, [wCC2F]                                    ;; 00:386c $fa $2f $cc
-    ld   [wD5B5], A                                    ;; 00:386f $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3872 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:386f $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3872 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3875 $ea $00 $20
     ld   HL, wCC24                                     ;; 00:3878 $21 $24 $cc
     ld   A, [HL+]                                      ;; 00:387b $2a
@@ -7675,14 +7676,14 @@ jp_00_380c:
 .jr_00_387f:
     call call_00_1040                                  ;; 00:387f $cd $40 $10
     ld   A, $0f                                        ;; 00:3882 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:3884 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3887 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3884 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3887 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:388a $ea $00 $20
     call call_0f_4c82 ;@bank 15                        ;; 00:388d $cd $82 $4c
     call call_0f_4c95 ;@bank 15                        ;; 00:3890 $cd $95 $4c
     ld   A, $23                                        ;; 00:3893 $3e $23
-    ld   [wD5B5], A                                    ;; 00:3895 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3898 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3895 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3898 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:389b $ea $00 $20
     ld   HL, wD5CF                                     ;; 00:389e $21 $cf $d5
     ld   A, [HL+]                                      ;; 00:38a1 $2a
@@ -7750,7 +7751,7 @@ jp_00_38a5:
     ld   [wD136], A                                    ;; 00:3909 $ea $36 $d1
     ld   A, [wD1C5]                                    ;; 00:390c $fa $c5 $d1
     ld   [wD58B], A                                    ;; 00:390f $ea $8b $d5
-    ld   A, [wD586]                                    ;; 00:3912 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:3912 $fa $86 $d5
     cp   A, $01                                        ;; 00:3915 $fe $01
     ret  NZ                                            ;; 00:3917 $c0
     ld   A, [wD1C5]                                    ;; 00:3918 $fa $c5 $d1
@@ -7761,8 +7762,8 @@ jp_00_38a5:
     ret  Z                                             ;; 00:3923 $c8
 .jr_00_3924:
     ld   A, $04                                        ;; 00:3924 $3e $04
-    ld   [wD5B5], A                                    ;; 00:3926 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3929 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3926 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3929 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:392c $ea $00 $20
     ld   HL, data_04_5a0f                              ;; 00:392f $21 $0f $5a
     ld   DE, $8c20                                     ;; 00:3932 $11 $20 $8c
@@ -7771,8 +7772,8 @@ jp_00_38a5:
 
 jp_00_393a:
     ld   A, $1a                                        ;; 00:393a $3e $1a
-    ld   [wD5B5], A                                    ;; 00:393c $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:393f $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:393c $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:393f $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3942 $ea $00 $20
     ld   A, [wCA4D]                                    ;; 00:3945 $fa $4d $ca
     cp   A, $04                                        ;; 00:3948 $fe $04
@@ -7786,17 +7787,17 @@ jp_00_393a:
     jp   jp_1a_6071                                    ;; 00:395d $c3 $71 $60
 
 jp_00_3960:
-    ld   A, [wD586]                                    ;; 00:3960 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:3960 $fa $86 $d5
     cp   A, $03                                        ;; 00:3963 $fe $03
     jr   NZ, .jr_00_39b3                               ;; 00:3965 $20 $4c
     ld   A, [wC56B]                                    ;; 00:3967 $fa $6b $c5
     cp   A, $02                                        ;; 00:396a $fe $02
     jr   NZ, .jr_00_399e                               ;; 00:396c $20 $30
     ld   A, $04                                        ;; 00:396e $3e $04
-    ld   [wD5B5], A                                    ;; 00:3970 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3973 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3970 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3973 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3976 $ea $00 $20
-    ld   [wD58E], SP                                   ;; 00:3979 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 00:3979 $08 $8e $d5
     ld   HL, $5a0f                                     ;; 00:397c $21 $0f $5a
     ld   SP, HL                                        ;; 00:397f $f9
     ld   HL, $8c20                                     ;; 00:3980 $21 $20 $8c
@@ -7819,7 +7820,7 @@ jp_00_3960:
     ld   [HL+], A                                      ;; 00:3993 $22
     dec  B                                             ;; 00:3994 $05
     jr   NZ, .jr_00_3985                               ;; 00:3995 $20 $ee
-    ld   HL, wD58E                                     ;; 00:3997 $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 00:3997 $21 $8e $d5
     ld   A, [HL+]                                      ;; 00:399a $2a
     ld   H, [HL]                                       ;; 00:399b $66
     ld   L, A                                          ;; 00:399c $6f
@@ -7828,8 +7829,8 @@ jp_00_3960:
     ld   A, $88                                        ;; 00:399e $3e $88
     ldh  [rWY], A                                      ;; 00:39a0 $e0 $4a
     ld   A, $0f                                        ;; 00:39a2 $3e $0f
-    ld   [wD5B5], A                                    ;; 00:39a4 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:39a7 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:39a4 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:39a7 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:39aa $ea $00 $20
     call call_0f_4c82 ;@bank 15                        ;; 00:39ad $cd $82 $4c
     jp   call_0f_4c95 ;@bank 15                        ;; 00:39b0 $c3 $95 $4c
@@ -7837,7 +7838,7 @@ jp_00_3960:
     ret                                                ;; 00:39b3 $c9
 
 jp_00_39b4:
-    ld   A, [wD586]                                    ;; 00:39b4 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:39b4 $fa $86 $d5
     cp   A, $03                                        ;; 00:39b7 $fe $03
     jp   Z, .jp_00_3b18                                ;; 00:39b9 $ca $18 $3b
     ld   A, [wC557]                                    ;; 00:39bc $fa $57 $c5
@@ -7905,8 +7906,8 @@ jp_00_39b4:
     jp   .jp_00_3b00                                   ;; 00:3a35 $c3 $00 $3b
 .jp_00_3a38:
     ld   A, $05                                        ;; 00:3a38 $3e $05
-    ld   [wD5B5], A                                    ;; 00:3a3a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3a3d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3a3a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3a3d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3a40 $ea $00 $20
     call call_05_4bd5                                  ;; 00:3a43 $cd $d5 $4b
     jp   .jp_00_3b00                                   ;; 00:3a46 $c3 $00 $3b
@@ -7931,15 +7932,15 @@ jp_00_39b4:
     jr   C, .jr_00_3a95                                ;; 00:3a6f $38 $24
     jr   Z, .jr_00_3a84                                ;; 00:3a71 $28 $11
     ld   A, $7f                                        ;; 00:3a73 $3e $7f
-    ld   [wD5B5], A                                    ;; 00:3a75 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3a78 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3a75 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3a78 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3a7b $ea $00 $20
     call call_7f_43c6 ;@bank 127                       ;; 00:3a7e $cd $c6 $43
     jp   .jp_00_3b00                                   ;; 00:3a81 $c3 $00 $3b
 .jr_00_3a84:
     ld   A, $7f                                        ;; 00:3a84 $3e $7f
-    ld   [wD5B5], A                                    ;; 00:3a86 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3a89 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3a86 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3a89 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3a8c $ea $00 $20
     call call_7f_4000 ;@bank 127                       ;; 00:3a8f $cd $00 $40
     jp   .jp_00_3b00                                   ;; 00:3a92 $c3 $00 $3b
@@ -7952,8 +7953,8 @@ jp_00_39b4:
     jp   .jp_00_3b00                                   ;; 00:3aa0 $c3 $00 $3b
 .jr_00_3aa3:
     ld   A, $05                                        ;; 00:3aa3 $3e $05
-    ld   [wD5B5], A                                    ;; 00:3aa5 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3aa8 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3aa5 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3aa8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3aab $ea $00 $20
     xor  A, A                                          ;; 00:3aae $af
     ld   [wD36C], A                                    ;; 00:3aaf $ea $6c $d3
@@ -7964,8 +7965,8 @@ jp_00_39b4:
     jr   C, .jr_00_3af8                                ;; 00:3aba $38 $3c
     jr   Z, .jr_00_3adb                                ;; 00:3abc $28 $1d
     ld   A, $7f                                        ;; 00:3abe $3e $7f
-    ld   [wD5B5], A                                    ;; 00:3ac0 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3ac3 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3ac0 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3ac3 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3ac6 $ea $00 $20
     ld   A, [wD36F]                                    ;; 00:3ac9 $fa $6f $d3
     and  A, A                                          ;; 00:3acc $a7
@@ -7977,8 +7978,8 @@ jp_00_39b4:
     jp   .jp_00_3b00                                   ;; 00:3ad8 $c3 $00 $3b
 .jr_00_3adb:
     ld   A, $7f                                        ;; 00:3adb $3e $7f
-    ld   [wD5B5], A                                    ;; 00:3add $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3ae0 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3add $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3ae0 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3ae3 $ea $00 $20
     ld   A, [wD36F]                                    ;; 00:3ae6 $fa $6f $d3
     and  A, A                                          ;; 00:3ae9 $a7
@@ -7996,8 +7997,8 @@ jp_00_39b4:
     call call_00_1565                                  ;; 00:3b00 $cd $65 $15
     call call_00_1701                                  ;; 00:3b03 $cd $01 $17
     ld   A, $23                                        ;; 00:3b06 $3e $23
-    ld   [wD5B5], A                                    ;; 00:3b08 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3b0b $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3b08 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3b0b $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3b0e $ea $00 $20
     ld   HL, wD5CF                                     ;; 00:3b11 $21 $cf $d5
     ld   A, [HL+]                                      ;; 00:3b14 $2a
@@ -8006,8 +8007,8 @@ jp_00_39b4:
     jp   HL                                            ;; 00:3b17 $e9
 .jp_00_3b18:
     ld   A, $18                                        ;; 00:3b18 $3e $18
-    ld   [wD5B5], A                                    ;; 00:3b1a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3b1d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3b1a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3b1d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3b20 $ea $00 $20
     ld   A, [wCA1B]                                    ;; 00:3b23 $fa $1b $ca
     cp   A, $01                                        ;; 00:3b26 $fe $01
@@ -8023,8 +8024,8 @@ jp_00_39b4:
 
 jp_00_3b3f:
     ld   A, $04                                        ;; 00:3b3f $3e $04
-    ld   [wD5B5], A                                    ;; 00:3b41 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3b44 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3b41 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3b44 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3b47 $ea $00 $20
     ld   A, [wCC52]                                    ;; 00:3b4a $fa $52 $cc
     cp   A, $01                                        ;; 00:3b4d $fe $01
@@ -8039,7 +8040,7 @@ jp_00_3b3f:
     jp   $46e3                                         ;; 00:3b65 $c3 $e3 $46
 
 jp_00_3b68:
-    ld   A, [wD586]                                    ;; 00:3b68 $fa $86 $d5
+    ld   A, [wMainGameState]                           ;; 00:3b68 $fa $86 $d5
     cp   A, $03                                        ;; 00:3b6b $fe $03
     ret  NZ                                            ;; 00:3b6d $c0
     ld   A, $90                                        ;; 00:3b6e $3e $90
@@ -8065,8 +8066,8 @@ jp_00_3b68:
 
 jp_00_3b98:
     ld   A, $04                                        ;; 00:3b98 $3e $04
-    ld   [wD5B5], A                                    ;; 00:3b9a $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3b9d $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3b9a $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3b9d $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3ba0 $ea $00 $20
     ld   A, [wD502]                                    ;; 00:3ba3 $fa $02 $d5
     cp   A, $01                                        ;; 00:3ba6 $fe $01
@@ -8075,8 +8076,8 @@ jp_00_3b98:
 
 jp_00_3bae:
     ld   A, $11                                        ;; 00:3bae $3e $11
-    ld   [wD5B5], A                                    ;; 00:3bb0 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3bb3 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3bb0 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3bb3 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3bb6 $ea $00 $20
     ld   A, [wD4FA]                                    ;; 00:3bb9 $fa $fa $d4
     cp   A, $01                                        ;; 00:3bbc $fe $01
@@ -8095,8 +8096,8 @@ jp_00_3bae:
 
 jp_00_3bdb:
     ld   A, $06                                        ;; 00:3bdb $3e $06
-    ld   [wD5B5], A                                    ;; 00:3bdd $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3be0 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3bdd $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3be0 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3be3 $ea $00 $20
     ld   A, [wD38F]                                    ;; 00:3be6 $fa $8f $d3
     and  A, A                                          ;; 00:3be9 $a7
@@ -8215,8 +8216,8 @@ call_00_3c8e:
 
 call_00_3ca1:
     ld   A, $06                                        ;; 00:3ca1 $3e $06
-    ld   [wD5B5], A                                    ;; 00:3ca3 $ea $b5 $d5
-    ld   [wD5B7], A                                    ;; 00:3ca6 $ea $b7 $d5
+    ld   [wBackupRomBank], A                           ;; 00:3ca3 $ea $b5 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3ca6 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3ca9 $ea $00 $20
     ld   A, [wD4F9]                                    ;; 00:3cac $fa $f9 $d4
     and  A, A                                          ;; 00:3caf $a7
@@ -8233,16 +8234,16 @@ call_00_3ca1:
     call call_06_4000                                  ;; 00:3cc6 $cd $00 $40
     ret                                                ;; 00:3cc9 $c9
 
-call_00_3cca:
+jump_hl_in_bank_B:
     ld   [wD4FC], A                                    ;; 00:3cca $ea $fc $d4
     ld   A, B                                          ;; 00:3ccd $78
-    ld   [wD5B7], A                                    ;; 00:3cce $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3cce $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3cd1 $ea $00 $20
     jp   HL                                            ;; 00:3cd4 $e9
 
 function_3cd5:
     ld   A, [wD4FC]                                    ;; 00:3cd5 $fa $fc $d4
-    ld   [wD5B7], A                                    ;; 00:3cd8 $ea $b7 $d5
+    ld   [wCurrentRomBank], A                          ;; 00:3cd8 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:3cdb $ea $00 $20
     ret                                                ;; 00:3cde $c9
     ldh  A, [hIsGBC]                                   ;; 00:3cdf $f0 $fe

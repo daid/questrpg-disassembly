@@ -585,7 +585,7 @@ call_0f_4c95:
     db   $02, $03, $01, $00                            ;; 0f:4d42 ????
 .jp_0f_4d46:
     inc  [HL]                                          ;; 0f:4d46 $34
-    ld   [wD58E], SP                                   ;; 0f:4d47 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 0f:4d47 $08 $8e $d5
     ld   HL, data_0f_4194                              ;; 0f:4d4a $21 $94 $41
     ld   SP, HL                                        ;; 0f:4d4d $f9
     ld   HL, $9180                                     ;; 0f:4d4e $21 $80 $91
@@ -603,7 +603,7 @@ call_0f_4c95:
     ld   [HL+], A                                      ;; 0f:4d5c $22
     dec  B                                             ;; 0f:4d5d $05
     jr   NZ, .jr_0f_4d53                               ;; 0f:4d5e $20 $f3
-    ld   HL, wD58E                                     ;; 0f:4d60 $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 0f:4d60 $21 $8e $d5
     ld   A, [HL+]                                      ;; 0f:4d63 $2a
     ld   H, [HL]                                       ;; 0f:4d64 $66
     ld   L, A                                          ;; 0f:4d65 $6f
@@ -691,7 +691,7 @@ jp_0f_4d75:
     ld   A, [DE]                                       ;; 0f:4dda $1a
     ld   [HL], A                                       ;; 0f:4ddb $77
 .jr_0f_4ddc:
-    ld   [wD58E], SP                                   ;; 0f:4ddc $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 0f:4ddc $08 $8e $d5
     ld   HL, wC477                                     ;; 0f:4ddf $21 $77 $c4
     ld   A, [HL+]                                      ;; 0f:4de2 $2a
     ld   L, [HL]                                       ;; 0f:4de3 $6e
@@ -746,7 +746,7 @@ jp_0f_4d75:
     pop  DE                                            ;; 0f:4e27 $d1
     ld   [HL], E                                       ;; 0f:4e28 $73
 .jr_0f_4e29:
-    ld   HL, wD58E                                     ;; 0f:4e29 $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 0f:4e29 $21 $8e $d5
     ld   A, [HL+]                                      ;; 0f:4e2c $2a
     ld   H, [HL]                                       ;; 0f:4e2d $66
     ld   L, A                                          ;; 0f:4e2e $6f
@@ -800,7 +800,7 @@ jp_0f_4e31:
 
 jp_0f_4e6e:
     ld   [HL], $00                                     ;; 0f:4e6e $36 $00
-    ld   [wD58E], SP                                   ;; 0f:4e70 $08 $8e $d5
+    ld   [wStackPointerBackup], SP                     ;; 0f:4e70 $08 $8e $d5
     ld   SP, wC481                                     ;; 0f:4e73 $31 $81 $c4
     ld   HL, wC477                                     ;; 0f:4e76 $21 $77 $c4
     ld   A, [HL+]                                      ;; 0f:4e79 $2a
@@ -901,7 +901,7 @@ jp_0f_4e6e:
     dec  A                                             ;; 0f:4efc $3d
     jr   NZ, .jr_0f_4ef7                               ;; 0f:4efd $20 $f8
 .jr_0f_4eff:
-    ld   HL, wD58E                                     ;; 0f:4eff $21 $8e $d5
+    ld   HL, wStackPointerBackup                       ;; 0f:4eff $21 $8e $d5
     ld   A, [HL+]                                      ;; 0f:4f02 $2a
     ld   H, [HL]                                       ;; 0f:4f03 $66
     ld   L, A                                          ;; 0f:4f04 $6f
@@ -1050,7 +1050,7 @@ call_0f_4fa7:
 .jr_0f_4fd7:
     push BC                                            ;; 0f:4fd7 $c5
     ld   HL, $33b                                      ;; 0f:4fd8 $21 $3b $03
-    call call_00_067a                                  ;; 0f:4fdb $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:4fdb $cd $7a $06
     ld   DE, $29                                       ;; 0f:4fde $11 $29 $00
     add  HL, DE                                        ;; 0f:4fe1 $19
     bit  6, [HL]                                       ;; 0f:4fe2 $cb $76
@@ -1081,7 +1081,7 @@ call_0f_4fa7:
 .jp_0f_500a:
     push BC                                            ;; 0f:500a $c5
     ld   HL, $33b                                      ;; 0f:500b $21 $3b $03
-    call call_00_067a                                  ;; 0f:500e $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:500e $cd $7a $06
     ld   DE, $03                                       ;; 0f:5011 $11 $03 $00
     add  HL, DE                                        ;; 0f:5014 $19
     ld   A, [HL+]                                      ;; 0f:5015 $2a
@@ -1277,7 +1277,7 @@ call_0f_5131:
 .jp_0f_5138:
     push BC                                            ;; 0f:5138 $c5
     ld   HL, $33b                                      ;; 0f:5139 $21 $3b $03
-    call call_00_067a                                  ;; 0f:513c $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:513c $cd $7a $06
     ld   DE, $0e                                       ;; 0f:513f $11 $0e $00
     add  HL, DE                                        ;; 0f:5142 $19
     ld   B, [HL]                                       ;; 0f:5143 $46
@@ -1558,13 +1558,13 @@ call_0f_5179:
     ld   [wD1E1], A                                    ;; 0f:531b $ea $e1 $d1
     ld   C, $00                                        ;; 0f:531e $0e $00
     ld   HL, wCF36                                     ;; 0f:5320 $21 $36 $cf
-    call call_00_067a                                  ;; 0f:5323 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:5323 $cd $7a $06
     ld   DE, $14                                       ;; 0f:5326 $11 $14 $00
     add  HL, DE                                        ;; 0f:5329 $19
     ld   [HL], $03                                     ;; 0f:532a $36 $03
     ld   C, $04                                        ;; 0f:532c $0e $04
     ld   HL, wCF36                                     ;; 0f:532e $21 $36 $cf
-    call call_00_067a                                  ;; 0f:5331 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:5331 $cd $7a $06
     ld   DE, $10                                       ;; 0f:5334 $11 $10 $00
     add  HL, DE                                        ;; 0f:5337 $19
     ld   A, [HL]                                       ;; 0f:5338 $7e
@@ -1621,7 +1621,7 @@ call_0f_5179:
 .jr_0f_538c:
     push BC                                            ;; 0f:538c $c5
     ld   HL, $345                                      ;; 0f:538d $21 $45 $03
-    call call_00_067a                                  ;; 0f:5390 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:5390 $cd $7a $06
     ld   A, [HL]                                       ;; 0f:5393 $7e
     and  A, A                                          ;; 0f:5394 $a7
     jr   Z, .jr_0f_539a                                ;; 0f:5395 $28 $03
@@ -1636,7 +1636,7 @@ call_0f_5179:
 .jr_0f_53a2:
     push BC                                            ;; 0f:53a2 $c5
     ld   HL, wCF36                                     ;; 0f:53a3 $21 $36 $cf
-    call call_00_0683                                  ;; 0f:53a6 $cd $83 $06
+    call ld_DE_from_HL_add_2C                          ;; 0f:53a6 $cd $83 $06
     ld   HL, .data_0f_53d3                             ;; 0f:53a9 $21 $d3 $53
     ld   B, $1d                                        ;; 0f:53ac $06 $1d
     call memcopySmall                                  ;; 0f:53ae $cd $91 $05
@@ -1649,7 +1649,7 @@ call_0f_5179:
 .jr_0f_53bc:
     push BC                                            ;; 0f:53bc $c5
     ld   HL, wCF36                                     ;; 0f:53bd $21 $36 $cf
-    call call_00_067a                                  ;; 0f:53c0 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:53c0 $cd $7a $06
     ld   BC, $04                                       ;; 0f:53c3 $01 $04 $00
     add  HL, BC                                        ;; 0f:53c6 $09
     ld   A, [DE]                                       ;; 0f:53c7 $1a
@@ -1817,7 +1817,7 @@ call_0f_5469:
     ld   A, [wC610]                                    ;; 0f:54ea $fa $10 $c6
     and  A, A                                          ;; 0f:54ed $a7
     jr   Z, .jr_0f_5522                                ;; 0f:54ee $28 $32
-    call call_00_06c1                                  ;; 0f:54f0 $cd $c1 $06
+    call divide_BC_8                                   ;; 0f:54f0 $cd $c1 $06
     ld   A, B                                          ;; 0f:54f3 $78
     or   A, C                                          ;; 0f:54f4 $b1
     jr   NZ, .jr_0f_54fa                               ;; 0f:54f5 $20 $03
@@ -2014,7 +2014,7 @@ call_0f_5600:
     ld   A, [wC141]                                    ;; 0f:560e $fa $41 $c1
     ld   C, A                                          ;; 0f:5611 $4f
     ld   HL, data_0f_4004                              ;; 0f:5612 $21 $04 $40
-    call call_00_067a                                  ;; 0f:5615 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:5615 $cd $7a $06
     ld   A, H                                          ;; 0f:5618 $7c
     ld   [wD5E8], A                                    ;; 0f:5619 $ea $e8 $d5
     ld   A, L                                          ;; 0f:561c $7d
@@ -2025,7 +2025,7 @@ call_0f_5600:
 .jr_0f_5626:
     push BC                                            ;; 0f:5626 $c5
     ld   HL, $33d                                      ;; 0f:5627 $21 $3d $03
-    call call_00_067a                                  ;; 0f:562a $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:562a $cd $7a $06
     ld   DE, $22                                       ;; 0f:562d $11 $22 $00
     add  HL, DE                                        ;; 0f:5630 $19
     ld   A, [HL+]                                      ;; 0f:5631 $2a
@@ -2047,7 +2047,7 @@ call_0f_5600:
     inc  [HL]                                          ;; 0f:564a $34
     ld   C, [HL]                                       ;; 0f:564b $4e
     ld   HL, data_0f_4004                              ;; 0f:564c $21 $04 $40
-    call call_00_067a                                  ;; 0f:564f $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:564f $cd $7a $06
     ld   A, H                                          ;; 0f:5652 $7c
     ld   [wD5E8], A                                    ;; 0f:5653 $ea $e8 $d5
     ld   A, L                                          ;; 0f:5656 $7d
@@ -2147,7 +2147,7 @@ call_0f_56c6:
 .jr_0f_56df:
     ld   C, A                                          ;; 0f:56df $4f
     ld   HL, $33d                                      ;; 0f:56e0 $21 $3d $03
-    call call_00_067a                                  ;; 0f:56e3 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 0f:56e3 $cd $7a $06
     ld   DE, $24                                       ;; 0f:56e6 $11 $24 $00
     add  HL, DE                                        ;; 0f:56e9 $19
     ld   A, [HL]                                       ;; 0f:56ea $7e

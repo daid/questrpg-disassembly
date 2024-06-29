@@ -87,7 +87,7 @@ jp_06_4099:
     ld   A, $01                                        ;; 06:4099 $3e $01
     ld   [wD5C4], A                                    ;; 06:409b $ea $c4 $d5
     ld   A, $01                                        ;; 06:409e $3e $01
-    ld   [wD586], A                                    ;; 06:40a0 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 06:40a0 $ea $86 $d5
     ld   [wD58D], A                                    ;; 06:40a3 $ea $8d $d5
     ld   A, $8f                                        ;; 06:40a6 $3e $8f
     ld   [wD5D2], A                                    ;; 06:40a8 $ea $d2 $d5
@@ -629,21 +629,21 @@ jp_06_4437:
     ld   L, [HL]                                       ;; 06:44ae $6e
     ld   H, A                                          ;; 06:44af $67
     ld   A, [HL+]                                      ;; 06:44b0 $2a
-    ld   [wC143], A                                    ;; 06:44b1 $ea $43 $c1
+    ld   [wCurrentMap.low], A                          ;; 06:44b1 $ea $43 $c1
     ld   A, [HL+]                                      ;; 06:44b4 $2a
-    ld   [wC144], A                                    ;; 06:44b5 $ea $44 $c1
+    ld   [wPlayerX], A                                 ;; 06:44b5 $ea $44 $c1
     ld   A, [HL+]                                      ;; 06:44b8 $2a
-    ld   [wC145], A                                    ;; 06:44b9 $ea $45 $c1
+    ld   [wPlayerX.low], A                             ;; 06:44b9 $ea $45 $c1
     ld   A, [HL+]                                      ;; 06:44bc $2a
-    ld   [wC146], A                                    ;; 06:44bd $ea $46 $c1
+    ld   [wPlayerY], A                                 ;; 06:44bd $ea $46 $c1
     ld   A, [HL+]                                      ;; 06:44c0 $2a
-    ld   [wC147], A                                    ;; 06:44c1 $ea $47 $c1
+    ld   [wPlayerY.low], A                             ;; 06:44c1 $ea $47 $c1
     ld   A, [HL+]                                      ;; 06:44c4 $2a
     ld   [wC148], A                                    ;; 06:44c5 $ea $48 $c1
     ld   A, $00                                        ;; 06:44c8 $3e $00
     ld   [wC45B], A                                    ;; 06:44ca $ea $5b $c4
     ld   A, $01                                        ;; 06:44cd $3e $01
-    ld   [wD586], A                                    ;; 06:44cf $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 06:44cf $ea $86 $d5
     ld   [wD58D], A                                    ;; 06:44d2 $ea $8d $d5
     ld   A, $8f                                        ;; 06:44d5 $3e $8f
     ld   [wD5D2], A                                    ;; 06:44d7 $ea $d2 $d5
@@ -1248,7 +1248,7 @@ call_06_49c2:
     ret                                                ;; 06:4a85 $c9
 
 call_06_4a86:
-    call call_00_0f39                                  ;; 06:4a86 $cd $39 $0f
+    call startHardwareTimer                            ;; 06:4a86 $cd $39 $0f
     call disableLCD                                    ;; 06:4a89 $cd $23 $04
     ld   HL, data_06_5a16                              ;; 06:4a8c $21 $16 $5a
     ld   DE, $8000                                     ;; 06:4a8f $11 $00 $80
@@ -1459,7 +1459,7 @@ call_06_4a86:
     ret                                                ;; 06:4c64 $c9
 
 call_06_4c65:
-    call call_00_0f39                                  ;; 06:4c65 $cd $39 $0f
+    call startHardwareTimer                            ;; 06:4c65 $cd $39 $0f
     call disableLCD                                    ;; 06:4c68 $cd $23 $04
     ld   A, $01                                        ;; 06:4c6b $3e $01
     ldh  [rVBK], A                                     ;; 06:4c6d $e0 $4f
@@ -1527,7 +1527,7 @@ call_06_4c65:
     ret                                                ;; 06:4cfe $c9
 
 call_06_4cff:
-    call call_00_0f39                                  ;; 06:4cff $cd $39 $0f
+    call startHardwareTimer                            ;; 06:4cff $cd $39 $0f
     call disableLCD                                    ;; 06:4d02 $cd $23 $04
     ld   A, $01                                        ;; 06:4d05 $3e $01
     ldh  [rVBK], A                                     ;; 06:4d07 $e0 $4f
@@ -1754,7 +1754,7 @@ call_06_4cff:
     db   $ea, $78, $d3, $c9                            ;; 06:4eef ????
 
 call_06_4ef3:
-    call call_00_0f39                                  ;; 06:4ef3 $cd $39 $0f
+    call startHardwareTimer                            ;; 06:4ef3 $cd $39 $0f
     call disableLCD                                    ;; 06:4ef6 $cd $23 $04
     ld   A, $01                                        ;; 06:4ef9 $3e $01
     ldh  [rVBK], A                                     ;; 06:4efb $e0 $4f
@@ -1810,7 +1810,7 @@ call_06_4ef3:
     ret                                                ;; 06:4f6e $c9
 
 call_06_4f6f:
-    call call_00_0f39                                  ;; 06:4f6f $cd $39 $0f
+    call startHardwareTimer                            ;; 06:4f6f $cd $39 $0f
     call disableLCD                                    ;; 06:4f72 $cd $23 $04
     ld   A, [wD4F9]                                    ;; 06:4f75 $fa $f9 $d4
     and  A, A                                          ;; 06:4f78 $a7
@@ -2915,7 +2915,7 @@ jp_06_57da:
     ld   C, A                                          ;; 06:582f $4f
     call call_00_3c2c                                  ;; 06:5830 $cd $2c $3c
     xor  A, A                                          ;; 06:5833 $af
-    ld   [wD586], A                                    ;; 06:5834 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 06:5834 $ea $86 $d5
     xor  A, A                                          ;; 06:5837 $af
     ld   [wD4F9], A                                    ;; 06:5838 $ea $f9 $d4
     ld   A, $01                                        ;; 06:583b $3e $01
@@ -2970,7 +2970,7 @@ jp_06_57da:
     ret                                                ;; 06:58a2 $c9
 .jp_06_58a3:
     ld   A, $05                                        ;; 06:58a3 $3e $05
-    ld   [wD586], A                                    ;; 06:58a5 $ea $86 $d5
+    ld   [wMainGameState], A                           ;; 06:58a5 $ea $86 $d5
     ld   A, $09                                        ;; 06:58a8 $3e $09
     ld   [wD51A], A                                    ;; 06:58aa $ea $1a $d5
     xor  A, A                                          ;; 06:58ad $af

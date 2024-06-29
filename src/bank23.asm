@@ -32,7 +32,7 @@ data_23_4022:
     ld   C, A                                          ;; 23:4042 $4f
     srl  C                                             ;; 23:4043 $cb $39
     ld   HL, .data_23_43a0                             ;; 23:4045 $21 $a0 $43
-    call call_00_067a                                  ;; 23:4048 $cd $7a $06
+    call ld_HL_from_HL_add_2C                          ;; 23:4048 $cd $7a $06
     ld   DE, $8d00                                     ;; 23:404b $11 $00 $8d
     ld   B, $20                                        ;; 23:404e $06 $20
     jp   memcopySmall                                  ;; 23:4050 $c3 $91 $05
