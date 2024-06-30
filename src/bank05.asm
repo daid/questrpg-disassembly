@@ -820,7 +820,7 @@ call_05_40cb:
     ld   [wD2C5], A                                    ;; 05:45dd $ea $c5 $d2
     ld   A, L                                          ;; 05:45e0 $7d
     ld   [wD2C6], A                                    ;; 05:45e1 $ea $c6 $d2
-    ld   HL, data_05_7922                              ;; 05:45e4 $21 $22 $79
+    ld   HL, stringTablePointers                       ;; 05:45e4 $21 $22 $79
     ld   A, [wD2C3]                                    ;; 05:45e7 $fa $c3 $d2
     ld   C, A                                          ;; 05:45ea $4f
     sla  C                                             ;; 05:45eb $cb $21
@@ -3453,8 +3453,8 @@ data_05_75e9:
     db   $0c, $81, $0f, $01, $19, $1c, $0d, $00        ;; 05:7919 ????????
     db   $00                                           ;; 05:7921 ?
 
-;@data format=P amount=30
-data_05_7922:
+;@string_table_pointers amount=30
+stringTablePointers:
     data_P data_05_795e                                ;; 05:7922 Ww $00
     data_P data_05_7982                                ;; 05:7924 ?? $01
     data_P data_05_7986                                ;; 05:7926 ?? $02
@@ -3486,130 +3486,322 @@ data_05_7922:
     data_P data_05_7b48                                ;; 05:795a ?? $1c
     data_P data_05_7b48                                ;; 05:795c ?? $1d
 
-;@data format=WWWW amount=10
 data_05_795e:
-    data_WWWW $4000, $403b, $4059, $4083               ;; 05:795e PpPpPpPp $00
-    data_WWWW $40d5, $40ff, $413d, $41ac               ;; 05:7966 PpPpPpPp $01
-    data_WWWW $41c0, $423a, $434f, $43ae               ;; 05:796e PpPpPpPp $02
-    data_WWWW $441c, $443c, $4488, $454c               ;; 05:7976 PpPpPpPp $03
-    data_WWWW $4572, $4679, $468c, $4756               ;; 05:797e PpPp???? $04
+    data_P data_stringtable_16_4000                    ;; 05:795e Pp
+    data_P data_stringtable_16_403b                    ;; 05:7960 Pp
+    data_P data_stringtable_16_4059                    ;; 05:7962 Pp
+    data_P data_stringtable_16_4083                    ;; 05:7964 Pp
+    data_P data_stringtable_16_40d5                    ;; 05:7966 Pp
+    data_P data_stringtable_16_40ff                    ;; 05:7968 Pp
+    data_P data_stringtable_16_413d                    ;; 05:796a Pp
+    data_P data_stringtable_16_41ac                    ;; 05:796c Pp
+    data_P data_stringtable_16_41c0                    ;; 05:796e Pp
+    data_P data_stringtable_16_423a                    ;; 05:7970 Pp
+    data_P data_stringtable_16_434f                    ;; 05:7972 Pp
+    data_P data_stringtable_16_43ae                    ;; 05:7974 Pp
+    data_P data_stringtable_16_441c                    ;; 05:7976 Pp
+    data_P data_stringtable_16_443c                    ;; 05:7978 Pp
+    data_P data_stringtable_16_4488                    ;; 05:797a Pp
+    data_P data_stringtable_16_454c                    ;; 05:797c Pp
+    data_P data_stringtable_16_4572                    ;; 05:797e Pp
+    data_P data_stringtable_16_4679                    ;; 05:7980 Pp
+
+data_05_7982:
+    data_P data_stringtable_16_468c                    ;; 05:7982 ??
+    data_P data_stringtable_16_4756                    ;; 05:7984 ??
 
 data_05_7986:
-    data_WWWW $479e, $47b9, $4831, $486e               ;; 05:7986 ???????? $05
-    data_WWWW $4896, $4a1d, $4a6a, $4ac5               ;; 05:798e ???????? $06
-    data_WWWW $4b2c, $4bb3, $4bf5, $4c73               ;; 05:7996 ???????? $07
-    data_WWWW $4cab, $4cd7, $4d14, $4d83               ;; 05:799e ???????? $08
-    data_WWWW $4dc6, $4e0a, $4e25, $4e93               ;; 05:79a6 ???????? $09
-    db   $4e, $bb, $4f, $17, $4f, $42, $4f, $86        ;; 05:79ae ????????
-    db   $4f, $9a, $4f, $aa, $50, $30, $50, $59        ;; 05:79b6 ????????
+    data_P data_stringtable_16_479e                    ;; 05:7986 ??
+    data_P data_stringtable_16_47b9                    ;; 05:7988 ??
+    data_P data_stringtable_16_4831                    ;; 05:798a ??
+    data_P data_stringtable_16_486e                    ;; 05:798c ??
+    data_P data_stringtable_16_4896                    ;; 05:798e ??
+    data_P data_stringtable_16_4a1d                    ;; 05:7990 ??
+
+data_05_7992:
+    data_P data_stringtable_16_4a6a                    ;; 05:7992 ??
+    data_P data_stringtable_16_4ac5                    ;; 05:7994 ??
+    data_P data_stringtable_16_4b2c                    ;; 05:7996 ??
+    data_P data_stringtable_16_4bb3                    ;; 05:7998 ??
+    data_P data_stringtable_16_4bf5                    ;; 05:799a ??
+    data_P data_stringtable_16_4c73                    ;; 05:799c ??
+    data_P data_stringtable_16_4cab                    ;; 05:799e ??
+    data_P data_stringtable_16_4cd7                    ;; 05:79a0 ??
+    data_P data_stringtable_16_4d14                    ;; 05:79a2 ??
+    data_P data_stringtable_16_4d83                    ;; 05:79a4 ??
+    data_P data_stringtable_16_4dc6                    ;; 05:79a6 ??
+    data_P data_stringtable_16_4e0a                    ;; 05:79a8 ??
+    data_P data_stringtable_16_4e25                    ;; 05:79aa ??
+    data_P data_stringtable_16_4e93                    ;; 05:79ac ??
+    data_P data_stringtable_16_4ebb                    ;; 05:79ae ??
+    data_P data_stringtable_16_4f17                    ;; 05:79b0 ??
+    data_P data_stringtable_16_4f42                    ;; 05:79b2 ??
+    data_P data_stringtable_16_4f86                    ;; 05:79b4 ??
+    data_P data_stringtable_16_4f9a                    ;; 05:79b6 ??
+    data_P data_stringtable_16_4faa                    ;; 05:79b8 ??
+    data_P data_stringtable_16_5030                    ;; 05:79ba ??
+    data_P data_stringtable_16_5059                    ;; 05:79bc ??
 
 data_05_79be:
-    db   $51, $5b, $52, $6f, $52, $b7, $52, $d5        ;; 05:79be ????????
+    data_P data_stringtable_16_515b                    ;; 05:79be ??
+    data_P data_stringtable_16_526f                    ;; 05:79c0 ??
+    data_P data_stringtable_16_52b7                    ;; 05:79c2 ??
+    data_P data_stringtable_16_52d5                    ;; 05:79c4 ??
 
 data_05_79c6:
-    db   $53, $21, $53, $6d, $53, $c3, $54, $72        ;; 05:79c6 ????????
-    db   $54, $b1, $54, $ef, $55, $2b, $55, $74        ;; 05:79ce ????????
-    db   $55, $8b                                      ;; 05:79d6 ??
+    data_P data_stringtable_16_5321                    ;; 05:79c6 ??
+    data_P data_stringtable_16_536d                    ;; 05:79c8 ??
+    data_P data_stringtable_16_53c3                    ;; 05:79ca ??
+    data_P data_stringtable_16_5472                    ;; 05:79cc ??
+    data_P data_stringtable_16_54b1                    ;; 05:79ce ??
+    data_P data_stringtable_16_54ef                    ;; 05:79d0 ??
+    data_P data_stringtable_16_552b                    ;; 05:79d2 ??
+    data_P data_stringtable_16_5574                    ;; 05:79d4 ??
+    data_P data_stringtable_16_558b                    ;; 05:79d6 ??
 
 data_05_79d8:
-    db   $7c, $3c, $55, $c4, $56, $89, $56, $a7        ;; 05:79d8 ????????
-    db   $7c, $dc, $56, $f5                            ;; 05:79e0 ????
+    data_P data_stringtable_16_7c3c                    ;; 05:79d8 ??
+    data_P data_stringtable_16_55c4                    ;; 05:79da ??
+    data_P data_stringtable_16_5689                    ;; 05:79dc ??
+    data_P data_stringtable_16_56a7                    ;; 05:79de ??
+    data_P data_stringtable_16_7cdc                    ;; 05:79e0 ??
+    data_P data_stringtable_16_56f5                    ;; 05:79e2 ??
 
 data_05_79e4:
-    db   $58, $06, $58, $32, $58, $46, $58, $8f        ;; 05:79e4 ????????
-    db   $58, $a5, $59, $17, $59, $37, $59, $b3        ;; 05:79ec ????????
-    db   $59, $ce, $59, $f1, $5a, $6d, $5a, $db        ;; 05:79f4 ????????
-    db   $5b, $4f, $5b, $f7, $5c, $46, $5c, $5e        ;; 05:79fc ????????
-    db   $5c, $c5                                      ;; 05:7a04 ??
+    data_P data_stringtable_16_5806                    ;; 05:79e4 ??
+    data_P data_stringtable_16_5832                    ;; 05:79e6 ??
+    data_P data_stringtable_16_5846                    ;; 05:79e8 ??
+    data_P data_stringtable_16_588f                    ;; 05:79ea ??
+    data_P data_stringtable_16_58a5                    ;; 05:79ec ??
+    data_P data_stringtable_16_5917                    ;; 05:79ee ??
+    data_P data_stringtable_16_5937                    ;; 05:79f0 ??
+    data_P data_stringtable_16_59b3                    ;; 05:79f2 ??
+    data_P data_stringtable_16_59ce                    ;; 05:79f4 ??
+    data_P data_stringtable_16_59f1                    ;; 05:79f6 ??
+    data_P data_stringtable_16_5a6d                    ;; 05:79f8 ??
+    data_P data_stringtable_16_5adb                    ;; 05:79fa ??
+    data_P data_stringtable_16_5b4f                    ;; 05:79fc ??
+    data_P data_stringtable_16_5bf7                    ;; 05:79fe ??
+    data_P data_stringtable_16_5c46                    ;; 05:7a00 ??
+    data_P data_stringtable_16_5c5e                    ;; 05:7a02 ??
+    data_P data_stringtable_16_5cc5                    ;; 05:7a04 ??
 
 data_05_7a06:
-    db   $5d, $01, $5d, $a3, $5e, $47                  ;; 05:7a06 ??????
+    data_P data_stringtable_16_5d01                    ;; 05:7a06 ??
+    data_P data_stringtable_16_5da3                    ;; 05:7a08 ??
+    data_P data_stringtable_16_5e47                    ;; 05:7a0a ??
 
 data_05_7a0c:
-    db   $5f, $02, $5f, $ac                            ;; 05:7a0c ????
+    data_P data_stringtable_16_5f02                    ;; 05:7a0c ??
+    data_P data_stringtable_16_5fac                    ;; 05:7a0e ??
 
 data_05_7a10:
-    db   $60, $96, $61, $55, $61, $fd, $62, $48        ;; 05:7a10 ????????
-    db   $62, $dd, $63, $ad, $63, $f2, $64, $fc        ;; 05:7a18 ????????
-    db   $66, $08, $67, $35, $67, $62, $67, $dd        ;; 05:7a20 ????????
-    db   $67, $fa                                      ;; 05:7a28 ??
+    data_P data_stringtable_16_6096                    ;; 05:7a10 ??
+    data_P data_stringtable_16_6155                    ;; 05:7a12 ??
+    data_P data_stringtable_16_61fd                    ;; 05:7a14 ??
+    data_P data_stringtable_16_6248                    ;; 05:7a16 ??
+    data_P data_stringtable_16_62dd                    ;; 05:7a18 ??
+    data_P data_stringtable_16_63ad                    ;; 05:7a1a ??
+    data_P data_stringtable_16_63f2                    ;; 05:7a1c ??
+    data_P data_stringtable_16_64fc                    ;; 05:7a1e ??
+    data_P data_stringtable_16_6608                    ;; 05:7a20 ??
+    data_P data_stringtable_16_6735                    ;; 05:7a22 ??
+    data_P data_stringtable_16_6762                    ;; 05:7a24 ??
+    data_P data_stringtable_16_67dd                    ;; 05:7a26 ??
+    data_P data_stringtable_16_67fa                    ;; 05:7a28 ??
 
 data_05_7a2a:
-    db   $68, $38, $68, $60, $68, $ff, $69, $4e        ;; 05:7a2a ????????
-    db   $69, $e7, $6a, $3e, $6a, $a3, $6a, $ee        ;; 05:7a32 ????????
-    db   $6b, $5b, $6c, $11, $6c, $2f, $6c, $88        ;; 05:7a3a ????????
-    db   $6c, $b5                                      ;; 05:7a42 ??
+    data_P data_stringtable_16_6838                    ;; 05:7a2a ??
+    data_P data_stringtable_16_6860                    ;; 05:7a2c ??
+    data_P data_stringtable_16_68ff                    ;; 05:7a2e ??
+    data_P data_stringtable_16_694e                    ;; 05:7a30 ??
+    data_P data_stringtable_16_69e7                    ;; 05:7a32 ??
+    data_P data_stringtable_16_6a3e                    ;; 05:7a34 ??
+    data_P data_stringtable_16_6aa3                    ;; 05:7a36 ??
+    data_P data_stringtable_16_6aee                    ;; 05:7a38 ??
+    data_P data_stringtable_16_6b5b                    ;; 05:7a3a ??
+    data_P data_stringtable_16_6c11                    ;; 05:7a3c ??
+    data_P data_stringtable_16_6c2f                    ;; 05:7a3e ??
+    data_P data_stringtable_16_6c88                    ;; 05:7a40 ??
+    data_P data_stringtable_16_6cb5                    ;; 05:7a42 ??
 
 data_05_7a44:
-    db   $6c, $f7, $6d, $c6                            ;; 05:7a44 ????
+    data_P data_stringtable_16_6cf7                    ;; 05:7a44 ??
+    data_P data_stringtable_16_6dc6                    ;; 05:7a46 ??
 
 data_05_7a48:
-    db   $6e, $2b, $6e, $c2, $6f, $93, $70, $02        ;; 05:7a48 ????????
-    db   $70, $20, $70, $67, $70, $cc, $71, $4b        ;; 05:7a50 ????????
-    db   $71, $9d, $73, $7c, $73, $ca                  ;; 05:7a58 ??????
+    data_P data_stringtable_16_6e2b                    ;; 05:7a48 ??
+    data_P data_stringtable_16_6ec2                    ;; 05:7a4a ??
+    data_P data_stringtable_16_6f93                    ;; 05:7a4c ??
+    data_P data_stringtable_16_7002                    ;; 05:7a4e ??
+    data_P data_stringtable_16_7020                    ;; 05:7a50 ??
+    data_P data_stringtable_16_7067                    ;; 05:7a52 ??
+    data_P data_stringtable_16_70cc                    ;; 05:7a54 ??
+    data_P data_stringtable_16_714b                    ;; 05:7a56 ??
+    data_P data_stringtable_16_719d                    ;; 05:7a58 ??
+    data_P data_stringtable_16_737c                    ;; 05:7a5a ??
+    data_P data_stringtable_16_73ca                    ;; 05:7a5c ??
 
 data_05_7a5e:
-    db   $73, $f7, $75, $4d                            ;; 05:7a5e ????
+    data_P data_stringtable_16_73f7                    ;; 05:7a5e ??
+    data_P data_stringtable_16_754d                    ;; 05:7a60 ??
 
 data_05_7a62:
-    db   $75, $b0                                      ;; 05:7a62 ??
+    data_P data_stringtable_16_75b0                    ;; 05:7a62 ??
 
 data_05_7a64:
-    db   $40, $00, $40, $bc, $40, $d5, $41, $1a        ;; 05:7a64 ????????
-    db   $41, $8d, $41, $ee, $42, $35, $42, $48        ;; 05:7a6c ????????
-    db   $42, $8b, $42, $df, $43, $00, $44, $3d        ;; 05:7a74 ????????
-    db   $44, $65, $45, $a9, $45, $be, $45, $d6        ;; 05:7a7c ????????
-    db   $46, $06, $46, $21, $46, $37, $46, $5b        ;; 05:7a84 ????????
-    db   $46, $ad, $46, $f5, $47, $18, $47, $d3        ;; 05:7a8c ????????
-    db   $47, $e6, $47, $fa, $48, $4a, $48, $65        ;; 05:7a94 ????????
-    db   $48, $87, $48, $b0, $48, $dd, $49, $0d        ;; 05:7a9c ????????
-    db   $49, $26, $49, $4c, $49, $64, $49, $a4        ;; 05:7aa4 ????????
-    db   $49, $b6, $49, $fe, $4a, $1c, $4a, $5e        ;; 05:7aac ????????
-    db   $4a, $a8, $4a, $e9, $4b, $58, $4b, $aa        ;; 05:7ab4 ????????
-    db   $4b, $d1, $4c, $25, $4c, $60, $4c, $7b        ;; 05:7abc ????????
-    db   $4c, $b9, $4d, $05, $4d, $2a, $4d, $72        ;; 05:7ac4 ????????
-    db   $4d, $87, $4f, $35, $4f, $79, $51, $48        ;; 05:7acc ????????
-    db   $51, $85, $52, $bb, $54, $00, $54, $51        ;; 05:7ad4 ????????
-    db   $54, $97, $55, $02                            ;; 05:7adc ????
+    data_P data_stringtable_17_4000                    ;; 05:7a64 ??
+    data_P data_stringtable_17_40bc                    ;; 05:7a66 ??
+    data_P data_stringtable_17_40d5                    ;; 05:7a68 ??
+    data_P data_stringtable_17_411a                    ;; 05:7a6a ??
+    data_P data_stringtable_17_418d                    ;; 05:7a6c ??
+    data_P data_stringtable_17_41ee                    ;; 05:7a6e ??
+    data_P data_stringtable_17_4235                    ;; 05:7a70 ??
+    data_P data_stringtable_17_4248                    ;; 05:7a72 ??
+    data_P data_stringtable_17_428b                    ;; 05:7a74 ??
+    data_P data_stringtable_17_42df                    ;; 05:7a76 ??
+    data_P data_stringtable_17_4300                    ;; 05:7a78 ??
+    data_P data_stringtable_17_443d                    ;; 05:7a7a ??
+    data_P data_stringtable_17_4465                    ;; 05:7a7c ??
+    data_P data_stringtable_17_45a9                    ;; 05:7a7e ??
+    data_P data_stringtable_17_45be                    ;; 05:7a80 ??
+    data_P data_stringtable_17_45d6                    ;; 05:7a82 ??
+    data_P data_stringtable_17_4606                    ;; 05:7a84 ??
+    data_P data_stringtable_17_4621                    ;; 05:7a86 ??
+    data_P data_stringtable_17_4637                    ;; 05:7a88 ??
+    data_P data_stringtable_17_465b                    ;; 05:7a8a ??
+    data_P data_stringtable_17_46ad                    ;; 05:7a8c ??
+    data_P data_stringtable_17_46f5                    ;; 05:7a8e ??
+    data_P data_stringtable_17_4718                    ;; 05:7a90 ??
+    data_P data_stringtable_17_47d3                    ;; 05:7a92 ??
+    data_P data_stringtable_17_47e6                    ;; 05:7a94 ??
+    data_P data_stringtable_17_47fa                    ;; 05:7a96 ??
+    data_P data_stringtable_17_484a                    ;; 05:7a98 ??
+    data_P data_stringtable_17_4865                    ;; 05:7a9a ??
+    data_P data_stringtable_17_4887                    ;; 05:7a9c ??
+    data_P data_stringtable_17_48b0                    ;; 05:7a9e ??
+    data_P data_stringtable_17_48dd                    ;; 05:7aa0 ??
+    data_P data_stringtable_17_490d                    ;; 05:7aa2 ??
+    data_P data_stringtable_17_4926                    ;; 05:7aa4 ??
+    data_P data_stringtable_17_494c                    ;; 05:7aa6 ??
+    data_P data_stringtable_17_4964                    ;; 05:7aa8 ??
+    data_P data_stringtable_17_49a4                    ;; 05:7aaa ??
+    data_P data_stringtable_17_49b6                    ;; 05:7aac ??
+    data_P data_stringtable_17_49fe                    ;; 05:7aae ??
+    data_P data_stringtable_17_4a1c                    ;; 05:7ab0 ??
+    data_P data_stringtable_17_4a5e                    ;; 05:7ab2 ??
+    data_P data_stringtable_17_4aa8                    ;; 05:7ab4 ??
+    data_P data_stringtable_17_4ae9                    ;; 05:7ab6 ??
+    data_P data_stringtable_17_4b58                    ;; 05:7ab8 ??
+    data_P data_stringtable_17_4baa                    ;; 05:7aba ??
+    data_P data_stringtable_17_4bd1                    ;; 05:7abc ??
+    data_P data_stringtable_17_4c25                    ;; 05:7abe ??
+    data_P data_stringtable_17_4c60                    ;; 05:7ac0 ??
+    data_P data_stringtable_17_4c7b                    ;; 05:7ac2 ??
+    data_P data_stringtable_17_4cb9                    ;; 05:7ac4 ??
+    data_P data_stringtable_17_4d05                    ;; 05:7ac6 ??
+    data_P data_stringtable_17_4d2a                    ;; 05:7ac8 ??
+    data_P data_stringtable_17_4d72                    ;; 05:7aca ??
+    data_P data_stringtable_17_4d87                    ;; 05:7acc ??
+    data_P data_stringtable_17_4f35                    ;; 05:7ace ??
+    data_P data_stringtable_17_4f79                    ;; 05:7ad0 ??
+    data_P data_stringtable_17_5148                    ;; 05:7ad2 ??
+    data_P data_stringtable_17_5185                    ;; 05:7ad4 ??
+    data_P data_stringtable_17_52bb                    ;; 05:7ad6 ??
+    data_P data_stringtable_17_5400                    ;; 05:7ad8 ??
+    data_P data_stringtable_17_5451                    ;; 05:7ada ??
+    data_P data_stringtable_17_5497                    ;; 05:7adc ??
+    data_P data_stringtable_17_5502                    ;; 05:7ade ??
 
 data_05_7ae0:
-    db   $55, $51, $55, $ee, $56, $2d, $56, $70        ;; 05:7ae0 ????????
+    data_P data_stringtable_17_5551                    ;; 05:7ae0 ??
+    data_P data_stringtable_17_55ee                    ;; 05:7ae2 ??
+    data_P data_stringtable_17_562d                    ;; 05:7ae4 ??
+    data_P data_stringtable_17_5670                    ;; 05:7ae6 ??
 
 data_05_7ae8:
-    db   $56, $b4, $56, $f8, $57, $2f, $57, $a8        ;; 05:7ae8 ????????
-    db   $57, $d2                                      ;; 05:7af0 ??
+    data_P data_stringtable_17_56b4                    ;; 05:7ae8 ??
+    data_P data_stringtable_17_56f8                    ;; 05:7aea ??
+    data_P data_stringtable_17_572f                    ;; 05:7aec ??
+    data_P data_stringtable_17_57a8                    ;; 05:7aee ??
+    data_P data_stringtable_17_57d2                    ;; 05:7af0 ??
 
 data_05_7af2:
-    db   $58, $09, $58, $55, $58, $ac, $59, $39        ;; 05:7af2 ????????
-    db   $59, $87, $59, $e4, $5a, $4e, $5a, $ef        ;; 05:7afa ????????
-    db   $5b, $0f                                      ;; 05:7b02 ??
+    data_P data_stringtable_17_5809                    ;; 05:7af2 ??
+    data_P data_stringtable_17_5855                    ;; 05:7af4 ??
+    data_P data_stringtable_17_58ac                    ;; 05:7af6 ??
+    data_P data_stringtable_17_5939                    ;; 05:7af8 ??
+    data_P data_stringtable_17_5987                    ;; 05:7afa ??
+    data_P data_stringtable_17_59e4                    ;; 05:7afc ??
+    data_P data_stringtable_17_5a4e                    ;; 05:7afe ??
+    data_P data_stringtable_17_5aef                    ;; 05:7b00 ??
+    data_P data_stringtable_17_5b0f                    ;; 05:7b02 ??
 
 data_05_7b04:
-    db   $5b, $38, $5b, $82, $5b, $a1, $5b, $e3        ;; 05:7b04 ????????
-    db   $5c, $49, $5c, $bb, $5c, $d8, $5d, $22        ;; 05:7b0c ????????
-    db   $5d, $95, $5d, $e9, $5e, $13, $5f, $0c        ;; 05:7b14 ????????
-    db   $5f, $2f, $5f, $52, $5f, $88, $5f, $a2        ;; 05:7b1c ????????
-    db   $5f, $e4, $60, $7e                            ;; 05:7b24 ????
+    data_P data_stringtable_17_5b38                    ;; 05:7b04 ??
+    data_P data_stringtable_17_5b82                    ;; 05:7b06 ??
+    data_P data_stringtable_17_5ba1                    ;; 05:7b08 ??
+    data_P data_stringtable_17_5be3                    ;; 05:7b0a ??
+    data_P data_stringtable_17_5c49                    ;; 05:7b0c ??
+    data_P data_stringtable_17_5cbb                    ;; 05:7b0e ??
+    data_P data_stringtable_17_5cd8                    ;; 05:7b10 ??
+    data_P data_stringtable_17_5d22                    ;; 05:7b12 ??
+    data_P data_stringtable_17_5d95                    ;; 05:7b14 ??
+    data_P data_stringtable_17_5de9                    ;; 05:7b16 ??
+    data_P data_stringtable_17_5e13                    ;; 05:7b18 ??
+    data_P data_stringtable_17_5f0c                    ;; 05:7b1a ??
+    data_P data_stringtable_17_5f2f                    ;; 05:7b1c ??
+    data_P data_stringtable_17_5f52                    ;; 05:7b1e ??
+    data_P data_stringtable_17_5f88                    ;; 05:7b20 ??
+    data_P data_stringtable_17_5fa2                    ;; 05:7b22 ??
+    data_P data_stringtable_17_5fe4                    ;; 05:7b24 ??
+    data_P data_stringtable_17_607e                    ;; 05:7b26 ??
 
 data_05_7b28:
-    db   $60, $bc, $61, $57, $61, $8f, $62, $43        ;; 05:7b28 ????????
-    db   $62, $64, $62, $e1, $63, $18                  ;; 05:7b30 ??????
+    data_P data_stringtable_17_60bc                    ;; 05:7b28 ??
+    data_P data_stringtable_17_6157                    ;; 05:7b2a ??
+    data_P data_stringtable_17_618f                    ;; 05:7b2c ??
+    data_P data_stringtable_17_6243                    ;; 05:7b2e ??
+    data_P data_stringtable_17_6264                    ;; 05:7b30 ??
+    data_P data_stringtable_17_62e1                    ;; 05:7b32 ??
+    data_P data_stringtable_17_6318                    ;; 05:7b34 ??
 
 data_05_7b36:
-    db   $63, $54, $65, $7c, $65, $d3, $66, $10        ;; 05:7b36 ????????
-    db   $66, $54, $67, $ee, $68, $2e                  ;; 05:7b3e ??????
+    data_P data_stringtable_17_6354                    ;; 05:7b36 ??
+    data_P data_stringtable_17_657c                    ;; 05:7b38 ??
+    data_P data_stringtable_17_65d3                    ;; 05:7b3a ??
+    data_P data_stringtable_17_6610                    ;; 05:7b3c ??
+    data_P data_stringtable_17_6654                    ;; 05:7b3e ??
+    data_P data_stringtable_17_67ee                    ;; 05:7b40 ??
+    data_P data_stringtable_17_682e                    ;; 05:7b42 ??
 
 data_05_7b44:
-    db   $68, $6b, $69, $3d                            ;; 05:7b44 ????
+    data_P data_stringtable_17_686b                    ;; 05:7b44 ??
+    data_P data_stringtable_17_693d                    ;; 05:7b46 ??
 
 data_05_7b48:
-    db   $6a, $e0, $6c, $46, $6d, $18, $6d, $32        ;; 05:7b48 ????????
-    db   $6d, $4f, $6d, $9a, $6f, $53, $6f, $6d        ;; 05:7b50 ????????
+    data_P data_stringtable_17_6ae0                    ;; 05:7b48 ??
+    data_P data_stringtable_17_6c46                    ;; 05:7b4a ??
+    data_P data_stringtable_17_6d18                    ;; 05:7b4c ??
+    data_P data_stringtable_17_6d32                    ;; 05:7b4e ??
+    data_P data_stringtable_17_6d4f                    ;; 05:7b50 ??
+    data_P data_stringtable_17_6d9a                    ;; 05:7b52 ??
+    data_P data_stringtable_17_6f53                    ;; 05:7b54 ??
+    data_P data_stringtable_17_6f6d                    ;; 05:7b56 ??
 
 data_05_7b58:
-    db   $6f, $84, $6f, $af, $70, $27, $70, $48        ;; 05:7b58 ????????
-    db   $70, $8c, $70, $c7, $71, $b5, $71, $cf        ;; 05:7b60 ????????
-    db   $72, $00, $72, $24, $72, $46, $72, $60        ;; 05:7b68 ????????
+    data_P data_stringtable_17_6f84                    ;; 05:7b58 ??
+    data_P data_stringtable_17_6faf                    ;; 05:7b5a ??
+    data_P data_stringtable_17_7027                    ;; 05:7b5c ??
+    data_P data_stringtable_17_7048                    ;; 05:7b5e ??
+    data_P data_stringtable_17_708c                    ;; 05:7b60 ??
+    data_P data_stringtable_17_70c7                    ;; 05:7b62 ??
+    data_P data_stringtable_17_71b5                    ;; 05:7b64 ??
+    data_P data_stringtable_17_71cf                    ;; 05:7b66 ??
+    data_P data_stringtable_17_7200                    ;; 05:7b68 ??
+    data_P data_stringtable_17_7224                    ;; 05:7b6a ??
+    data_P data_stringtable_17_7246                    ;; 05:7b6c ??
+    data_P data_stringtable_17_7260                    ;; 05:7b6e ??
     db   $72, $7a, $72, $94, $72, $c7, $72, $fa        ;; 05:7b70 ????????
     db   $73, $1b, $73, $35, $73, $4f, $73, $70        ;; 05:7b78 ????????
     db   $73, $8a, $73, $a4, $73, $ce                  ;; 05:7b80 ??????

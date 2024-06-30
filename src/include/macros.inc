@@ -10,16 +10,6 @@ shift
 db high(\1), low(\1)
 shift
 ENDM
-MACRO data_WWWW
-db high(\1), low(\1)
-shift
-db high(\1), low(\1)
-shift
-db high(\1), low(\1)
-shift
-db high(\1), low(\1)
-shift
-ENDM
 MACRO data_bbWWWWWWWWWWWWWWWWbbb
 db \1
 shift
@@ -74,4 +64,10 @@ dw \1
 ENDM
 MACRO short_stop
 db $10
+ENDM
+MACRO string_data
+PUSHC
+SETCHARMAP STRING_DATA
+db \#
+POPC
 ENDM
