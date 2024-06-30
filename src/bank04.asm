@@ -204,7 +204,7 @@ call_04_4000:
     ld   A, [HL+]                                      ;; 04:413a $2a
     ld   E, [HL]                                       ;; 04:413b $5e
     ld   D, A                                          ;; 04:413c $57
-    ld   HL, wD5A7                                     ;; 04:413d $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 04:413d $21 $a7 $d5
     ld   A, [HL+]                                      ;; 04:4140 $2a
     ld   C, [HL]                                       ;; 04:4141 $4e
     ld   B, A                                          ;; 04:4142 $47
@@ -3021,7 +3021,7 @@ call_04_613a:
     ld   [HL], A                                       ;; 04:615c $77
     jr   .jr_04_6171                                   ;; 04:615d $18 $12
 .jr_04_615f:
-    ld   HL, wD5AC                                     ;; 04:615f $21 $ac $d5
+    ld   HL, wRoomWidthPixels.low                      ;; 04:615f $21 $ac $d5
     ld   A, [HL-]                                      ;; 04:6162 $3a
     sub  A, $a0                                        ;; 04:6163 $d6 $a0
     ld   [wCEB3], A                                    ;; 04:6165 $ea $b3 $ce
@@ -3051,7 +3051,7 @@ call_04_613a:
     ld   [HL], A                                       ;; 04:6198 $77
     jr   .jr_04_61ad                                   ;; 04:6199 $18 $12
 .jp_04_619b:
-    ld   HL, wD5AE                                     ;; 04:619b $21 $ae $d5
+    ld   HL, wRoomHeightPixels.low                     ;; 04:619b $21 $ae $d5
     ld   A, [HL-]                                      ;; 04:619e $3a
     sub  A, $90                                        ;; 04:619f $d6 $90
     ld   [wCEB5], A                                    ;; 04:61a1 $ea $b5 $ce

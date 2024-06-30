@@ -706,9 +706,9 @@ call_10_4bb7:
     ld   HL, data_10_6ccd                              ;; 10:4de5 $21 $cd $6c
     call ld_HL_from_HL_add_2C                          ;; 10:4de8 $cd $7a $06
     ld   A, [HL+]                                      ;; 10:4deb $2a
-    ld   [wD13A], A                                    ;; 10:4dec $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 10:4dec $ea $3a $d1
     ld   A, [HL+]                                      ;; 10:4def $2a
-    ld   [wD13B], A                                    ;; 10:4df0 $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 10:4df0 $ea $3b $d1
     ld   DE, $04                                       ;; 10:4df3 $11 $04 $00
     add  HL, DE                                        ;; 10:4df6 $19
     ld   DE, wCB02                                     ;; 10:4df7 $11 $02 $cb

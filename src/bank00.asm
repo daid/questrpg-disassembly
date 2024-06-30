@@ -880,7 +880,7 @@ call_00_06ce:
     push DE                                            ;; 00:06ce $d5
     push HL                                            ;; 00:06cf $e5
     call divide_DE_8                                   ;; 00:06d0 $cd $b4 $06
-    ld   HL, wD5A7                                     ;; 00:06d3 $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:06d3 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:06d6 $2a
     ld   C, [HL]                                       ;; 00:06d7 $4e
     ld   B, A                                          ;; 00:06d8 $47
@@ -1045,9 +1045,9 @@ call_00_0779:
     ld   HL, $462f                                     ;; 00:07ed $21 $2f $46
     call ld_HL_from_HL_add_2C                          ;; 00:07f0 $cd $7a $06
     ld   A, H                                          ;; 00:07f3 $7c
-    ld   [wD13A], A                                    ;; 00:07f4 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:07f4 $ea $3a $d1
     ld   A, L                                          ;; 00:07f7 $7d
-    ld   [wD13B], A                                    ;; 00:07f8 $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:07f8 $ea $3b $d1
     ld   HL, wD138                                     ;; 00:07fb $21 $38 $d1
     ld   A, $00                                        ;; 00:07fe $3e $00
     ld   [HL+], A                                      ;; 00:0800 $22
@@ -1179,13 +1179,13 @@ call_00_0897:
     ld   A, $da                                        ;; 00:08c6 $3e $da
     ld   [HL+], A                                      ;; 00:08c8 $22
     ld   A, [HL+]                                      ;; 00:08c9 $2a
-    ld   [wD13A], A                                    ;; 00:08ca $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:08ca $ea $3a $d1
     ld   A, [HL+]                                      ;; 00:08cd $2a
-    ld   [wD13B], A                                    ;; 00:08ce $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:08ce $ea $3b $d1
     ld   A, $00                                        ;; 00:08d1 $3e $00
     ld   [wD138], A                                    ;; 00:08d3 $ea $38 $d1
     ld   A, $14                                        ;; 00:08d6 $3e $14
-    ld   [wD139], A                                    ;; 00:08d8 $ea $39 $d1
+    ld   [wMessageBank], A                             ;; 00:08d8 $ea $39 $d1
     ld   A, $04                                        ;; 00:08db $3e $04
     call call_00_11a8                                  ;; 00:08dd $cd $a8 $11
     jp   call_00_2b1b                                  ;; 00:08e0 $c3 $1b $2b
@@ -1222,9 +1222,9 @@ call_00_0897:
     ld   BC, $07                                       ;; 00:0913 $01 $07 $00
     add  HL, BC                                        ;; 00:0916 $09
     ld   A, [HL+]                                      ;; 00:0917 $2a
-    ld   [wD13A], A                                    ;; 00:0918 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:0918 $ea $3a $d1
     ld   A, [HL+]                                      ;; 00:091b $2a
-    ld   [wD13B], A                                    ;; 00:091c $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:091c $ea $3b $d1
     ld   BC, $05                                       ;; 00:091f $01 $05 $00
     add  HL, BC                                        ;; 00:0922 $09
     ld   A, [wD837]                                    ;; 00:0923 $fa $37 $d8
@@ -1234,7 +1234,7 @@ call_00_0897:
     ld   A, [HL+]                                      ;; 00:092b $2a
     ld   [wD138], A                                    ;; 00:092c $ea $38 $d1
     ld   A, [HL+]                                      ;; 00:092f $2a
-    ld   [wD139], A                                    ;; 00:0930 $ea $39 $d1
+    ld   [wMessageBank], A                             ;; 00:0930 $ea $39 $d1
     jp   call_00_2b1b                                  ;; 00:0933 $c3 $1b $2b
 
 call_00_0936:
@@ -1304,7 +1304,7 @@ call_00_0936:
     pop  HL                                            ;; 00:09b3 $e1
 .jr_00_09b4:
     push HL                                            ;; 00:09b4 $e5
-    ld   HL, wD5A7                                     ;; 00:09b5 $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:09b5 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:09b8 $2a
     ld   E, [HL]                                       ;; 00:09b9 $5e
     ld   D, A                                          ;; 00:09ba $57
@@ -1321,7 +1321,7 @@ call_00_0936:
     call is_BC_DE_equal                                ;; 00:09c9 $cd $f2 $05
     jp   C, .jp_00_096e                                ;; 00:09cc $da $6e $09
     push HL                                            ;; 00:09cf $e5
-    ld   HL, wD5A9                                     ;; 00:09d0 $21 $a9 $d5
+    ld   HL, wRoomHeightTiles                          ;; 00:09d0 $21 $a9 $d5
     ld   A, [HL+]                                      ;; 00:09d3 $2a
     ld   E, [HL]                                       ;; 00:09d4 $5e
     ld   D, A                                          ;; 00:09d5 $57
@@ -2429,7 +2429,7 @@ call_00_105f:
     ld   E, [HL]                                       ;; 00:1071 $5e
     ld   D, A                                          ;; 00:1072 $57
     call divide_DE_8                                   ;; 00:1073 $cd $b4 $06
-    ld   HL, wD5A7                                     ;; 00:1076 $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:1076 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:1079 $2a
     ld   C, [HL]                                       ;; 00:107a $4e
     ld   B, A                                          ;; 00:107b $47
@@ -2473,9 +2473,9 @@ call_00_105f:
     cp   A, $0b                                        ;; 00:10c0 $fe $0b
     call Z, call_00_1194                               ;; 00:10c2 $cc $94 $11
     dec  HL                                            ;; 00:10c5 $2b
-    ld   A, [wD5A7]                                    ;; 00:10c6 $fa $a7 $d5
+    ld   A, [wRoomWidthTiles]                          ;; 00:10c6 $fa $a7 $d5
     ld   D, A                                          ;; 00:10c9 $57
-    ld   A, [wD5A8]                                    ;; 00:10ca $fa $a8 $d5
+    ld   A, [wRoomWidthTiles.low]                      ;; 00:10ca $fa $a8 $d5
     ld   E, A                                          ;; 00:10cd $5f
     add  HL, DE                                        ;; 00:10ce $19
     ld   A, [HL]                                       ;; 00:10cf $7e
@@ -2994,14 +2994,14 @@ call_00_1415:
     ld   A, [HL+]                                      ;; 00:1480 $2a
     ld   C, [HL]                                       ;; 00:1481 $4e
     ld   B, A                                          ;; 00:1482 $47
-    ld   HL, wD5A7                                     ;; 00:1483 $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:1483 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:1486 $2a
     ld   E, [HL]                                       ;; 00:1487 $5e
     ld   D, A                                          ;; 00:1488 $57
     call call_00_0555                                  ;; 00:1489 $cd $55 $05
     ld   A, [wD5B0]                                    ;; 00:148c $fa $b0 $d5
     ld   D, A                                          ;; 00:148f $57
-    ld   A, [wD5B1]                                    ;; 00:1490 $fa $b1 $d5
+    ld   A, [wD5B0.low]                                ;; 00:1490 $fa $b1 $d5
     ld   E, A                                          ;; 00:1493 $5f
     dec  DE                                            ;; 00:1494 $1b
     ld   A, D                                          ;; 00:1495 $7a
@@ -3010,7 +3010,7 @@ call_00_1415:
     ld   A, E                                          ;; 00:149a $7b
     and  A, L                                          ;; 00:149b $a5
     ld   [wCEC9], A                                    ;; 00:149c $ea $c9 $ce
-    ld   HL, wD5A7                                     ;; 00:149f $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:149f $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:14a2 $2a
     ld   C, [HL]                                       ;; 00:14a3 $4e
     ld   B, A                                          ;; 00:14a4 $47
@@ -3106,7 +3106,7 @@ call_00_14e4:
     add  HL, DE                                        ;; 00:153d $19
     ld   [HL], A                                       ;; 00:153e $77
 .jr_00_153f:
-    ld   HL, wD5A7                                     ;; 00:153f $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:153f $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:1542 $2a
     ld   E, [HL]                                       ;; 00:1543 $5e
     ld   D, A                                          ;; 00:1544 $57
@@ -3117,7 +3117,7 @@ call_00_14e4:
     add  HL, DE                                        ;; 00:154b $19
     ld   A, [wD5B0]                                    ;; 00:154c $fa $b0 $d5
     ld   D, A                                          ;; 00:154f $57
-    ld   A, [wD5B1]                                    ;; 00:1550 $fa $b1 $d5
+    ld   A, [wD5B0.low]                                ;; 00:1550 $fa $b1 $d5
     ld   E, A                                          ;; 00:1553 $5f
     dec  DE                                            ;; 00:1554 $1b
     ld   A, H                                          ;; 00:1555 $7c
@@ -3243,7 +3243,7 @@ call_00_15a6:
     ld   A, $1f                                        ;; 00:161b $3e $1f
     add  A, L                                          ;; 00:161d $85
     ld   [wCED4], A                                    ;; 00:161e $ea $d4 $ce
-    ld   HL, wD5A7                                     ;; 00:1621 $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:1621 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:1624 $2a
     ld   L, [HL]                                       ;; 00:1625 $6e
     ld   H, A                                          ;; 00:1626 $67
@@ -3254,7 +3254,7 @@ call_00_15a6:
     ld   A, [wCEBF]                                    ;; 00:162f $fa $bf $ce
     and  A, L                                          ;; 00:1632 $a5
     ld   [wCEC7], A                                    ;; 00:1633 $ea $c7 $ce
-    ld   HL, wD5A7                                     ;; 00:1636 $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:1636 $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:1639 $2a
     ld   C, [HL]                                       ;; 00:163a $4e
     ld   B, A                                          ;; 00:163b $47
@@ -3366,7 +3366,7 @@ call_00_1688:
     ld   E, [HL]                                       ;; 00:16e7 $5e
     ld   D, A                                          ;; 00:16e8 $57
     inc  DE                                            ;; 00:16e9 $13
-    ld   HL, wD5A7                                     ;; 00:16ea $21 $a7 $d5
+    ld   HL, wRoomWidthTiles                           ;; 00:16ea $21 $a7 $d5
     ld   A, [HL+]                                      ;; 00:16ed $2a
     ld   L, [HL]                                       ;; 00:16ee $6e
     ld   H, A                                          ;; 00:16ef $67
@@ -4705,19 +4705,19 @@ call_00_2204:
     ret                                                ;; 00:2216 $c9
 
 call_00_2217:
-    ld   A, [wD5AC]                                    ;; 00:2217 $fa $ac $d5
+    ld   A, [wRoomWidthPixels.low]                     ;; 00:2217 $fa $ac $d5
     sub  A, B                                          ;; 00:221a $90
     ld   E, A                                          ;; 00:221b $5f
-    ld   A, [wD5AB]                                    ;; 00:221c $fa $ab $d5
+    ld   A, [wRoomWidthPixels]                         ;; 00:221c $fa $ab $d5
     sbc  A, $00                                        ;; 00:221f $de $00
     ld   D, A                                          ;; 00:2221 $57
     ret                                                ;; 00:2222 $c9
 
 call_00_2223:
-    ld   A, [wD5AE]                                    ;; 00:2223 $fa $ae $d5
+    ld   A, [wRoomHeightPixels.low]                    ;; 00:2223 $fa $ae $d5
     sub  A, B                                          ;; 00:2226 $90
     ld   E, A                                          ;; 00:2227 $5f
-    ld   A, [wD5AD]                                    ;; 00:2228 $fa $ad $d5
+    ld   A, [wRoomHeightPixels]                        ;; 00:2228 $fa $ad $d5
     sbc  A, $00                                        ;; 00:222b $de $00
     ld   D, A                                          ;; 00:222d $57
     ret                                                ;; 00:222e $c9
@@ -5323,11 +5323,11 @@ call_00_25d9:
     ld   HL, wD126                                     ;; 00:25e1 $21 $26 $d1
     cp   A, [HL]                                       ;; 00:25e4 $be
     jp   C, .jp_00_28ca                                ;; 00:25e5 $da $ca $28
-    ld   A, [wD139]                                    ;; 00:25e8 $fa $39 $d1
+    ld   A, [wMessageBank]                             ;; 00:25e8 $fa $39 $d1
     ld   [wBackupRomBank], A                           ;; 00:25eb $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:25ee $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:25f1 $ea $00 $20
-    ld   HL, wD13A                                     ;; 00:25f4 $21 $3a $d1
+    ld   HL, wMessageAddr                              ;; 00:25f4 $21 $3a $d1
     ld   A, [HL+]                                      ;; 00:25f7 $2a
     ld   L, [HL]                                       ;; 00:25f8 $6e
     ld   H, A                                          ;; 00:25f9 $67
@@ -5366,9 +5366,9 @@ call_00_25d9:
 .jp_00_2649:
     inc  HL                                            ;; 00:2649 $23
     ld   A, H                                          ;; 00:264a $7c
-    ld   [wD13A], A                                    ;; 00:264b $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:264b $ea $3a $d1
     ld   A, L                                          ;; 00:264e $7d
-    ld   [wD13B], A                                    ;; 00:264f $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:264f $ea $3b $d1
     call call_00_2afc                                  ;; 00:2652 $cd $fc $2a
     ld   A, [wD126]                                    ;; 00:2655 $fa $26 $d1
     add  A, E                                          ;; 00:2658 $83
@@ -5387,9 +5387,9 @@ call_00_25d9:
 .jp_00_266e:
     inc  HL                                            ;; 00:266e $23
     ld   A, H                                          ;; 00:266f $7c
-    ld   [wD13A], A                                    ;; 00:2670 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:2670 $ea $3a $d1
     ld   A, L                                          ;; 00:2673 $7d
-    ld   [wD13B], A                                    ;; 00:2674 $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:2674 $ea $3b $d1
     ld   A, [wD1E9]                                    ;; 00:2677 $fa $e9 $d1
     jp   call_00_11a8                                  ;; 00:267a $c3 $a8 $11
 .jp_00_267d:
@@ -5407,9 +5407,9 @@ call_00_25d9:
     pop  HL                                            ;; 00:2694 $e1
     inc  HL                                            ;; 00:2695 $23
     ld   A, H                                          ;; 00:2696 $7c
-    ld   [wD13A], A                                    ;; 00:2697 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:2697 $ea $3a $d1
     ld   A, L                                          ;; 00:269a $7d
-    ld   [wD13B], A                                    ;; 00:269b $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:269b $ea $3b $d1
     ld   A, $01                                        ;; 00:269e $3e $01
     ld   [$2000], A                                    ;; 00:26a0 $ea $00 $20
     call call_01_4109 ;@bank 1                         ;; 00:26a3 $cd $09 $41
@@ -5438,9 +5438,9 @@ call_00_25d9:
     pop  HL                                            ;; 00:26cb $e1
     inc  HL                                            ;; 00:26cc $23
     ld   A, H                                          ;; 00:26cd $7c
-    ld   [wD13A], A                                    ;; 00:26ce $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:26ce $ea $3a $d1
     ld   A, L                                          ;; 00:26d1 $7d
-    ld   [wD13B], A                                    ;; 00:26d2 $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:26d2 $ea $3b $d1
     jp   call_00_25d9                                  ;; 00:26d5 $c3 $d9 $25
 .jp_00_26d8:
     inc  HL                                            ;; 00:26d8 $23
@@ -5459,9 +5459,9 @@ call_00_25d9:
 .jr_00_26e9:
     inc  HL                                            ;; 00:26e9 $23
     ld   A, [HL+]                                      ;; 00:26ea $2a
-    ld   [wD13A], A                                    ;; 00:26eb $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:26eb $ea $3a $d1
     ld   A, [HL+]                                      ;; 00:26ee $2a
-    ld   [wD13B], A                                    ;; 00:26ef $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:26ef $ea $3b $d1
     jp   call_00_25d9                                  ;; 00:26f2 $c3 $d9 $25
 .jp_00_26f5:
     inc  HL                                            ;; 00:26f5 $23
@@ -5504,9 +5504,9 @@ call_00_25d9:
     inc  HL                                            ;; 00:2726 $23
 .jr_00_2727:
     ld   A, [HL+]                                      ;; 00:2727 $2a
-    ld   [wD13A], A                                    ;; 00:2728 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:2728 $ea $3a $d1
     ld   A, [HL+]                                      ;; 00:272b $2a
-    ld   [wD13B], A                                    ;; 00:272c $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:272c $ea $3b $d1
     ld   HL, wD13C                                     ;; 00:272f $21 $3c $d1
     ld   B, $6c                                        ;; 00:2732 $06 $6c
     call memzeroSmall                                  ;; 00:2734 $cd $8b $05
@@ -5536,7 +5536,7 @@ call_00_25d9:
     jr   .jr_00_2785                                   ;; 00:2760 $18 $23
 .jr_00_2762:
     pop  HL                                            ;; 00:2762 $e1
-    ld   HL, wD13A                                     ;; 00:2763 $21 $3a $d1
+    ld   HL, wMessageAddr                              ;; 00:2763 $21 $3a $d1
     ld   A, $42                                        ;; 00:2766 $3e $42
     ld   [HL+], A                                      ;; 00:2768 $22
     ld   A, $05                                        ;; 00:2769 $3e $05
@@ -5559,9 +5559,9 @@ call_00_25d9:
 .jr_00_2785:
     inc  HL                                            ;; 00:2785 $23
     ld   A, H                                          ;; 00:2786 $7c
-    ld   [wD13A], A                                    ;; 00:2787 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:2787 $ea $3a $d1
     ld   A, L                                          ;; 00:278a $7d
-    ld   [wD13B], A                                    ;; 00:278b $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:278b $ea $3b $d1
     ld   A, $07                                        ;; 00:278e $3e $07
     call call_00_11a8                                  ;; 00:2790 $cd $a8 $11
     jp   call_00_25d9                                  ;; 00:2793 $c3 $d9 $25
@@ -5584,9 +5584,9 @@ call_00_25d9:
     inc  HL                                            ;; 00:27ae $23
     inc  HL                                            ;; 00:27af $23
     ld   A, H                                          ;; 00:27b0 $7c
-    ld   [wD13A], A                                    ;; 00:27b1 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:27b1 $ea $3a $d1
     ld   A, L                                          ;; 00:27b4 $7d
-    ld   [wD13B], A                                    ;; 00:27b5 $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:27b5 $ea $3b $d1
     jp   call_00_25d9                                  ;; 00:27b8 $c3 $d9 $25
 .jp_00_27bb:
     ld   A, $0f                                        ;; 00:27bb $3e $0f
@@ -5671,7 +5671,7 @@ call_00_25d9:
     ld   [wD1C3], A                                    ;; 00:2852 $ea $c3 $d1
     ret                                                ;; 00:2855 $c9
 .jr_00_2856:
-    ld   HL, wD13A                                     ;; 00:2856 $21 $3a $d1
+    ld   HL, wMessageAddr                              ;; 00:2856 $21 $3a $d1
     ld   A, [HL+]                                      ;; 00:2859 $2a
     ld   L, [HL]                                       ;; 00:285a $6e
     ld   H, A                                          ;; 00:285b $67
@@ -5684,9 +5684,9 @@ call_00_25d9:
     inc  HL                                            ;; 00:2867 $23
 .jr_00_2868:
     ld   A, [HL+]                                      ;; 00:2868 $2a
-    ld   [wD13A], A                                    ;; 00:2869 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:2869 $ea $3a $d1
     ld   A, [HL+]                                      ;; 00:286c $2a
-    ld   [wD13B], A                                    ;; 00:286d $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:286d $ea $3b $d1
     ld   HL, wD13C                                     ;; 00:2870 $21 $3c $d1
     ld   B, $6c                                        ;; 00:2873 $06 $6c
     call memzeroSmall                                  ;; 00:2875 $cd $8b $05
@@ -5710,7 +5710,7 @@ call_00_25d9:
     jr   Z, .jr_00_289f                                ;; 00:289b $28 $02
     jr   .jr_00_2898                                   ;; 00:289d $18 $f9
 .jr_00_289f:
-    ld   HL, wD13B                                     ;; 00:289f $21 $3b $d1
+    ld   HL, wMessageAddr.low                          ;; 00:289f $21 $3b $d1
     ld   A, $01                                        ;; 00:28a2 $3e $01
     add  A, [HL]                                       ;; 00:28a4 $86
     ld   [HL-], A                                      ;; 00:28a5 $32
@@ -5728,7 +5728,7 @@ call_00_25d9:
     cp   A, B                                          ;; 00:28b9 $b8
     jr   C, .jp_00_28e9                                ;; 00:28ba $38 $2d
     jr   Z, .jp_00_28e9                                ;; 00:28bc $28 $2b
-    ld   HL, wD13B                                     ;; 00:28be $21 $3b $d1
+    ld   HL, wMessageAddr.low                          ;; 00:28be $21 $3b $d1
     ld   A, $01                                        ;; 00:28c1 $3e $01
     add  A, [HL]                                       ;; 00:28c3 $86
     ld   [HL-], A                                      ;; 00:28c4 $32
@@ -5754,7 +5754,7 @@ call_00_25d9:
     ld   [wD12D], A                                    ;; 00:28e5 $ea $2d $d1
     ret                                                ;; 00:28e8 $c9
 .jp_00_28e9:
-    ld   HL, wD13B                                     ;; 00:28e9 $21 $3b $d1
+    ld   HL, wMessageAddr.low                          ;; 00:28e9 $21 $3b $d1
     ld   A, $01                                        ;; 00:28ec $3e $01
     add  A, [HL]                                       ;; 00:28ee $86
     ld   [HL-], A                                      ;; 00:28ef $32
@@ -5789,9 +5789,9 @@ call_00_25d9:
     jp   NC, .jp_00_28ca                               ;; 00:2921 $d2 $ca $28
     inc  HL                                            ;; 00:2924 $23
     ld   A, H                                          ;; 00:2925 $7c
-    ld   [wD13A], A                                    ;; 00:2926 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:2926 $ea $3a $d1
     ld   A, L                                          ;; 00:2929 $7d
-    ld   [wD13B], A                                    ;; 00:292a $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:292a $ea $3b $d1
     ld   A, C                                          ;; 00:292d $79
     cp   A, $9b                                        ;; 00:292e $fe $9b
     jr   C, .jr_00_294f                                ;; 00:2930 $38 $1d
@@ -5980,11 +5980,11 @@ call_00_2a13:
     ret                                                ;; 00:2a40 $c9
 
 jp_00_2a41:
-    ld   A, [wD139]                                    ;; 00:2a41 $fa $39 $d1
+    ld   A, [wMessageBank]                             ;; 00:2a41 $fa $39 $d1
     ld   [wBackupRomBank], A                           ;; 00:2a44 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:2a47 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:2a4a $ea $00 $20
-    ld   HL, wD13A                                     ;; 00:2a4d $21 $3a $d1
+    ld   HL, wMessageAddr                              ;; 00:2a4d $21 $3a $d1
     ld   A, [HL+]                                      ;; 00:2a50 $2a
     ld   L, [HL]                                       ;; 00:2a51 $6e
     ld   H, A                                          ;; 00:2a52 $67
@@ -6068,7 +6068,7 @@ jp_00_2a41:
     ld   [HL+], A                                      ;; 00:2acc $22
     ld   A, $c6                                        ;; 00:2acd $3e $c6
     ld   [HL+], A                                      ;; 00:2acf $22
-    ld   HL, wD13A                                     ;; 00:2ad0 $21 $3a $d1
+    ld   HL, wMessageAddr                              ;; 00:2ad0 $21 $3a $d1
     ld   A, $41                                        ;; 00:2ad3 $3e $41
     ld   [HL+], A                                      ;; 00:2ad5 $22
     ld   A, $99                                        ;; 00:2ad6 $3e $99
@@ -6298,7 +6298,7 @@ call_00_2bc4:
     add  A, A                                          ;; 00:2c96 $87
     ld   C, A                                          ;; 00:2c97 $4f
     ld   B, $00                                        ;; 00:2c98 $06 $00
-    ld   HL, $4000                                     ;; 00:2c9a $21 $00 $40
+    ld   HL, data_35_4000 ;@=ptr bank=35               ;; 00:2c9a $21 $00 $40
     add  HL, BC                                        ;; 00:2c9d $09
     ld   A, [HL+]                                      ;; 00:2c9e $2a
     ld   [wD5CF], A                                    ;; 00:2c9f $ea $cf $d5
@@ -6702,13 +6702,13 @@ call_00_2f87:
     jr   Z, .jr_00_3033                                ;; 00:3027 $28 $0a
     dec  A                                             ;; 00:3029 $3d
     ld   C, A                                          ;; 00:302a $4f
-    ld   HL, $4527                                     ;; 00:302b $21 $27 $45
+    ld   HL, data_08_4527 ;@=ptr bank=8                ;; 00:302b $21 $27 $45
     call ld_HL_from_HL_add_2C                          ;; 00:302e $cd $7a $06
     jr   .jr_00_3047                                   ;; 00:3031 $18 $14
 .jr_00_3033:
     ld   A, [wD591]                                    ;; 00:3033 $fa $91 $d5
     ld   C, A                                          ;; 00:3036 $4f
-    ld   HL, $4615                                     ;; 00:3037 $21 $15 $46
+    ld   HL, data_08_4615 ;@=ptr bank=8                ;; 00:3037 $21 $15 $46
     call ld_HL_from_HL_add_2C                          ;; 00:303a $cd $7a $06
     call call_00_064c                                  ;; 00:303d $cd $4c $06
     rlca                                               ;; 00:3040 $07
@@ -7221,9 +7221,9 @@ call_00_3437:
     ld   HL, $417d                                     ;; 00:34b0 $21 $7d $41
     call ld_HL_from_HL_add_2C                          ;; 00:34b3 $cd $7a $06
     ld   A, H                                          ;; 00:34b6 $7c
-    ld   [wD13A], A                                    ;; 00:34b7 $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 00:34b7 $ea $3a $d1
     ld   A, L                                          ;; 00:34ba $7d
-    ld   [wD13B], A                                    ;; 00:34bb $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 00:34bb $ea $3b $d1
     ld   HL, wD138                                     ;; 00:34be $21 $38 $d1
     ld   A, $00                                        ;; 00:34c1 $3e $00
     ld   [HL+], A                                      ;; 00:34c3 $22

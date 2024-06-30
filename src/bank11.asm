@@ -1399,11 +1399,11 @@ call_11_5a1e:
     jp   .jp_11_5daa                                   ;; 11:5da7 $c3 $aa $5d
 .jp_11_5daa:
     ld   A, H                                          ;; 11:5daa $7c
-    ld   [wD13A], A                                    ;; 11:5dab $ea $3a $d1
+    ld   [wMessageAddr], A                             ;; 11:5dab $ea $3a $d1
     ld   A, L                                          ;; 11:5dae $7d
-    ld   [wD13B], A                                    ;; 11:5daf $ea $3b $d1
+    ld   [wMessageAddr.low], A                         ;; 11:5daf $ea $3b $d1
     ld   A, $18                                        ;; 11:5db2 $3e $18
-    ld   [wD139], A                                    ;; 11:5db4 $ea $39 $d1
+    ld   [wMessageBank], A                             ;; 11:5db4 $ea $39 $d1
     jp   call_00_2b1b                                  ;; 11:5db7 $c3 $1b $2b
 .jp_11_5dba:
     ld   HL, wD572                                     ;; 11:5dba $21 $72 $d5

@@ -10,6 +10,16 @@ shift
 db high(\1), low(\1)
 shift
 ENDM
+MACRO data_WWWW
+db high(\1), low(\1)
+shift
+db high(\1), low(\1)
+shift
+db high(\1), low(\1)
+shift
+db high(\1), low(\1)
+shift
+ENDM
 MACRO data_bbWWWWWWWWWWWWWWWWbbb
 db \1
 shift

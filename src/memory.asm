@@ -1230,13 +1230,12 @@ wD136:
 wD138:
     ds 1                                               ;; d138
 
-wD139:
+wMessageBank:
     ds 1                                               ;; d139
 
-wD13A:
+wMessageAddr:
     ds 1                                               ;; d13a
-
-wD13B:
+.low:
     ds 1                                               ;; d13b
 
 wD13C:
@@ -2186,31 +2185,27 @@ wRoomGraphicsPointer:
 wRoomPalettePointer:
     ds 2                                               ;; d5a5
 
-wD5A7:
+wRoomWidthTiles:
     ds 1                                               ;; d5a7
-
-wD5A8:
+.low:
     ds 1                                               ;; d5a8
 
-wD5A9:
+wRoomHeightTiles:
     ds 2                                               ;; d5a9
 
-wD5AB:
+wRoomWidthPixels:
     ds 1                                               ;; d5ab
-
-wD5AC:
+.low:
     ds 1                                               ;; d5ac
 
-wD5AD:
+wRoomHeightPixels:
     ds 1                                               ;; d5ad
-
-wD5AE:
+.low:
     ds 2                                               ;; d5ae
 
 wD5B0:
     ds 1                                               ;; d5b0
-
-wD5B1:
+.low:
     ds 1                                               ;; d5b1
 
 wD5B2:
