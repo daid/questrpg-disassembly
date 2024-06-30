@@ -1394,13 +1394,12 @@ wD2BE:
 wD2BF:
     ds 4                                               ;; d2bf
 
-wD2C3:
+wScriptIndex:
     ds 2                                               ;; d2c3
 
-wD2C5:
+wScriptPointer:
     ds 1                                               ;; d2c5
-
-wD2C6:
+.low:
     ds 1                                               ;; d2c6
 
 wD2C7:

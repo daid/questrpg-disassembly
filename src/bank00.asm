@@ -2786,11 +2786,11 @@ jp_00_12e1:
     jp   jp_06_57da                                    ;; 00:12fe $c3 $da $57
 
 call_00_1301:
-    ld   [wD2C3], A                                    ;; 00:1301 $ea $c3 $d2
+    ld   [wScriptIndex], A                             ;; 00:1301 $ea $c3 $d2
     ld   A, $05                                        ;; 00:1304 $3e $05
     ld   [wCurrentRomBank], A                          ;; 00:1306 $ea $b7 $d5
     ld   [$2000], A                                    ;; 00:1309 $ea $00 $20
-    call call_05_4000                                  ;; 00:130c $cd $00 $40
+    call startScript                                   ;; 00:130c $cd $00 $40
     ld   A, $02                                        ;; 00:130f $3e $02
     ld   [wC53B], A                                    ;; 00:1311 $ea $3b $c5
     ld   A, $10                                        ;; 00:1314 $3e $10

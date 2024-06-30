@@ -37,6 +37,7 @@ class StringTable(Block):
 
 CHARS = {
     0x8F: "!",
+    0x90: "?",
     0x97: " ",
     0x9A: "'",
     0xD3: ".",

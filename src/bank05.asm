@@ -7,17 +7,17 @@ INCLUDE "include/constants.inc"
 
 SECTION "bank05", ROMX[$4000], BANK[$05]
 
-call_05_4000:
-    ld   A, [wD2C3]                                    ;; 05:4000 $fa $c3 $d2
+startScript:
+    ld   A, [wScriptIndex]                             ;; 05:4000 $fa $c3 $d2
     ld   L, A                                          ;; 05:4003 $6f
     ld   H, $00                                        ;; 05:4004 $26 $00
     add  HL, HL                                        ;; 05:4006 $29
-    ld   DE, data_05_4e49                              ;; 05:4007 $11 $49 $4e
+    ld   DE, scriptTable01                             ;; 05:4007 $11 $49 $4e
     add  HL, DE                                        ;; 05:400a $19
     ld   A, [HL+]                                      ;; 05:400b $2a
-    ld   [wD2C5], A                                    ;; 05:400c $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:400c $ea $c5 $d2
     ld   A, [HL]                                       ;; 05:400f $7e
-    ld   [wD2C6], A                                    ;; 05:4010 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4010 $ea $c6 $d2
     xor  A, A                                          ;; 05:4013 $af
     ld   [wD2C7], A                                    ;; 05:4014 $ea $c7 $d2
     ld   [wD2C8], A                                    ;; 05:4017 $ea $c8 $d2
@@ -71,9 +71,9 @@ call_05_403e:
 .jr_05_408b:
     ld   HL, data_05_4e7d                              ;; 05:408b $21 $7d $4e
     ld   A, [HL+]                                      ;; 05:408e $2a
-    ld   [wD2C5], A                                    ;; 05:408f $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:408f $ea $c5 $d2
     ld   A, [HL]                                       ;; 05:4092 $7e
-    ld   [wD2C6], A                                    ;; 05:4093 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4093 $ea $c6 $d2
     ret                                                ;; 05:4096 $c9
 .jr_05_4097:
     ld   HL, wC155                                     ;; 05:4097 $21 $55 $c1
@@ -91,18 +91,18 @@ call_05_403e:
     ld   BC, $02                                       ;; 05:40ae $01 $02 $00
     add  HL, BC                                        ;; 05:40b1 $09
     ld   A, [HL+]                                      ;; 05:40b2 $2a
-    ld   [wD2C5], A                                    ;; 05:40b3 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:40b3 $ea $c5 $d2
     ld   A, [HL]                                       ;; 05:40b6 $7e
-    ld   [wD2C6], A                                    ;; 05:40b7 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:40b7 $ea $c6 $d2
     ret                                                ;; 05:40ba $c9
 .jr_05_40bb:
     ld   HL, data_05_4e7d                              ;; 05:40bb $21 $7d $4e
     ld   BC, $04                                       ;; 05:40be $01 $04 $00
     add  HL, BC                                        ;; 05:40c1 $09
     ld   A, [HL+]                                      ;; 05:40c2 $2a
-    ld   [wD2C5], A                                    ;; 05:40c3 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:40c3 $ea $c5 $d2
     ld   A, [HL]                                       ;; 05:40c6 $7e
-    ld   [wD2C6], A                                    ;; 05:40c7 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:40c7 $ea $c6 $d2
     ret                                                ;; 05:40ca $c9
 
 call_05_40cb:
@@ -656,17 +656,17 @@ call_05_40cb:
     jp   Z, jp_05_4dfe                                 ;; 05:448f $ca $fe $4d
     ret                                                ;; 05:4492 $c9
 .jr_05_4493:
-    ld   A, [wD2C5]                                    ;; 05:4493 $fa $c5 $d2
+    ld   A, [wScriptPointer]                           ;; 05:4493 $fa $c5 $d2
     ld   H, A                                          ;; 05:4496 $67
-    ld   A, [wD2C6]                                    ;; 05:4497 $fa $c6 $d2
+    ld   A, [wScriptPointer.low]                       ;; 05:4497 $fa $c6 $d2
     ld   L, A                                          ;; 05:449a $6f
     ld   A, [HL+]                                      ;; 05:449b $2a
     cp   A, $01                                        ;; 05:449c $fe $01
-    jp   C, .jp_05_453d                                ;; 05:449e $da $3d $45
-    jp   Z, .jp_05_4575                                ;; 05:44a1 $ca $75 $45
+    jp   C, .script_opcode_00                          ;; 05:449e $da $3d $45
+    jp   Z, .script_opcode_01                          ;; 05:44a1 $ca $75 $45
     cp   A, $03                                        ;; 05:44a4 $fe $03
-    jp   C, .jp_05_45ce                                ;; 05:44a6 $da $ce $45
-    jp   Z, .jp_05_461f                                ;; 05:44a9 $ca $1f $46
+    jp   C, .script_opcode_02                          ;; 05:44a6 $da $ce $45
+    jp   Z, .script_opcode_03                          ;; 05:44a9 $ca $1f $46
     cp   A, $05                                        ;; 05:44ac $fe $05
     jp   C, .jp_05_463a                                ;; 05:44ae $da $3a $46
     jp   Z, .jp_05_465c                                ;; 05:44b1 $ca $5c $46
@@ -674,7 +674,7 @@ call_05_40cb:
     jp   C, .jp_05_4671                                ;; 05:44b6 $da $71 $46
     jp   Z, .jp_05_4693                                ;; 05:44b9 $ca $93 $46
     cp   A, $09                                        ;; 05:44bc $fe $09
-    jp   C, .jp_05_46c2                                ;; 05:44be $da $c2 $46
+    jp   C, .script_opcode_08                          ;; 05:44be $da $c2 $46
     jp   Z, .jp_05_4760                                ;; 05:44c1 $ca $60 $47
     cp   A, $0b                                        ;; 05:44c4 $fe $0b
     jp   C, .jp_05_477b                                ;; 05:44c6 $da $7b $47
@@ -722,7 +722,7 @@ call_05_40cb:
     jp   C, .jp_05_4b28                                ;; 05:4536 $da $28 $4b
     jp   Z, .jp_05_4b3f                                ;; 05:4539 $ca $3f $4b
     ret                                                ;; 05:453c $c9
-.jp_05_453d:
+.script_opcode_00:
     ld   A, [HL+]                                      ;; 05:453d $2a
     ld   [wD5C0], A                                    ;; 05:453e $ea $c0 $d5
     ld   A, [HL+]                                      ;; 05:4541 $2a
@@ -747,11 +747,11 @@ call_05_40cb:
     call call_00_09eb                                  ;; 05:4568 $cd $eb $09
     pop  HL                                            ;; 05:456b $e1
     ld   A, H                                          ;; 05:456c $7c
-    ld   [wD2C5], A                                    ;; 05:456d $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:456d $ea $c5 $d2
     ld   A, L                                          ;; 05:4570 $7d
-    ld   [wD2C6], A                                    ;; 05:4571 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4571 $ea $c6 $d2
     ret                                                ;; 05:4574 $c9
-.jp_05_4575:
+.script_opcode_01:
     ld   A, [HL+]                                      ;; 05:4575 $2a
     ld   [wD2D6], A                                    ;; 05:4576 $ea $d6 $d2
     ld   D, H                                          ;; 05:4579 $54
@@ -801,14 +801,14 @@ call_05_40cb:
     ld   L, E                                          ;; 05:45be $6b
     ld   A, [HL+]                                      ;; 05:45bf $2a
     cp   A, $01                                        ;; 05:45c0 $fe $01
-    jr   Z, .jp_05_4575                                ;; 05:45c2 $28 $b1
+    jr   Z, .script_opcode_01                          ;; 05:45c2 $28 $b1
     dec  HL                                            ;; 05:45c4 $2b
     ld   A, H                                          ;; 05:45c5 $7c
-    ld   [wD2C5], A                                    ;; 05:45c6 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:45c6 $ea $c5 $d2
     ld   A, L                                          ;; 05:45c9 $7d
-    ld   [wD2C6], A                                    ;; 05:45ca $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:45ca $ea $c6 $d2
     ret                                                ;; 05:45cd $c9
-.jp_05_45ce:
+.script_opcode_02:
     ld   A, $d3                                        ;; 05:45ce $3e $d3
     ld   [wD1BD], A                                    ;; 05:45d0 $ea $bd $d1
     ld   A, $19                                        ;; 05:45d3 $3e $19
@@ -817,11 +817,11 @@ call_05_40cb:
     ld   E, A                                          ;; 05:45d9 $5f
     ld   D, $00                                        ;; 05:45da $16 $00
     ld   A, H                                          ;; 05:45dc $7c
-    ld   [wD2C5], A                                    ;; 05:45dd $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:45dd $ea $c5 $d2
     ld   A, L                                          ;; 05:45e0 $7d
-    ld   [wD2C6], A                                    ;; 05:45e1 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:45e1 $ea $c6 $d2
     ld   HL, stringTablePointers                       ;; 05:45e4 $21 $22 $79
-    ld   A, [wD2C3]                                    ;; 05:45e7 $fa $c3 $d2
+    ld   A, [wScriptIndex]                             ;; 05:45e7 $fa $c3 $d2
     ld   C, A                                          ;; 05:45ea $4f
     sla  C                                             ;; 05:45eb $cb $21
     ld   B, $00                                        ;; 05:45ed $06 $00
@@ -836,7 +836,7 @@ call_05_40cb:
     ld   [wMessageAddr], A                             ;; 05:45f9 $ea $3a $d1
     ld   A, [HL]                                       ;; 05:45fc $7e
     ld   [wMessageAddr.low], A                         ;; 05:45fd $ea $3b $d1
-    ld   A, [wD2C3]                                    ;; 05:4600 $fa $c3 $d2
+    ld   A, [wScriptIndex]                             ;; 05:4600 $fa $c3 $d2
     cp   A, $11                                        ;; 05:4603 $fe $11
     jr   NC, .jr_05_4612                               ;; 05:4605 $30 $0b
     xor  A, A                                          ;; 05:4607 $af
@@ -852,14 +852,14 @@ call_05_40cb:
 .jr_05_461b:
     call call_00_2b1b                                  ;; 05:461b $cd $1b $2b
     ret                                                ;; 05:461e $c9
-.jp_05_461f:
+.script_opcode_03:
     ld   A, [HL+]                                      ;; 05:461f $2a
     ld   E, A                                          ;; 05:4620 $5f
     ld   D, $00                                        ;; 05:4621 $16 $00
     ld   A, H                                          ;; 05:4623 $7c
-    ld   [wD2C5], A                                    ;; 05:4624 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4624 $ea $c5 $d2
     ld   A, L                                          ;; 05:4627 $7d
-    ld   [wD2C6], A                                    ;; 05:4628 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4628 $ea $c6 $d2
     sla  E                                             ;; 05:462b $cb $23
     rl   D                                             ;; 05:462d $cb $12
     ld   HL, $323                                      ;; 05:462f $21 $23 $03
@@ -883,9 +883,9 @@ call_05_40cb:
     ld   A, $01                                        ;; 05:464e $3e $01
     ld   [wD2D8], A                                    ;; 05:4650 $ea $d8 $d2
     ld   A, H                                          ;; 05:4653 $7c
-    ld   [wD2C5], A                                    ;; 05:4654 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4654 $ea $c5 $d2
     ld   A, L                                          ;; 05:4657 $7d
-    ld   [wD2C6], A                                    ;; 05:4658 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4658 $ea $c6 $d2
     ret                                                ;; 05:465b $c9
 .jp_05_465c:
     ld   A, $01                                        ;; 05:465c $3e $01
@@ -894,9 +894,9 @@ call_05_40cb:
     ld   A, [HL+]                                      ;; 05:4664 $2a
     ld   [wD2D4], A                                    ;; 05:4665 $ea $d4 $d2
     ld   A, H                                          ;; 05:4668 $7c
-    ld   [wD2C5], A                                    ;; 05:4669 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4669 $ea $c5 $d2
     ld   A, L                                          ;; 05:466c $7d
-    ld   [wD2C6], A                                    ;; 05:466d $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:466d $ea $c6 $d2
     ret                                                ;; 05:4670 $c9
 .jp_05_4671:
     ld   A, [HL+]                                      ;; 05:4671 $2a
@@ -910,9 +910,9 @@ call_05_40cb:
     ld   A, [wD312]                                    ;; 05:4684 $fa $12 $d3
     ld   [wD313], A                                    ;; 05:4687 $ea $13 $d3
     ld   A, H                                          ;; 05:468a $7c
-    ld   [wD2C5], A                                    ;; 05:468b $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:468b $ea $c5 $d2
     ld   A, L                                          ;; 05:468e $7d
-    ld   [wD2C6], A                                    ;; 05:468f $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:468f $ea $c6 $d2
     ret                                                ;; 05:4692 $c9
 .jp_05_4693:
     ld   A, $01                                        ;; 05:4693 $3e $01
@@ -938,11 +938,11 @@ call_05_40cb:
     ld   [wD316], A                                    ;; 05:46b6 $ea $16 $d3
 .jr_05_46b9:
     ld   A, H                                          ;; 05:46b9 $7c
-    ld   [wD2C5], A                                    ;; 05:46ba $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:46ba $ea $c5 $d2
     ld   A, L                                          ;; 05:46bd $7d
-    ld   [wD2C6], A                                    ;; 05:46be $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:46be $ea $c6 $d2
     ret                                                ;; 05:46c1 $c9
-.jp_05_46c2:
+.script_opcode_08:
     ld   A, [HL+]                                      ;; 05:46c2 $2a
     ld   [wCurrentMap], A                              ;; 05:46c3 $ea $42 $c1
     ld   A, [HL+]                                      ;; 05:46c6 $2a
@@ -1024,17 +1024,17 @@ call_05_40cb:
     ld   [wD318], A                                    ;; 05:4753 $ea $18 $d3
     dec  HL                                            ;; 05:4756 $2b
     ld   A, H                                          ;; 05:4757 $7c
-    ld   [wD2C5], A                                    ;; 05:4758 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4758 $ea $c5 $d2
     ld   A, L                                          ;; 05:475b $7d
-    ld   [wD2C6], A                                    ;; 05:475c $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:475c $ea $c6 $d2
     ret                                                ;; 05:475f $c9
 .jp_05_4760:
     ld   A, [HL+]                                      ;; 05:4760 $2a
     ld   [wD318], A                                    ;; 05:4761 $ea $18 $d3
     ld   A, H                                          ;; 05:4764 $7c
-    ld   [wD2C5], A                                    ;; 05:4765 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4765 $ea $c5 $d2
     ld   A, L                                          ;; 05:4768 $7d
-    ld   [wD2C6], A                                    ;; 05:4769 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4769 $ea $c6 $d2
     ld   A, [wD2B9]                                    ;; 05:476c $fa $b9 $d2
     ld   [wD31C], A                                    ;; 05:476f $ea $1c $d3
     ld   A, $01                                        ;; 05:4772 $3e $01
@@ -1047,9 +1047,9 @@ call_05_40cb:
     ld   A, [HL+]                                      ;; 05:477f $2a
     ld   [wD30F], A                                    ;; 05:4780 $ea $0f $d3
     ld   A, H                                          ;; 05:4783 $7c
-    ld   [wD2C5], A                                    ;; 05:4784 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4784 $ea $c5 $d2
     ld   A, L                                          ;; 05:4787 $7d
-    ld   [wD2C6], A                                    ;; 05:4788 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4788 $ea $c6 $d2
     ld   A, $01                                        ;; 05:478b $3e $01
     ld   [wD30E], A                                    ;; 05:478d $ea $0e $d3
     ld   A, $05                                        ;; 05:4790 $3e $05
@@ -1061,9 +1061,9 @@ call_05_40cb:
     jr   C, .jr_05_47aa                                ;; 05:4799 $38 $0f
     jr   Z, .jr_05_47be                                ;; 05:479b $28 $21
     ld   A, [wD38B]                                    ;; 05:479d $fa $8b $d3
-    ld   [wD2C5], A                                    ;; 05:47a0 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:47a0 $ea $c5 $d2
     ld   A, [wD38C]                                    ;; 05:47a3 $fa $8c $d3
-    ld   [wD2C6], A                                    ;; 05:47a6 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:47a6 $ea $c6 $d2
     ret                                                ;; 05:47a9 $c9
 .jr_05_47aa:
     ld   A, H                                          ;; 05:47aa $7c
@@ -1072,9 +1072,9 @@ call_05_40cb:
     ld   [wD38C], A                                    ;; 05:47af $ea $8c $d3
     ld   HL, data_05_75e9                              ;; 05:47b2 $21 $e9 $75
     ld   A, [HL+]                                      ;; 05:47b5 $2a
-    ld   [wD2C5], A                                    ;; 05:47b6 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:47b6 $ea $c5 $d2
     ld   A, [HL]                                       ;; 05:47b9 $7e
-    ld   [wD2C6], A                                    ;; 05:47ba $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:47ba $ea $c6 $d2
     ret                                                ;; 05:47bd $c9
 .jr_05_47be:
     ld   A, H                                          ;; 05:47be $7c
@@ -1085,9 +1085,9 @@ call_05_40cb:
     ld   HL, data_05_75e9                              ;; 05:47c9 $21 $e9 $75
     add  HL, DE                                        ;; 05:47cc $19
     ld   A, [HL+]                                      ;; 05:47cd $2a
-    ld   [wD2C5], A                                    ;; 05:47ce $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:47ce $ea $c5 $d2
     ld   A, [HL]                                       ;; 05:47d1 $7e
-    ld   [wD2C6], A                                    ;; 05:47d2 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:47d2 $ea $c6 $d2
     ret                                                ;; 05:47d5 $c9
 .jp_05_47d6:
     ld   A, [HL+]                                      ;; 05:47d6 $2a
@@ -1095,9 +1095,9 @@ call_05_40cb:
     call call_00_11a8                                  ;; 05:47d8 $cd $a8 $11
     pop  HL                                            ;; 05:47db $e1
     ld   A, H                                          ;; 05:47dc $7c
-    ld   [wD2C5], A                                    ;; 05:47dd $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:47dd $ea $c5 $d2
     ld   A, L                                          ;; 05:47e0 $7d
-    ld   [wD2C6], A                                    ;; 05:47e1 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:47e1 $ea $c6 $d2
     ret                                                ;; 05:47e4 $c9
 .jp_05_47e5:
     ld   A, [HL+]                                      ;; 05:47e5 $2a
@@ -1131,9 +1131,9 @@ call_05_40cb:
     ret                                                ;; 05:4815 $c9
 .jp_05_4816:
     ld   A, H                                          ;; 05:4816 $7c
-    ld   [wD2C5], A                                    ;; 05:4817 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4817 $ea $c5 $d2
     ld   A, L                                          ;; 05:481a $7d
-    ld   [wD2C6], A                                    ;; 05:481b $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:481b $ea $c6 $d2
     ret                                                ;; 05:481e $c9
 .jp_05_481f:
     ld   A, [HL+]                                      ;; 05:481f $2a
@@ -1147,9 +1147,9 @@ call_05_40cb:
     ld   [wC46C], A                                    ;; 05:482d $ea $6c $c4
 .jr_05_4830:
     ld   A, H                                          ;; 05:4830 $7c
-    ld   [wD2C5], A                                    ;; 05:4831 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4831 $ea $c5 $d2
     ld   A, L                                          ;; 05:4834 $7d
-    ld   [wD2C6], A                                    ;; 05:4835 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4835 $ea $c6 $d2
     ret                                                ;; 05:4838 $c9
 .jp_05_4839:
     ld   A, [HL+]                                      ;; 05:4839 $2a
@@ -1168,12 +1168,12 @@ call_05_40cb:
     ld   A, [HL+]                                      ;; 05:4855 $2a
     and  A, A                                          ;; 05:4856 $a7
     cp   A, $01                                        ;; 05:4857 $fe $01
-    jp   Z, .jp_05_4575                                ;; 05:4859 $ca $75 $45
+    jp   Z, .script_opcode_01                          ;; 05:4859 $ca $75 $45
     dec  HL                                            ;; 05:485c $2b
     ld   A, H                                          ;; 05:485d $7c
-    ld   [wD2C5], A                                    ;; 05:485e $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:485e $ea $c5 $d2
     ld   A, L                                          ;; 05:4861 $7d
-    ld   [wD2C6], A                                    ;; 05:4862 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4862 $ea $c6 $d2
     ret                                                ;; 05:4865 $c9
 .jp_05_4866:
     ld   A, [HL+]                                      ;; 05:4866 $2a
@@ -1190,20 +1190,20 @@ call_05_40cb:
     ld   [wC45B], A                                    ;; 05:487c $ea $5b $c4
     ld   A, [HL+]                                      ;; 05:487f $2a
     and  A, A                                          ;; 05:4880 $a7
-    jp   Z, .jp_05_453d                                ;; 05:4881 $ca $3d $45
+    jp   Z, .script_opcode_00                          ;; 05:4881 $ca $3d $45
     dec  HL                                            ;; 05:4884 $2b
     ld   A, H                                          ;; 05:4885 $7c
-    ld   [wD2C5], A                                    ;; 05:4886 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4886 $ea $c5 $d2
     ld   A, L                                          ;; 05:4889 $7d
-    ld   [wD2C6], A                                    ;; 05:488a $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:488a $ea $c6 $d2
     ret                                                ;; 05:488d $c9
 .jp_05_488e:
     ld   A, [HL+]                                      ;; 05:488e $2a
     ld   [wD2D5], A                                    ;; 05:488f $ea $d5 $d2
     ld   A, H                                          ;; 05:4892 $7c
-    ld   [wD2C5], A                                    ;; 05:4893 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4893 $ea $c5 $d2
     ld   A, L                                          ;; 05:4896 $7d
-    ld   [wD2C6], A                                    ;; 05:4897 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4897 $ea $c6 $d2
     ret                                                ;; 05:489a $c9
 .jp_05_489b:
     ld   A, [wMainGameState]                           ;; 05:489b $fa $86 $d5
@@ -1225,27 +1225,27 @@ call_05_40cb:
     xor  A, A                                          ;; 05:48bc $af
     ld   [wD58B], A                                    ;; 05:48bd $ea $8b $d5
     ld   A, H                                          ;; 05:48c0 $7c
-    ld   [wD2C5], A                                    ;; 05:48c1 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:48c1 $ea $c5 $d2
     ld   A, L                                          ;; 05:48c4 $7d
-    ld   [wD2C6], A                                    ;; 05:48c5 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:48c5 $ea $c6 $d2
     ret                                                ;; 05:48c8 $c9
 .jp_05_48c9:
     ldh  A, [rLCDC]                                    ;; 05:48c9 $f0 $40
     and  A, $df                                        ;; 05:48cb $e6 $df
     ldh  [rLCDC], A                                    ;; 05:48cd $e0 $40
     ld   A, H                                          ;; 05:48cf $7c
-    ld   [wD2C5], A                                    ;; 05:48d0 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:48d0 $ea $c5 $d2
     ld   A, L                                          ;; 05:48d3 $7d
-    ld   [wD2C6], A                                    ;; 05:48d4 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:48d4 $ea $c6 $d2
     ret                                                ;; 05:48d7 $c9
 .jp_05_48d8:
     ld   A, [HL+]                                      ;; 05:48d8 $2a
     ld   C, A                                          ;; 05:48d9 $4f
     ld   B, $00                                        ;; 05:48da $06 $00
     ld   A, H                                          ;; 05:48dc $7c
-    ld   [wD2C5], A                                    ;; 05:48dd $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:48dd $ea $c5 $d2
     ld   A, L                                          ;; 05:48e0 $7d
-    ld   [wD2C6], A                                    ;; 05:48e1 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:48e1 $ea $c6 $d2
     ld   HL, wC12D                                     ;; 05:48e4 $21 $2d $c1
     add  HL, BC                                        ;; 05:48e7 $09
     ld   A, $01                                        ;; 05:48e8 $3e $01
@@ -1292,9 +1292,9 @@ call_05_40cb:
     jr   Z, .jp_05_48ef                                ;; 05:4922 $28 $cb
     dec  HL                                            ;; 05:4924 $2b
     ld   A, H                                          ;; 05:4925 $7c
-    ld   [wD2C5], A                                    ;; 05:4926 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4926 $ea $c5 $d2
     ld   A, L                                          ;; 05:4929 $7d
-    ld   [wD2C6], A                                    ;; 05:492a $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:492a $ea $c6 $d2
     ret                                                ;; 05:492d $c9
 .jp_05_492e:
     ld   A, [HL+]                                      ;; 05:492e $2a
@@ -1309,9 +1309,9 @@ call_05_40cb:
     ld   H, B                                          ;; 05:493b $60
     ld   L, C                                          ;; 05:493c $69
     ld   A, H                                          ;; 05:493d $7c
-    ld   [wD2C5], A                                    ;; 05:493e $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:493e $ea $c5 $d2
     ld   A, L                                          ;; 05:4941 $7d
-    ld   [wD2C6], A                                    ;; 05:4942 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4942 $ea $c6 $d2
     ret                                                ;; 05:4945 $c9
 .jp_05_4946:
     ld   A, [HL+]                                      ;; 05:4946 $2a
@@ -1326,22 +1326,22 @@ call_05_40cb:
     ld   H, B                                          ;; 05:4952 $60
     ld   L, C                                          ;; 05:4953 $69
     ld   A, H                                          ;; 05:4954 $7c
-    ld   [wD2C5], A                                    ;; 05:4955 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4955 $ea $c5 $d2
     ld   A, L                                          ;; 05:4958 $7d
-    ld   [wD2C6], A                                    ;; 05:4959 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4959 $ea $c6 $d2
     ret                                                ;; 05:495c $c9
 .jp_05_495d:
     ld   A, H                                          ;; 05:495d $7c
-    ld   [wD2C5], A                                    ;; 05:495e $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:495e $ea $c5 $d2
     ld   A, L                                          ;; 05:4961 $7d
-    ld   [wD2C6], A                                    ;; 05:4962 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4962 $ea $c6 $d2
     call call_00_0f2a                                  ;; 05:4965 $cd $2a $0f
     ret                                                ;; 05:4968 $c9
 .jp_05_4969:
     ld   A, H                                          ;; 05:4969 $7c
-    ld   [wD2C5], A                                    ;; 05:496a $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:496a $ea $c5 $d2
     ld   A, L                                          ;; 05:496d $7d
-    ld   [wD2C6], A                                    ;; 05:496e $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:496e $ea $c6 $d2
     ld   A, $01                                        ;; 05:4971 $3e $01
     ld   [wC46B], A                                    ;; 05:4973 $ea $6b $c4
     ret                                                ;; 05:4976 $c9
@@ -1359,9 +1359,9 @@ call_05_40cb:
     ld   A, $01                                        ;; 05:498c $3e $01
     ld   [wD31D], A                                    ;; 05:498e $ea $1d $d3
     ld   A, H                                          ;; 05:4991 $7c
-    ld   [wD2C5], A                                    ;; 05:4992 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4992 $ea $c5 $d2
     ld   A, L                                          ;; 05:4995 $7d
-    ld   [wD2C6], A                                    ;; 05:4996 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4996 $ea $c6 $d2
     ld   A, [wC45D]                                    ;; 05:4999 $fa $5d $c4
     ld   [wC089], A                                    ;; 05:499c $ea $89 $c0
     add  A, $08                                        ;; 05:499f $c6 $08
@@ -1390,23 +1390,23 @@ call_05_40cb:
     ld   [wD5B9], A                                    ;; 05:49cd $ea $b9 $d5
 .jr_05_49d0:
     ld   A, H                                          ;; 05:49d0 $7c
-    ld   [wD2C5], A                                    ;; 05:49d1 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:49d1 $ea $c5 $d2
     ld   A, L                                          ;; 05:49d4 $7d
-    ld   [wD2C6], A                                    ;; 05:49d5 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:49d5 $ea $c6 $d2
     ret                                                ;; 05:49d8 $c9
 .jp_05_49d9:
     ld   A, $01                                        ;; 05:49d9 $3e $01
     ld   [wD2BD], A                                    ;; 05:49db $ea $bd $d2
     ld   A, H                                          ;; 05:49de $7c
-    ld   [wD2C5], A                                    ;; 05:49df $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:49df $ea $c5 $d2
     ld   A, L                                          ;; 05:49e2 $7d
-    ld   [wD2C6], A                                    ;; 05:49e3 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:49e3 $ea $c6 $d2
     ret                                                ;; 05:49e6 $c9
 .jp_05_49e7:
     ld   A, H                                          ;; 05:49e7 $7c
-    ld   [wD2C5], A                                    ;; 05:49e8 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:49e8 $ea $c5 $d2
     ld   A, L                                          ;; 05:49eb $7d
-    ld   [wD2C6], A                                    ;; 05:49ec $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:49ec $ea $c6 $d2
     ld   HL, data_05_7b86                              ;; 05:49ef $21 $86 $7b
     ld   DE, wShadowOAM                                ;; 05:49f2 $11 $00 $c0
     ld   B, $60                                        ;; 05:49f5 $06 $60
@@ -1427,18 +1427,18 @@ call_05_40cb:
     ld   [wD5BA], A                                    ;; 05:4a0f $ea $ba $d5
 .jr_05_4a12:
     ld   A, H                                          ;; 05:4a12 $7c
-    ld   [wD2C5], A                                    ;; 05:4a13 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4a13 $ea $c5 $d2
     ld   A, L                                          ;; 05:4a16 $7d
-    ld   [wD2C6], A                                    ;; 05:4a17 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4a17 $ea $c6 $d2
     ret                                                ;; 05:4a1a $c9
 .jp_05_4a1b:
     ld   A, [HL+]                                      ;; 05:4a1b $2a
     and  A, A                                          ;; 05:4a1c $a7
     jr   NZ, .jr_05_4a3b                               ;; 05:4a1d $20 $1c
     ld   A, H                                          ;; 05:4a1f $7c
-    ld   [wD2C5], A                                    ;; 05:4a20 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4a20 $ea $c5 $d2
     ld   A, L                                          ;; 05:4a23 $7d
-    ld   [wD2C6], A                                    ;; 05:4a24 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4a24 $ea $c6 $d2
     xor  A, A                                          ;; 05:4a27 $af
     ld   [wC088], A                                    ;; 05:4a28 $ea $88 $c0
     ld   [wC089], A                                    ;; 05:4a2b $ea $89 $c0
@@ -1449,9 +1449,9 @@ call_05_40cb:
     ret                                                ;; 05:4a3a $c9
 .jr_05_4a3b:
     ld   A, H                                          ;; 05:4a3b $7c
-    ld   [wD2C5], A                                    ;; 05:4a3c $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4a3c $ea $c5 $d2
     ld   A, L                                          ;; 05:4a3f $7d
-    ld   [wD2C6], A                                    ;; 05:4a40 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4a40 $ea $c6 $d2
     ld   A, [wC45D]                                    ;; 05:4a43 $fa $5d $c4
     ld   [wC089], A                                    ;; 05:4a46 $ea $89 $c0
     add  A, $08                                        ;; 05:4a49 $c6 $08
@@ -1475,17 +1475,17 @@ call_05_40cb:
     ld   A, [HL+]                                      ;; 05:4a72 $2a
     ld   [wD322], A                                    ;; 05:4a73 $ea $22 $d3
     ld   A, H                                          ;; 05:4a76 $7c
-    ld   [wD2C5], A                                    ;; 05:4a77 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4a77 $ea $c5 $d2
     ld   A, L                                          ;; 05:4a7a $7d
-    ld   [wD2C6], A                                    ;; 05:4a7b $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4a7b $ea $c6 $d2
     ld   A, $01                                        ;; 05:4a7e $3e $01
     ld   [wD320], A                                    ;; 05:4a80 $ea $20 $d3
     ret                                                ;; 05:4a83 $c9
 .jp_05_4a84:
     ld   A, H                                          ;; 05:4a84 $7c
-    ld   [wD2C5], A                                    ;; 05:4a85 $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4a85 $ea $c5 $d2
     ld   A, L                                          ;; 05:4a88 $7d
-    ld   [wD2C6], A                                    ;; 05:4a89 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4a89 $ea $c6 $d2
     ld   A, $c3                                        ;; 05:4a8c $3e $c3
     ldh  [rLCDC], A                                    ;; 05:4a8e $e0 $40
     ret                                                ;; 05:4a90 $c9
@@ -1497,9 +1497,9 @@ call_05_40cb:
     ld   A, $01                                        ;; 05:4a97 $3e $01
     ld   [wD36D], A                                    ;; 05:4a99 $ea $6d $d3
     ld   A, H                                          ;; 05:4a9c $7c
-    ld   [wD2C5], A                                    ;; 05:4a9d $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4a9d $ea $c5 $d2
     ld   A, L                                          ;; 05:4aa0 $7d
-    ld   [wD2C6], A                                    ;; 05:4aa1 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4aa1 $ea $c6 $d2
     xor  A, A                                          ;; 05:4aa4 $af
     ld   [wD36F], A                                    ;; 05:4aa5 $ea $6f $d3
     sla  C                                             ;; 05:4aa8 $cb $21
@@ -1561,9 +1561,9 @@ call_05_40cb:
     ld   A, [HL+]                                      ;; 05:4b07 $2a
     ld   C, A                                          ;; 05:4b08 $4f
     ld   A, H                                          ;; 05:4b09 $7c
-    ld   [wD2C5], A                                    ;; 05:4b0a $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4b0a $ea $c5 $d2
     ld   A, L                                          ;; 05:4b0d $7d
-    ld   [wD2C6], A                                    ;; 05:4b0e $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4b0e $ea $c6 $d2
     sla  C                                             ;; 05:4b11 $cb $21
     rl   B                                             ;; 05:4b13 $cb $10
     ld   HL, $323                                      ;; 05:4b15 $21 $23 $03
@@ -1584,9 +1584,9 @@ call_05_40cb:
     ld   A, [HL+]                                      ;; 05:4b28 $2a
     ld   C, A                                          ;; 05:4b29 $4f
     ld   A, H                                          ;; 05:4b2a $7c
-    ld   [wD2C5], A                                    ;; 05:4b2b $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4b2b $ea $c5 $d2
     ld   A, L                                          ;; 05:4b2e $7d
-    ld   [wD2C6], A                                    ;; 05:4b2f $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4b2f $ea $c6 $d2
     ld   HL, wC10E                                     ;; 05:4b32 $21 $0e $c1
     ld   B, $00                                        ;; 05:4b35 $06 $00
     add  HL, BC                                        ;; 05:4b37 $09
@@ -1669,9 +1669,9 @@ call_05_40cb:
 .jr_05_4bbd:
     dec  HL                                            ;; 05:4bbd $2b
     ld   A, H                                          ;; 05:4bbe $7c
-    ld   [wD2C5], A                                    ;; 05:4bbf $ea $c5 $d2
+    ld   [wScriptPointer], A                           ;; 05:4bbf $ea $c5 $d2
     ld   A, L                                          ;; 05:4bc2 $7d
-    ld   [wD2C6], A                                    ;; 05:4bc3 $ea $c6 $d2
+    ld   [wScriptPointer.low], A                       ;; 05:4bc3 $ea $c6 $d2
     ld   A, $01                                        ;; 05:4bc6 $3e $01
     ld   [wD318], A                                    ;; 05:4bc8 $ea $18 $d3
     ld   A, $05                                        ;; 05:4bcb $3e $05
@@ -2073,551 +2073,716 @@ jp_05_4dfe:
     ld   [wD315], A                                    ;; 05:4e45 $ea $15 $d3
     ret                                                ;; 05:4e48 $c9
 
-data_05_4e49:
-    db   $4e, $92, $51, $57, $51, $84, $52, $5d        ;; 05:4e49 ..??????
-    db   $55, $4a, $55, $d8, $58, $72, $58, $78        ;; 05:4e51 ????????
-    db   $58, $c0, $5a, $70, $5a, $b4, $5a, $d5        ;; 05:4e59 ????????
-    db   $5c, $7d, $5d, $de, $5d, $f4, $5f, $2f        ;; 05:4e61 ????????
-    db   $5f, $b7, $5f, $f2, $65, $46, $66, $31        ;; 05:4e69 ????????
-    db   $66, $c9, $67, $62, $6b, $21, $6c, $6a        ;; 05:4e71 ????????
-    db   $6c, $f1, $6d, $60                            ;; 05:4e79 ????
+;@data format=P amount=26
+scriptTable01:
+    data_P data_05_4e92                                ;; 05:4e49 .. $00
+    data_P data_05_5157                                ;; 05:4e4b ?? $01
+    data_P data_05_5184                                ;; 05:4e4d ?? $02
+    data_P data_05_525d                                ;; 05:4e4f ?? $03
+    data_P data_05_554a                                ;; 05:4e51 ?? $04
+    data_P data_05_55d8                                ;; 05:4e53 ?? $05
+    data_P data_05_5872                                ;; 05:4e55 ?? $06
+    data_P data_05_5878                                ;; 05:4e57 ?? $07
+    data_P data_05_58c0                                ;; 05:4e59 ?? $08
+    data_P data_05_5a70                                ;; 05:4e5b ?? $09
+    data_P data_05_5ab4                                ;; 05:4e5d ?? $0a
+    data_P data_05_5ad5                                ;; 05:4e5f ?? $0b
+    data_P data_05_5c7d                                ;; 05:4e61 ?? $0c
+    data_P data_05_5dde                                ;; 05:4e63 ?? $0d
+    data_P data_05_5df4                                ;; 05:4e65 ?? $0e
+    data_P data_05_5f2f                                ;; 05:4e67 ?? $0f
+    data_P data_05_5fb7                                ;; 05:4e69 ?? $10
+    data_P data_05_5ff2                                ;; 05:4e6b ?? $11
+    data_P data_05_6546                                ;; 05:4e6d ?? $12
+    data_P data_05_6631                                ;; 05:4e6f ?? $13
+    data_P data_05_66c9                                ;; 05:4e71 ?? $14
+    data_P data_05_6762                                ;; 05:4e73 ?? $15
+    data_P data_05_6b21                                ;; 05:4e75 ?? $16
+    data_P data_05_6c6a                                ;; 05:4e77 ?? $17
+    data_P data_05_6cf1                                ;; 05:4e79 ?? $18
+    data_P data_05_6d60                                ;; 05:4e7b ?? $19
 
 data_05_4e7d:
     db   $76, $da, $77, $92, $78, $46, $6f, $a3        ;; 05:4e7d ????????
     db   $4e, $87, $1b, $21, $01, $22, $10, $01        ;; 05:4e85 ????????
-    db   $21, $00, $0d, $00, $00, $0c, $93, $1d        ;; 05:4e8d ?????...
-    db   $01, $08, $00, $18, $00, $00, $11, $00        ;; 05:4e95 ..Ww...W
-    dw   $0070                                         ;; 05:4e9d wW
-    db   $88, $03, $00, $00, $00, $70, $00, $30        ;; 05:4e9f w.......
-    db   $2c, $04, $a4, $0c, $20, $06, $05, $05        ;; 05:4ea7 ........
-    db   $12, $1e, $10, $38, $01, $00, $01, $10        ;; 05:4eaf ......w.
-    db   $58, $04, $03, $01, $13, $01, $10, $08        ;; 05:4eb7 ...w....
-    db   $03, $02, $01, $0f, $01, $13, $00, $12        ;; 05:4ebf ........
-    db   $14, $10, $18, $03, $02, $01, $12, $14        ;; 05:4ec7 ........
-    db   $10, $00, $01, $00, $01, $12, $14, $10        ;; 05:4ecf .w......
-    db   $00, $02, $01, $01, $12, $14, $10, $00        ;; 05:4ed7 w......w
-    db   $01, $00, $01, $12, $14, $10, $00, $02        ;; 05:4edf ......w.
-    db   $01, $01, $12, $14, $10, $40, $03, $02        ;; 05:4ee7 ........
-    db   $01, $10, $38, $02, $01, $01, $12, $1e        ;; 05:4eef ........
-    db   $10, $00, $01, $00, $01, $12, $1e, $10        ;; 05:4ef7 .w......
-    db   $00, $02, $01, $01, $12, $1e, $10, $00        ;; 05:4eff w......w
-    db   $01, $00, $01, $12, $1e, $10, $00, $02        ;; 05:4f07 ......w.
-    db   $01, $01, $12, $1e, $10, $00, $01, $00        ;; 05:4f0f .....w..
-    db   $01, $12, $1e, $10, $00, $02, $01, $01        ;; 05:4f17 ....w...
-    db   $0c, $0e, $01, $00, $10, $04, $04, $01        ;; 05:4f1f ........
-    db   $12, $1e, $10, $00, $03, $01, $01, $12        ;; 05:4f27 ...w....
-    db   $1e, $04, $00, $00, $01, $18, $01, $12        ;; 05:4f2f ........
-    db   $3c, $04, $00, $00, $00, $18, $01, $12        ;; 05:4f37 ........
-    db   $0a, $02, $00, $14, $10, $0c, $03, $02        ;; 05:4f3f ........
-    db   $02, $01, $00, $0c, $04, $04, $02, $0c        ;; 05:4f47 ........
-    db   $09, $06, $01, $0a, $10, $08, $03, $03        ;; 05:4f4f ........
-    db   $02, $01, $00, $08, $04, $03, $02, $12        ;; 05:4f57 w.......
-    db   $08, $10, $08, $03, $02, $02, $01, $00        ;; 05:4f5f ........
-    db   $08, $04, $04, $02, $0c, $09, $06, $01        ;; 05:4f67 ........
-    db   $0a, $1e, $12, $0a, $1d, $00, $03, $00        ;; 05:4f6f ........
-    db   $12, $14, $0c, $17, $12, $14, $02, $01        ;; 05:4f77 ........
-    db   $14, $0c, $93, $12, $1e, $10, $18, $04        ;; 05:4f7f ........
-    db   $03, $01, $00, $00, $00, $48, $00, $28        ;; 05:4f87 .w......
-    db   $03, $04, $60, $12, $01, $02, $02, $14        ;; 05:4f8f ........
-    db   $21, $01, $22, $10, $02, $21, $00, $12        ;; 05:4f97 ........
-    db   $0a, $10, $00, $03, $02, $01, $01, $00        ;; 05:4f9f ..w.....
-    db   $60, $04, $04, $01, $10, $00, $02, $03        ;; 05:4fa7 .....w..
-    db   $01, $01, $00, $00, $01, $01, $00, $00        ;; 05:4faf ........
-    db   $01, $00, $48, $00, $28, $1f, $04, $40        ;; 05:4fb7 ........
-    db   $01, $01, $50, $04, $04, $01, $12, $01        ;; 05:4fbf ........
-    db   $01, $01, $00, $01, $01, $00, $12, $0a        ;; 05:4fc7 ........
-    db   $10, $00, $02, $01, $01, $12, $01, $04        ;; 05:4fcf .w......
-    db   $00, $00, $00, $08, $01, $02, $03, $14        ;; 05:4fd7 ........
-    db   $04, $00, $00, $01, $08, $01, $10, $18        ;; 05:4fdf ........
-    db   $02, $01, $01, $04, $00, $00, $00, $08        ;; 05:4fe7 ........
-    db   $01, $02, $04, $02, $05, $02, $06, $02        ;; 05:4fef ........
-    db   $07, $14, $04, $00, $00, $01, $08, $01        ;; 05:4ff7 ........
-    db   $12, $01, $10, $50, $01, $00, $01, $03        ;; 05:4fff ......w.
-    db   $00, $03, $01, $10, $60, $04, $03, $01        ;; 05:5007 .......w
-    db   $13, $01, $12, $0a, $1e, $12, $64, $08        ;; 05:500f ........
-    db   $00, $12, $01, $01, $11, $00, $68, $00        ;; 05:5017 Ww...Ww.
-    db   $a8, $03, $0e, $00, $00, $00, $50, $00        ;; 05:501f ........
-    db   $58, $06, $04, $19, $02, $08, $14, $10        ;; 05:5027 ........
-    db   $48, $03, $02, $01, $12, $01, $10, $00        ;; 05:502f .......w
-    db   $02, $01, $01, $01, $00, $00, $01, $01        ;; 05:5037 ........
-    db   $00, $02, $09, $14, $10, $28, $01, $00        ;; 05:503f ........
-    db   $01, $1b, $10, $18, $03, $02, $01, $10        ;; 05:5047 w.......
-    db   $08, $01, $00, $00, $1c, $00, $10, $1a        ;; 05:504f ...w....
-    db   $12, $1e, $07, $00, $03, $00, $1e, $12        ;; 05:5057 ........
-    db   $64, $0c, $18, $12, $c8, $0c, $8e, $07        ;; 05:505f ........
-    db   $01, $12, $14, $1c, $01, $10, $10, $00        ;; 05:5067 .......w
-    db   $04, $03, $01, $00, $00, $00, $68, $00        ;; 05:506f ........
-    db   $a8, $1f, $03, $17, $01, $00, $30, $03        ;; 05:5077 ........
-    db   $03, $01, $10, $30, $04, $03, $01, $10        ;; 05:507f ......w.
-    db   $08, $02, $01, $01, $01, $00, $00, $01        ;; 05:5087 ........
-    db   $01, $00, $02, $0a, $14, $10, $18, $04        ;; 05:508f ........
-    db   $03, $01, $01, $00, $00, $04, $04, $00        ;; 05:5097 .w......
-    db   $10, $20, $02, $01, $01, $10, $18, $04        ;; 05:509f ........
-    db   $03, $01, $08, $00, $0e, $01, $01, $11        ;; 05:50a7 .w.Ww...
-    db   $00, $88, $00, $c0, $03, $10, $20, $03        ;; 05:50af Ww......
-    db   $02, $01, $00, $01, $00, $88, $00, $c0        ;; 05:50b7 ........
-    db   $1f, $03, $17, $10, $30, $03, $02, $01        ;; 05:50bf ........
-    db   $01, $01, $30, $03, $03, $01, $10, $20        ;; 05:50c7 ........
-    db   $02, $01, $01, $01, $01, $20, $03, $03        ;; 05:50cf ........
-    db   $01, $10, $08, $02, $01, $01, $01, $01        ;; 05:50d7 ........
-    db   $08, $02, $02, $01, $0e, $01, $01, $00        ;; 05:50df ........
-    db   $03, $00, $00, $12, $01, $10, $00, $03        ;; 05:50e7 ......w.
-    db   $00, $01, $12, $14, $02, $0b, $02, $0c        ;; 05:50ef ........
-    db   $02, $0d, $02, $0e, $14, $10, $00, $01        ;; 05:50f7 ......w.
-    db   $00, $01, $01, $01, $00, $02, $00, $00        ;; 05:50ff ........
-    db   $12, $32, $10, $00, $03, $00, $01, $01        ;; 05:5107 ...w....
-    db   $01, $00, $03, $00, $00, $02, $0f, $02        ;; 05:510f ........
-    db   $10, $02, $11, $14, $10, $18, $04, $03        ;; 05:5117 ........
-    db   $01, $10, $28, $01, $00, $01, $10, $40        ;; 05:511f w....w..
-    db   $04, $03, $01, $10, $08, $04, $03, $01        ;; 05:5127 ..w.....
-    db   $10, $28, $04, $03, $01, $10, $28, $02        ;; 05:512f ....w...
-    db   $01, $01, $10, $e8, $04, $03, $01, $10        ;; 05:5137 ......w.
-    db   $38, $02, $01, $01, $10, $48, $04, $03        ;; 05:513f ........
-    db   $01, $13, $01, $12, $0a, $1e, $12, $46        ;; 05:5147 w.......
-    db   $10, $08, $04, $03, $01, $0d, $00, $00        ;; 05:514f ......w.
+    db   $21, $00, $0d, $00, $00                       ;; 05:4e8d ?????
+
+;@script
+data_05_4e92:
+    db   $0c, $93                                      ;; 05:4e92 ..
+    db   $1d, $01                                      ;; 05:4e94 ..
+    db   $08, $00, $18, $00, $00, $11, $00, $70, $00, $88, $03 ;; 05:4e96 .Ww...WwWw.
+    db   $00, $00, $00, $70, $00, $30, $2c, $04, $a4   ;; 05:4ea1 .........
+    db   $0c, $20                                      ;; 05:4eaa ..
+    db   $06, $05, $05                                 ;; 05:4eac ...
+    db   $12, $1e                                      ;; 05:4eaf ..
+    db   $10, $38, $01, $00, $01                       ;; 05:4eb1 ....w
+    db   $10, $58, $04, $03, $01                       ;; 05:4eb6 ....w
+    db   $13, $01                                      ;; 05:4ebb ..
+    db   $10, $08, $03, $02, $01                       ;; 05:4ebd .....
+    db   $0f, $01                                      ;; 05:4ec2 ..
+    db   $13, $00                                      ;; 05:4ec4 ..
+    db   $12, $14                                      ;; 05:4ec6 ..
+    db   $10, $18, $03, $02, $01                       ;; 05:4ec8 .....
+    db   $12, $14                                      ;; 05:4ecd ..
+    db   $10, $00, $01, $00, $01                       ;; 05:4ecf .w...
+    db   $12, $14                                      ;; 05:4ed4 ..
+    db   $10, $00, $02, $01, $01                       ;; 05:4ed6 .w...
+    db   $12, $14                                      ;; 05:4edb ..
+    db   $10, $00, $01, $00, $01                       ;; 05:4edd .w...
+    db   $12, $14                                      ;; 05:4ee2 ..
+    db   $10, $00, $02, $01, $01                       ;; 05:4ee4 .w...
+    db   $12, $14                                      ;; 05:4ee9 ..
+    db   $10, $40, $03, $02, $01                       ;; 05:4eeb .....
+    db   $10, $38, $02, $01, $01                       ;; 05:4ef0 .....
+    db   $12, $1e                                      ;; 05:4ef5 ..
+    db   $10, $00, $01, $00, $01                       ;; 05:4ef7 .w...
+    db   $12, $1e                                      ;; 05:4efc ..
+    db   $10, $00, $02, $01, $01                       ;; 05:4efe .w...
+    db   $12, $1e                                      ;; 05:4f03 ..
+    db   $10, $00, $01, $00, $01                       ;; 05:4f05 .w...
+    db   $12, $1e                                      ;; 05:4f0a ..
+    db   $10, $00, $02, $01, $01                       ;; 05:4f0c .w...
+    db   $12, $1e                                      ;; 05:4f11 ..
+    db   $10, $00, $01, $00, $01                       ;; 05:4f13 .w...
+    db   $12, $1e                                      ;; 05:4f18 ..
+    db   $10, $00, $02, $01, $01                       ;; 05:4f1a .w...
+    db   $0c, $0e                                      ;; 05:4f1f ..
+    db   $01, $00, $10, $04, $04, $01                  ;; 05:4f21 ......
+    db   $12, $1e                                      ;; 05:4f27 ..
+    db   $10, $00, $03, $01, $01                       ;; 05:4f29 .w...
+    db   $12, $1e                                      ;; 05:4f2e ..
+    db   $04, $00, $00, $01, $18, $01                  ;; 05:4f30 ......
+    db   $12, $3c                                      ;; 05:4f36 ..
+    db   $04, $00, $00, $00, $18, $01                  ;; 05:4f38 ......
+    db   $12, $0a                                      ;; 05:4f3e ..
+    db   $02, $00                                      ;; 05:4f40 ..
+    db   $14                                           ;; 05:4f42 .
+    db   $10, $0c, $03, $02, $02                       ;; 05:4f43 .....
+    db   $01, $00, $0c, $04, $04, $02                  ;; 05:4f48 ......
+    db   $0c, $09                                      ;; 05:4f4e ..
+    db   $06, $01, $0a                                 ;; 05:4f50 ...
+    db   $10, $08, $03, $03, $02                       ;; 05:4f53 ....w
+    db   $01, $00, $08, $04, $03, $02                  ;; 05:4f58 ......
+    db   $12, $08                                      ;; 05:4f5e ..
+    db   $10, $08, $03, $02, $02                       ;; 05:4f60 .....
+    db   $01, $00, $08, $04, $04, $02                  ;; 05:4f65 ......
+    db   $0c, $09                                      ;; 05:4f6b ..
+    db   $06, $01, $0a                                 ;; 05:4f6d ...
+    db   $1e                                           ;; 05:4f70 .
+    db   $12, $0a                                      ;; 05:4f71 ..
+    db   $1d, $00                                      ;; 05:4f73 ..
+    db   $03, $00                                      ;; 05:4f75 ..
+    db   $12, $14                                      ;; 05:4f77 ..
+    db   $0c, $17                                      ;; 05:4f79 ..
+    db   $12, $14                                      ;; 05:4f7b ..
+    db   $02, $01                                      ;; 05:4f7d ..
+    db   $14                                           ;; 05:4f7f .
+    db   $0c, $93                                      ;; 05:4f80 ..
+    db   $12, $1e                                      ;; 05:4f82 ..
+    db   $10, $18, $04, $03, $01                       ;; 05:4f84 ....w
+    db   $00, $00, $00, $48, $00, $28, $03, $04, $60   ;; 05:4f89 .........
+    db   $12, $01                                      ;; 05:4f92 ..
+    db   $02, $02                                      ;; 05:4f94 ..
+    db   $14                                           ;; 05:4f96 .
+    db   $21, $01                                      ;; 05:4f97 ..
+    db   $22, $10, $02                                 ;; 05:4f99 ...
+    db   $21, $00                                      ;; 05:4f9c ..
+    db   $12, $0a                                      ;; 05:4f9e ..
+    db   $10, $00, $03, $02, $01                       ;; 05:4fa0 .w...
+    db   $01, $00, $60, $04, $04, $01                  ;; 05:4fa5 ......
+    db   $10, $00, $02, $03, $01                       ;; 05:4fab .w...
+    db   $01, $00, $00, $01, $01, $00                  ;; 05:4fb0 ......
+    db   $00, $01, $00, $48, $00, $28, $1f, $04, $40   ;; 05:4fb6 .........
+    db   $01, $01, $50, $04, $04, $01                  ;; 05:4fbf ......
+    db   $12, $01                                      ;; 05:4fc5 ..
+    db   $01, $01, $00, $01, $01, $00                  ;; 05:4fc7 ......
+    db   $12, $0a                                      ;; 05:4fcd ..
+    db   $10, $00, $02, $01, $01                       ;; 05:4fcf .w...
+    db   $12, $01                                      ;; 05:4fd4 ..
+    db   $04, $00, $00, $00, $08, $01                  ;; 05:4fd6 ......
+    db   $02, $03                                      ;; 05:4fdc ..
+    db   $14                                           ;; 05:4fde .
+    db   $04, $00, $00, $01, $08, $01                  ;; 05:4fdf ......
+    db   $10, $18, $02, $01, $01                       ;; 05:4fe5 .....
+    db   $04, $00, $00, $00, $08, $01                  ;; 05:4fea ......
+    db   $02, $04                                      ;; 05:4ff0 ..
+    db   $02, $05                                      ;; 05:4ff2 ..
+    db   $02, $06                                      ;; 05:4ff4 ..
+    db   $02, $07                                      ;; 05:4ff6 ..
+    db   $14                                           ;; 05:4ff8 .
+    db   $04, $00, $00, $01, $08, $01                  ;; 05:4ff9 ......
+    db   $12, $01                                      ;; 05:4fff ..
+    db   $10, $50, $01, $00, $01                       ;; 05:5001 ....w
+    db   $03, $00                                      ;; 05:5006 ..
+    db   $03, $01                                      ;; 05:5008 ..
+    db   $10, $60, $04, $03, $01                       ;; 05:500a ....w
+    db   $13, $01                                      ;; 05:500f ..
+    db   $12, $0a                                      ;; 05:5011 ..
+    db   $1e                                           ;; 05:5013 .
+    db   $12, $64                                      ;; 05:5014 ..
+    db   $08, $00, $12, $01, $01, $11, $00, $68, $00, $a8, $03 ;; 05:5016 .Ww...Ww...
+    db   $0e                                           ;; 05:5021 .
+    db   $00, $00, $00, $50, $00, $58, $06, $04, $19   ;; 05:5022 .........
+    db   $02, $08                                      ;; 05:502b ..
+    db   $14                                           ;; 05:502d .
+    db   $10, $48, $03, $02, $01                       ;; 05:502e .....
+    db   $12, $01                                      ;; 05:5033 ..
+    db   $10, $00, $02, $01, $01                       ;; 05:5035 .w...
+    db   $01, $00, $00, $01, $01, $00                  ;; 05:503a ......
+    db   $02, $09                                      ;; 05:5040 ..
+    db   $14                                           ;; 05:5042 .
+    db   $10, $28, $01, $00, $01                       ;; 05:5043 ....w
+    db   $1b                                           ;; 05:5048 .
+    db   $10, $18, $03, $02, $01                       ;; 05:5049 .....
+    db   $10, $08, $01, $00, $00                       ;; 05:504e ....w
+    db   $1c, $00, $10                                 ;; 05:5053 ...
+    db   $1a                                           ;; 05:5056 .
+    db   $12, $1e                                      ;; 05:5057 ..
+    db   $07, $00                                      ;; 05:5059 ..
+    db   $03, $00                                      ;; 05:505b ..
+    db   $1e                                           ;; 05:505d .
+    db   $12, $64                                      ;; 05:505e ..
+    db   $0c, $18                                      ;; 05:5060 ..
+    db   $12, $c8                                      ;; 05:5062 ..
+    db   $0c, $8e                                      ;; 05:5064 ..
+    db   $07, $01                                      ;; 05:5066 ..
+    db   $12, $14                                      ;; 05:5068 ..
+    db   $1c, $01, $10                                 ;; 05:506a ...
+    db   $10, $00, $04, $03, $01                       ;; 05:506d .w...
+    db   $00, $00, $00, $68, $00, $a8, $1f, $03, $17   ;; 05:5072 .........
+    db   $01, $00, $30, $03, $03, $01                  ;; 05:507b ......
+    db   $10, $30, $04, $03, $01                       ;; 05:5081 ....w
+    db   $10, $08, $02, $01, $01                       ;; 05:5086 .....
+    db   $01, $00, $00, $01, $01, $00                  ;; 05:508b ......
+    db   $02, $0a                                      ;; 05:5091 ..
+    db   $14                                           ;; 05:5093 .
+    db   $10, $18, $04, $03, $01                       ;; 05:5094 ....w
+    db   $01, $00, $00, $04, $04, $00                  ;; 05:5099 ......
+    db   $10, $20, $02, $01, $01                       ;; 05:509f .....
+    db   $10, $18, $04, $03, $01                       ;; 05:50a4 ....w
+    db   $08, $00, $0e, $01, $01, $11, $00, $88, $00, $c0, $03 ;; 05:50a9 .Ww...Ww...
+    db   $10, $20, $03, $02, $01                       ;; 05:50b4 .....
+    db   $00, $01, $00, $88, $00, $c0, $1f, $03, $17   ;; 05:50b9 .........
+    db   $10, $30, $03, $02, $01                       ;; 05:50c2 .....
+    db   $01, $01, $30, $03, $03, $01                  ;; 05:50c7 ......
+    db   $10, $20, $02, $01, $01                       ;; 05:50cd .....
+    db   $01, $01, $20, $03, $03, $01                  ;; 05:50d2 ......
+    db   $10, $08, $02, $01, $01                       ;; 05:50d8 .....
+    db   $01, $01, $08, $02, $02, $01                  ;; 05:50dd ......
+    db   $0e                                           ;; 05:50e3 .
+    db   $01, $01, $00, $03, $00, $00                  ;; 05:50e4 ......
+    db   $12, $01                                      ;; 05:50ea ..
+    db   $10, $00, $03, $00, $01                       ;; 05:50ec .w...
+    db   $12, $14                                      ;; 05:50f1 ..
+    db   $02, $0b                                      ;; 05:50f3 ..
+    db   $02, $0c                                      ;; 05:50f5 ..
+    db   $02, $0d                                      ;; 05:50f7 ..
+    db   $02, $0e                                      ;; 05:50f9 ..
+    db   $14                                           ;; 05:50fb .
+    db   $10, $00, $01, $00, $01                       ;; 05:50fc .w...
+    db   $01, $01, $00, $02, $00, $00                  ;; 05:5101 ......
+    db   $12, $32                                      ;; 05:5107 ..
+    db   $10, $00, $03, $00, $01                       ;; 05:5109 .w...
+    db   $01, $01, $00, $03, $00, $00                  ;; 05:510e ......
+    db   $02, $0f                                      ;; 05:5114 ..
+    db   $02, $10                                      ;; 05:5116 ..
+    db   $02, $11                                      ;; 05:5118 ..
+    db   $14                                           ;; 05:511a .
+    db   $10, $18, $04, $03, $01                       ;; 05:511b ....w
+    db   $10, $28, $01, $00, $01                       ;; 05:5120 ....w
+    db   $10, $40, $04, $03, $01                       ;; 05:5125 ....w
+    db   $10, $08, $04, $03, $01                       ;; 05:512a .....
+    db   $10, $28, $04, $03, $01                       ;; 05:512f ....w
+    db   $10, $28, $02, $01, $01                       ;; 05:5134 .....
+    db   $10, $e8, $04, $03, $01                       ;; 05:5139 ....w
+    db   $10, $38, $02, $01, $01                       ;; 05:513e .....
+    db   $10, $48, $04, $03, $01                       ;; 05:5143 ....w
+    db   $13, $01                                      ;; 05:5148 ..
+    db   $12, $0a                                      ;; 05:514a ..
+    db   $1e                                           ;; 05:514c .
+    db   $12, $46                                      ;; 05:514d ..
+    db   $10, $08, $04, $03, $01                       ;; 05:514f .....
+    db   $0d, $00, $00                                 ;; 05:5154 .w.
+
+data_05_5157:
     db   $0c, $93, $02, $00, $14, $01, $00, $00        ;; 05:5157 ????????
     db   $04, $04, $00, $12, $1e, $01, $00, $20        ;; 05:515f ????????
     db   $04, $04, $01, $09, $02, $25, $00, $12        ;; 05:5167 ????????
     db   $14, $0c, $05, $24, $00, $01, $03, $00        ;; 05:516f ????????
     db   $12, $32, $02, $01, $14, $10, $20, $04        ;; 05:5177 ????????
-    db   $03, $01, $0d, $01, $00, $12, $01, $00        ;; 05:517f ????????
-    db   $01, $00, $88, $01, $88, $1f, $04, $1a        ;; 05:5187 ????????
-    db   $10, $50, $03, $02, $01, $01, $01, $18        ;; 05:518f ????????
-    db   $01, $01, $01, $12, $01, $10, $00, $02        ;; 05:5197 ????????
-    db   $01, $01, $01, $01, $38, $01, $01, $01        ;; 05:519f ????????
-    db   $02, $00, $14, $10, $60, $03, $02, $01        ;; 05:51a7 ????????
-    db   $10, $48, $01, $00, $01, $10, $78, $03        ;; 05:51af ????????
-    db   $02, $01, $10, $18, $01, $00, $01, $10        ;; 05:51b7 ????????
-    db   $30, $03, $02, $01, $10, $08, $03, $02        ;; 05:51bf ????????
-    db   $01, $10, $38, $03, $02, $01, $10, $18        ;; 05:51c7 ????????
-    db   $02, $01, $01, $10, $10, $03, $02, $01        ;; 05:51cf ????????
-    db   $12, $14, $02, $01, $14, $00, $01, $00        ;; 05:51d7 ????????
-    db   $88, $00, $c0, $1f, $03, $1e, $01, $01        ;; 05:51df ????????
-    db   $60, $03, $03, $01, $0e, $12, $05, $01        ;; 05:51e7 ????????
-    db   $01, $08, $02, $02, $01, $02, $02, $14        ;; 05:51ef ????????
-    db   $01, $00, $00, $01, $01, $00, $12, $3c        ;; 05:51f7 ????????
-    db   $01, $00, $00, $04, $04, $00, $12, $0a        ;; 05:51ff ????????
-    db   $02, $03, $14, $10, $10, $04, $03, $01        ;; 05:5207 ????????
-    db   $10, $18, $01, $00, $01, $10, $40, $04        ;; 05:520f ????????
-    db   $03, $01, $13, $01, $12, $32, $08, $00        ;; 05:5217 ????????
-    db   $16, $01, $00, $11, $00, $a0, $00, $60        ;; 05:521f ????????
-    db   $04, $10, $40, $04, $03, $01, $10, $50        ;; 05:5227 ????????
-    db   $02, $01, $01, $10, $20, $03, $02, $01        ;; 05:522f ????????
-    db   $10, $18, $01, $00, $01, $10, $38, $03        ;; 05:5237 ????????
-    db   $02, $01, $12, $0a, $02, $04, $14, $12        ;; 05:523f ????????
-    db   $32, $02, $05, $14, $10, $38, $04, $03        ;; 05:5247 ????????
-    db   $01, $10, $28, $02, $01, $01, $10, $08        ;; 05:524f ????????
-    db   $04, $03, $01, $0d, $02, $00, $18, $03        ;; 05:5257 ????????
-    db   $12, $01, $03, $00, $00, $01, $00, $58        ;; 05:525f ????????
-    db   $00, $38, $00, $01, $01, $00, $02, $00        ;; 05:5267 ????????
-    db   $70, $00, $38, $22, $02, $38, $10, $40        ;; 05:526f ????????
-    db   $03, $02, $01, $10, $10, $02, $01, $01        ;; 05:5277 ????????
-    db   $04, $01, $14, $00, $00, $01, $04, $00        ;; 05:527f ????????
-    db   $00, $01, $58, $01, $02, $00, $02, $01        ;; 05:5287 ????????
-    db   $02, $02, $02, $03, $14, $12, $1e, $04        ;; 05:528f ????????
-    db   $00, $00, $00, $58, $01, $04, $00, $14        ;; 05:5297 ????????
-    db   $00, $00, $01, $12, $1e, $00, $03, $00        ;; 05:529f ????????
-    db   $98, $00, $e0, $1e, $03, $34, $01, $03        ;; 05:52a7 ????????
-    db   $50, $03, $03, $01, $0e, $10, $00, $01        ;; 05:52af ????????
-    db   $00, $01, $01, $03, $00, $02, $02, $00        ;; 05:52b7 ????????
-    db   $02, $04, $14, $01, $03, $10, $04, $04        ;; 05:52bf ????????
-    db   $01, $10, $10, $01, $00, $01, $01, $03        ;; 05:52c7 ????????
-    db   $10, $04, $04, $01, $10, $18, $04, $03        ;; 05:52cf ????????
-    db   $01, $01, $03, $18, $04, $04, $01, $03        ;; 05:52d7 ????????
-    db   $03, $10, $30, $04, $03, $01, $13, $01        ;; 05:52df ????????
-    db   $08, $00, $28, $01, $00, $11, $00, $70        ;; 05:52e7 ????????
-    db   $00, $d0, $04, $00, $00, $00, $70, $00        ;; 05:52ef ????????
-    db   $f0, $1e, $04, $34, $10, $60, $04, $03        ;; 05:52f7 ????????
-    db   $01, $01, $00, $60, $04, $04, $01, $10        ;; 05:52ff ????????
-    db   $18, $04, $03, $01, $01, $00, $18, $01        ;; 05:5307 ????????
-    db   $01, $01, $10, $38, $04, $03, $01, $01        ;; 05:530f ????????
-    db   $00, $00, $02, $02, $00, $10, $10, $04        ;; 05:5317 ????????
-    db   $03, $01, $00, $00, $00, $80, $00, $68        ;; 05:531f ????????
-    db   $0c, $04, $39, $00, $01, $00, $90, $00        ;; 05:5327 ????????
-    db   $88, $02, $02, $03, $10, $18, $04, $03        ;; 05:532f ????????
-    db   $01, $12, $01, $02, $05, $14, $10, $20        ;; 05:5337 ????????
-    db   $04, $03, $01, $12, $01, $02, $06, $14        ;; 05:533f ????????
-    db   $10, $18, $04, $03, $01, $10, $30, $02        ;; 05:5347 ????????
-    db   $01, $01, $12, $02, $10, $00, $03, $00        ;; 05:534f ????????
-    db   $01, $12, $32, $00, $02, $00, $a8, $00        ;; 05:5357 ????????
-    db   $50, $1e, $04, $34, $01, $02, $18, $04        ;; 05:535f ????????
-    db   $04, $01, $01, $00, $00, $01, $01, $00        ;; 05:5367 ????????
-    db   $01, $01, $00, $03, $03, $00, $02, $07        ;; 05:536f ????????
-    db   $14, $01, $02, $18, $03, $03, $01, $01        ;; 05:5377 ????????
-    db   $00, $18, $01, $01, $01, $01, $01, $18        ;; 05:537f ????????
-    db   $01, $01, $01, $0e, $01, $00, $10, $01        ;; 05:5387 ????????
-    db   $01, $01, $01, $01, $10, $03, $03, $01        ;; 05:538f ????????
-    db   $03, $02, $10, $30, $01, $00, $01, $01        ;; 05:5397 ????????
-    db   $00, $30, $03, $03, $01, $01, $01, $30        ;; 05:539f ????????
-    db   $03, $03, $01, $03, $01, $03, $00, $10        ;; 05:53a7 ????????
-    db   $58, $03, $02, $01, $10, $10, $03, $02        ;; 05:53af ????????
-    db   $01, $10, $48, $03, $02, $01, $10, $88        ;; 05:53b7 ????????
-    db   $01, $00, $01, $10, $f0, $03, $02, $01        ;; 05:53bf ????????
-    db   $10, $08, $03, $02, $01, $00, $02, $00        ;; 05:53c7 ????????
-    db   $40, $00, $38, $00, $04, $01, $0e, $00        ;; 05:53cf ????????
-    db   $03, $00, $48, $00, $60, $02, $03, $03        ;; 05:53d7 ????????
-    db   $0e, $00, $04, $00, $58, $00, $60, $0c        ;; 05:53df ????????
-    db   $03, $39, $10, $70, $03, $02, $01, $12        ;; 05:53e7 ????????
-    db   $14, $02, $08, $02, $09, $02, $0a, $14        ;; 05:53ef ????????
-    db   $1e, $0c, $10, $06, $0a, $0a, $10, $20        ;; 05:53f7 ????????
-    db   $01, $01, $02, $01, $01, $18, $01, $02        ;; 05:53ff ????????
-    db   $02, $01, $03, $1c, $02, $01, $02, $01        ;; 05:5407 ????????
-    db   $04, $1c, $02, $01, $02, $05, $05, $10        ;; 05:540f ????????
-    db   $00, $18, $01, $01, $01, $03, $00, $08        ;; 05:5417 ????????
-    db   $01, $01, $01, $04, $00, $08, $01, $01        ;; 05:541f ????????
-    db   $00, $05, $00, $50, $00, $60, $13, $04        ;; 05:5427 ????????
-    db   $3a, $0c, $92, $12, $14, $01, $01, $10        ;; 05:542f ????????
-    db   $01, $01, $01, $02, $0b, $14, $01, $03        ;; 05:5437 ????????
-    db   $00, $02, $02, $01, $01, $04, $00, $02        ;; 05:543f ????????
-    db   $02, $01, $01, $05, $00, $02, $02, $01        ;; 05:5447 ????????
-    db   $0e, $01, $05, $10, $02, $02, $01, $12        ;; 05:544f ????????
-    db   $14, $02, $0c, $02, $0d, $14, $01, $05        ;; 05:5457 ????????
-    db   $00, $03, $03, $01, $02, $0e, $02, $0f        ;; 05:545f ????????
-    db   $14, $01, $03, $0c, $02, $02, $02, $01        ;; 05:5467 ????????
-    db   $05, $00, $01, $01, $00, $02, $10, $14        ;; 05:546f ????????
-    db   $01, $03, $0c, $02, $02, $02, $0e, $01        ;; 05:5477 ????????
-    db   $05, $04, $01, $01, $02, $0c, $0b, $06        ;; 05:547f ????????
-    db   $03, $06, $01, $05, $08, $01, $02, $01        ;; 05:5487 ????????
-    db   $01, $03, $18, $02, $01, $02, $0c, $09        ;; 05:548f ????????
-    db   $01, $03, $20, $02, $01, $02, $01, $04        ;; 05:5497 ????????
-    db   $20, $02, $01, $02, $03, $03, $03, $04        ;; 05:549f ????????
-    db   $01, $01, $08, $01, $01, $02, $01, $05        ;; 05:54a7 ????????
-    db   $08, $03, $03, $02, $0e, $01, $01, $02        ;; 05:54af ????????
-    db   $01, $01, $02, $01, $05, $02, $02, $02        ;; 05:54b7 ????????
-    db   $02, $06, $03, $06, $01, $01, $10, $01        ;; 05:54bf ????????
-    db   $02, $02, $01, $05, $02, $02, $01, $02        ;; 05:54c7 ????????
-    db   $0e, $01, $01, $00, $07, $02, $02, $01        ;; 05:54cf ????????
-    db   $05, $04, $03, $03, $02, $02, $11, $02        ;; 05:54d7 ????????
-    db   $12, $0c, $09, $03, $02, $14, $01, $05        ;; 05:54df ????????
-    db   $00, $04, $04, $00, $12, $14, $02, $13        ;; 05:54e7 ????????
-    db   $14, $0c, $10, $06, $0a, $05, $03, $05        ;; 05:54ef ????????
-    db   $00, $06, $00, $40, $00, $50, $2c, $04        ;; 05:54f7 ????????
-    db   $a4, $00, $07, $00, $50, $00, $60, $2c        ;; 05:54ff ????????
-    db   $04, $a4, $00, $08, $00, $60, $00, $50        ;; 05:5507 ????????
-    db   $2c, $04, $a4, $12, $0a, $10, $40, $01        ;; 05:550f ????????
-    db   $00, $01, $10, $08, $03, $02, $01, $01        ;; 05:5517 ????????
-    db   $01, $08, $01, $01, $01, $09, $03, $12        ;; 05:551f ????????
-    db   $1e, $0c, $05, $03, $06, $03, $07, $03        ;; 05:5527 ????????
-    db   $08, $01, $00, $08, $04, $04, $01, $02        ;; 05:552f ????????
-    db   $14, $02, $15, $14, $12, $1e, $10, $78        ;; 05:5537 ????????
-    db   $04, $03, $01, $10, $10, $04, $03, $01        ;; 05:553f ????????
-    db   $0d, $03, $00, $00, $00, $00, $78, $00        ;; 05:5547 ????????
-    db   $88, $13, $04, $3a, $10, $30, $03, $02        ;; 05:554f ????????
-    db   $01, $0e, $01, $00, $10, $04, $04, $01        ;; 05:5557 ????????
-    db   $04, $00, $00, $01, $18, $01, $12, $0a        ;; 05:555f ????????
-    db   $02, $00, $14, $12, $0a, $01, $00, $10        ;; 05:5567 ????????
-    db   $04, $04, $01, $09, $04, $25, $00, $06        ;; 05:556f ????????
-    db   $01, $0a, $0c, $05, $24, $00, $00, $03        ;; 05:5577 ????????
-    db   $00, $00, $00, $00, $90, $00, $28, $00        ;; 05:557f ????????
-    db   $04, $01, $01, $00, $58, $04, $04, $01        ;; 05:5587 ????????
-    db   $10, $18, $03, $02, $01, $01, $00, $20        ;; 05:558f ????????
-    db   $04, $04, $01, $10, $00, $01, $00, $01        ;; 05:5597 ????????
-    db   $0e, $01, $00, $00, $02, $02, $01, $02        ;; 05:559f ????????
-    db   $01, $02, $02, $02, $03, $15, $00, $14        ;; 05:55a7 ????????
-    db   $10, $08, $04, $03, $01, $10, $18, $04        ;; 05:55af ????????
-    db   $03, $01, $01, $00, $18, $02, $02, $01        ;; 05:55b7 ????????
-    db   $10, $30, $04, $03, $01, $01, $00, $30        ;; 05:55bf ????????
-    db   $04, $04, $01, $08, $00, $2b, $01, $01        ;; 05:55c7 ????????
-    db   $11, $00, $50, $00, $60, $03, $0d, $04        ;; 05:55cf ????????
-    db   $00, $08, $00, $3b, $01, $01, $11, $01        ;; 05:55d7 ????????
-    db   $10, $05, $a8, $04, $10, $08, $04, $03        ;; 05:55df ????????
-    db   $01, $10, $08, $02, $01, $01, $0f, $00        ;; 05:55e7 ????????
-    db   $00, $01, $01, $10, $05, $a8, $25, $04        ;; 05:55ef ????????
-    db   $3e, $12, $0a, $01, $01, $08, $04, $04        ;; 05:55f7 ????????
-    db   $01, $0e, $01, $01, $08, $02, $02, $01        ;; 05:55ff ????????
-    db   $03, $01, $1d, $01, $0c, $97, $01, $00        ;; 05:5607 ????????
-    db   $20, $02, $02, $01, $0e, $01, $00, $10        ;; 05:560f ????????
-    db   $03, $03, $01, $0e, $01, $00, $20, $02        ;; 05:5617 ????????
-    db   $02, $01, $08, $00, $3e, $00, $00, $11        ;; 05:561f ????????
-    db   $03, $78, $03, $78, $04, $00, $00, $03        ;; 05:5627 ????????
-    db   $c8, $03, $78, $2e, $02, $a4, $01, $00        ;; 05:562f ????????
-    db   $a0, $02, $02, $01, $13, $01, $08, $00        ;; 05:5637 ????????
-    db   $87, $00, $00, $11, $00, $30, $00, $68        ;; 05:563f ????????
-    db   $01, $00, $00, $00, $a0, $00, $50, $09        ;; 05:5647 ????????
-    db   $01, $3f, $00, $01, $00, $40, $00, $48        ;; 05:564f ????????
-    db   $25, $02, $3e, $12, $32, $0f, $01, $12        ;; 05:5657 ????????
-    db   $0a, $10, $38, $01, $00, $01, $01, $00        ;; 05:565f ????????
-    db   $18, $04, $04, $01, $0e, $01, $00, $10        ;; 05:5667 ????????
-    db   $02, $02, $01, $02, $00, $14, $01, $01        ;; 05:566f ????????
-    db   $20, $01, $01, $01, $0e, $01, $01, $08        ;; 05:5677 ????????
-    db   $04, $04, $01, $10, $00, $03, $01, $01        ;; 05:567f ????????
-    db   $02, $01, $14, $12, $14, $0c, $1b, $05        ;; 05:5687 ????????
-    db   $1e, $10, $00, $01, $00, $01, $01, $00        ;; 05:568f ????????
-    db   $00, $01, $01, $01, $01, $01, $00, $02        ;; 05:5697 ????????
-    db   $02, $01, $12, $14, $10, $00, $02, $00        ;; 05:569f ????????
-    db   $01, $01, $00, $00, $02, $01, $01, $01        ;; 05:56a7 ????????
-    db   $01, $00, $01, $02, $01, $12, $14, $10        ;; 05:56af ????????
-    db   $00, $01, $00, $01, $01, $00, $00, $01        ;; 05:56b7 ????????
-    db   $01, $01, $01, $01, $00, $02, $02, $01        ;; 05:56bf ????????
-    db   $12, $14, $10, $00, $04, $00, $01, $01        ;; 05:56c7 ????????
-    db   $00, $00, $04, $01, $01, $01, $01, $00        ;; 05:56cf ????????
-    db   $04, $02, $01, $12, $14, $0c, $1b, $05        ;; 05:56d7 ????????
-    db   $1e, $13, $01, $0c, $91, $08, $00, $3e        ;; 05:56df ????????
-    db   $00, $00, $11, $03, $78, $03, $78, $04        ;; 05:56e7 ????????
-    db   $00, $00, $03, $c8, $03, $60, $2e, $02        ;; 05:56ef ????????
-    db   $a4, $00, $01, $03, $88, $03, $28, $2f        ;; 05:56f7 ????????
-    db   $04, $a4, $01, $00, $10, $02, $02, $01        ;; 05:56ff ????????
-    db   $0e, $01, $00, $30, $02, $02, $01, $01        ;; 05:5707 ????????
-    db   $01, $30, $04, $04, $01, $0c, $1b, $05        ;; 05:570f ????????
-    db   $1e, $13, $01, $08, $00, $87, $01, $00        ;; 05:5717 ????????
-    db   $11, $00, $68, $00, $68, $04, $00, $00        ;; 05:571f ????????
-    db   $00, $90, $00, $68, $09, $04, $3f, $00        ;; 05:5727 ????????
-    db   $01, $00, $60, $00, $50, $25, $04, $3e        ;; 05:572f ????????
-    db   $0c, $1b, $05, $1e, $10, $10, $01, $00        ;; 05:5737 ????????
-    db   $01, $10, $50, $04, $03, $01, $12, $01        ;; 05:573f ????????
-    db   $00, $00, $00, $e0, $00, $38, $01, $01        ;; 05:5747 ????????
-    db   $02, $00, $01, $00, $d0, $00, $28, $28        ;; 05:574f ????????
-    db   $01, $3d, $10, $78, $02, $01, $01, $12        ;; 05:5757 ????????
-    db   $0a, $02, $02, $14, $10, $20, $02, $01        ;; 05:575f ????????
-    db   $01, $12, $01, $10, $00, $03, $02, $01        ;; 05:5767 ????????
-    db   $01, $00, $00, $04, $04, $01, $01, $01        ;; 05:576f ????????
-    db   $00, $04, $04, $01, $12, $0a, $02, $03        ;; 05:5777 ????????
-    db   $14, $10, $10, $03, $02, $01, $12, $0a        ;; 05:577f ????????
-    db   $02, $04, $14, $1d, $00, $12, $0a, $09        ;; 05:5787 ????????
-    db   $05, $1d, $01, $02, $05, $14, $12, $01        ;; 05:578f ????????
-    db   $00, $02, $01, $60, $00, $60, $09, $04        ;; 05:5797 ????????
-    db   $3f, $01, $02, $28, $02, $02, $01, $0e        ;; 05:579f ????????
-    db   $01, $02, $10, $03, $03, $01, $0e, $01        ;; 05:57a7 ????????
-    db   $02, $48, $02, $02, $01, $0e, $01, $02        ;; 05:57af ????????
-    db   $00, $03, $03, $01, $02, $06, $14, $0c        ;; 05:57b7 ????????
-    db   $1b, $05, $14, $08, $00, $3e, $00, $00        ;; 05:57bf ????????
-    db   $11, $03, $78, $03, $78, $04, $00, $00        ;; 05:57c7 ????????
-    db   $03, $88, $03, $60, $2e, $02, $a4, $00        ;; 05:57cf ????????
-    db   $01, $03, $88, $03, $50, $2f, $04, $a4        ;; 05:57d7 ????????
-    db   $00, $02, $03, $c8, $03, $50, $31, $02        ;; 05:57df ????????
-    db   $a4, $01, $02, $30, $02, $02, $01, $0c        ;; 05:57e7 ????????
-    db   $1b, $05, $14, $02, $07, $14, $0c, $1c        ;; 05:57ef ????????
-    db   $01, $01, $78, $04, $02, $01, $13, $01        ;; 05:57f7 ????????
-    db   $0c, $97, $08, $00, $86, $01, $00, $11        ;; 05:57ff ????????
-    db   $00, $e0, $00, $50, $03, $00, $00, $00        ;; 05:5807 ????????
-    db   $f0, $00, $50, $09, $03, $3f, $12, $14        ;; 05:580f ????????
-    db   $10, $00, $01, $00, $01, $01, $00, $00        ;; 05:5817 ????????
-    db   $02, $02, $01, $02, $08, $14, $08, $00        ;; 05:581f ????????
-    db   $3e, $00, $00, $11, $03, $78, $03, $78        ;; 05:5827 ????????
-    db   $04, $00, $00, $03, $c8, $03, $78, $2e        ;; 05:582f ????????
-    db   $02, $a4, $01, $00, $a0, $02, $02, $01        ;; 05:5837 ????????
-    db   $08, $00, $3e, $00, $00, $11, $03, $c8        ;; 05:583f ????????
-    db   $01, $98, $02, $00, $00, $03, $f0, $01        ;; 05:5847 ????????
-    db   $f0, $2e, $03, $a4, $01, $00, $20, $03        ;; 05:584f ????????
-    db   $03, $01, $0e, $01, $00, $18, $02, $02        ;; 05:5857 ????????
-    db   $01, $0e, $01, $00, $38, $03, $03, $01        ;; 05:585f ????????
-    db   $12, $0a, $0c, $81, $1d, $00, $0f, $01        ;; 05:5867 ????????
-    db   $0d, $05, $00, $02, $01, $14, $0d, $06        ;; 05:586f ????????
-    db   $00, $08, $00, $62, $01, $00, $11, $00        ;; 05:5877 ????????
-    db   $68, $00, $88, $01, $00, $00, $00, $78        ;; 05:587f ????????
-    db   $00, $88, $0e, $02, $4f, $18, $06, $02        ;; 05:5887 ????????
-    db   $05, $14, $01, $00, $00, $03, $03, $01        ;; 05:588f ????????
-    db   $12, $32, $0c, $1b, $05, $32, $12, $32        ;; 05:5897 ????????
-    db   $10, $10, $02, $01, $01, $10, $38, $04        ;; 05:589f ????????
-    db   $03, $01, $10, $48, $02, $01, $01, $10        ;; 05:58a7 ????????
-    db   $38, $04, $03, $01, $10, $c8, $01, $00        ;; 05:58af ????????
-    db   $01, $10, $d0, $03, $02, $01, $0d, $07        ;; 05:58b7 ????????
-    db   $00, $10, $20, $03, $02, $01, $10, $18        ;; 05:58bf ????????
-    db   $02, $01, $01, $10, $48, $03, $02, $01        ;; 05:58c7 ????????
-    db   $10, $40, $01, $00, $01, $02, $00, $14        ;; 05:58cf ????????
-    db   $0c, $1b, $05, $14, $0c, $1f, $0a, $09        ;; 05:58d7 ????????
-    db   $00, $10, $00, $02, $01, $01, $21, $01        ;; 05:58df ????????
-    db   $22, $10, $02, $21, $00, $02, $01, $0c        ;; 05:58e7 ????????
-    db   $1f, $0a, $02, $09, $0f, $00, $0a, $0a        ;; 05:58ef ????????
-    db   $0b, $12, $1e, $13, $01, $1e, $12, $64        ;; 05:58f7 ????????
-    db   $08, $00, $8b, $01, $00, $11, $00, $a0        ;; 05:58ff ????????
-    db   $00, $c0, $14, $00, $00, $00, $60, $00        ;; 05:5907 ????????
-    db   $60, $2b, $04, $5f, $12, $50, $01, $00        ;; 05:590f ????????
-    db   $48, $04, $04, $01, $0e, $01, $00, $18        ;; 05:5917 ????????
-    db   $01, $01, $01, $0e, $01, $00, $18, $04        ;; 05:591f ????????
-    db   $04, $01, $0e, $01, $00, $10, $01, $01        ;; 05:5927 ????????
-    db   $01, $02, $02, $14, $06, $01, $0a, $06        ;; 05:592f ????????
-    db   $01, $1e, $06, $01, $32, $10, $00, $02        ;; 05:5937 ????????
-    db   $01, $01, $12, $14, $10, $00, $01, $00        ;; 05:593f ????????
-    db   $01, $12, $14, $10, $00, $02, $01, $01        ;; 05:5947 ????????
-    db   $12, $0a, $02, $03, $02, $04, $14, $01        ;; 05:594f ????????
-    db   $00, $10, $02, $02, $01, $0e, $01, $00        ;; 05:5957 ????????
-    db   $18, $03, $03, $01, $0e, $01, $00, $00        ;; 05:595f ????????
-    db   $04, $04, $01, $12, $1e, $10, $18, $02        ;; 05:5967 ????????
-    db   $01, $01, $01, $00, $18, $02, $02, $01        ;; 05:596f ????????
-    db   $10, $10, $02, $01, $01, $01, $00, $10        ;; 05:5977 ????????
-    db   $03, $03, $01, $10, $18, $03, $02, $01        ;; 05:597f ????????
-    db   $01, $00, $18, $03, $03, $01, $10, $18        ;; 05:5987 ????????
-    db   $02, $01, $01, $01, $00, $18, $03, $03        ;; 05:598f ????????
-    db   $01, $10, $08, $03, $02, $01, $01, $00        ;; 05:5997 ????????
-    db   $08, $02, $02, $01, $10, $18, $03, $02        ;; 05:599f ????????
-    db   $01, $01, $00, $18, $03, $03, $01, $03        ;; 05:59a7 ????????
-    db   $00, $10, $20, $03, $02, $01, $10, $08        ;; 05:59af ????????
-    db   $02, $01, $01, $10, $10, $03, $02, $01        ;; 05:59b7 ????????
-    db   $01, $01, $00, $02, $02, $01, $10, $08        ;; 05:59bf ????????
-    db   $03, $02, $01, $02, $05, $14, $10, $18        ;; 05:59c7 ????????
-    db   $03, $02, $01, $01, $01, $00, $04, $04        ;; 05:59cf ????????
-    db   $01, $10, $18, $01, $00, $01, $10, $08        ;; 05:59d7 ????????
-    db   $03, $02, $01, $02, $06, $02, $07, $01        ;; 05:59df ????????
-    db   $01, $00, $02, $02, $01, $02, $08, $02        ;; 05:59e7 ????????
-    db   $09, $12, $01, $10, $00, $01, $02, $01        ;; 05:59ef ????????
-    db   $02, $0a, $10, $00, $03, $02, $01, $02        ;; 05:59f7 ????????
-    db   $0b, $02, $0c, $14, $12, $32, $0c, $0f        ;; 05:59ff ????????
-    db   $06, $03, $0a, $08, $00, $5a, $01, $01        ;; 05:5a07 ????????
-    db   $11, $00, $d8, $01, $e0, $03, $03, $03        ;; 05:5a0f ????????
-    db   $00, $03, $00, $d8, $01, $20, $37, $04        ;; 05:5a17 ????????
-    db   $4f, $06, $03, $0a, $12, $14, $10, $50        ;; 05:5a1f ????????
-    db   $03, $02, $01, $01, $03, $58, $04, $04        ;; 05:5a27 ????????
-    db   $01, $02, $0d, $02, $0e, $02, $0f, $14        ;; 05:5a2f ????????
-    db   $10, $50, $03, $02, $01, $01, $03, $50        ;; 05:5a37 ????????
-    db   $03, $03, $01, $12, $14, $01, $03, $08        ;; 05:5a3f ????????
-    db   $03, $03, $01, $12, $32, $01, $03, $00        ;; 05:5a47 ????????
-    db   $05, $05, $01, $12, $96, $0c, $15, $06        ;; 05:5a4f ????????
-    db   $05, $0a, $08, $00, $5a, $01, $01, $11        ;; 05:5a57 ????????
-    db   $00, $d8, $01, $40, $03, $01, $03, $10        ;; 05:5a5f ????????
-    db   $04, $04, $01, $02, $10, $14, $0d, $08        ;; 05:5a67 ????????
-    db   $00, $0c, $1b, $05, $1e, $10, $00, $02        ;; 05:5a6f ????????
-    db   $01, $01, $12, $14, $10, $00, $01, $00        ;; 05:5a77 ????????
-    db   $01, $12, $14, $10, $00, $02, $01, $01        ;; 05:5a7f ????????
-    db   $12, $0a, $0b, $00, $10, $00, $03, $02        ;; 05:5a87 ????????
-    db   $01, $12, $14, $21, $01, $22, $10, $02        ;; 05:5a8f ????????
-    db   $21, $00, $12, $1e, $02, $00, $14, $09        ;; 05:5a97 ????????
-    db   $06, $02, $01, $14, $0b, $01, $12, $32        ;; 05:5a9f ????????
-    db   $10, $78, $03, $02, $01, $10, $08, $04        ;; 05:5aa7 ????????
-    db   $03, $01, $0d, $09, $00, $14, $09, $07        ;; 05:5aaf ????????
-    db   $12, $14, $02, $01, $14, $01, $00, $10        ;; 05:5ab7 ????????
-    db   $01, $01, $01, $0e, $01, $00, $58, $04        ;; 05:5abf ????????
-    db   $04, $01, $0e, $01, $00, $78, $02, $02        ;; 05:5ac7 ????????
-    db   $01, $03, $00, $0d, $0a, $00, $00, $00        ;; 05:5acf ????????
-    db   $00, $90, $01, $78, $15, $01, $6c, $00        ;; 05:5ad7 ????????
-    db   $01, $00, $b0, $01, $78, $05, $02, $68        ;; 05:5adf ????????
-    db   $04, $01, $50, $00, $00, $01, $12, $32        ;; 05:5ae7 ????????
-    db   $04, $00, $50, $00, $00, $01, $12, $0a        ;; 05:5aef ????????
-    db   $10, $60, $02, $01, $01, $10, $08, $03        ;; 05:5af7 ????????
-    db   $02, $01, $02, $00, $02, $01, $14, $01        ;; 05:5aff ????????
-    db   $00, $04, $01, $01, $02, $01, $01, $04        ;; 05:5b07 ????????
-    db   $02, $02, $02, $0c, $09, $06, $01, $05        ;; 05:5b0f ????????
-    db   $01, $00, $04, $01, $02, $02, $01, $01        ;; 05:5b17 ????????
-    db   $04, $02, $01, $02, $0e, $01, $00, $04        ;; 05:5b1f ????????
-    db   $01, $01, $02, $01, $01, $04, $02, $02        ;; 05:5b27 ????????
-    db   $02, $0c, $09, $06, $03, $05, $01, $00        ;; 05:5b2f ????????
-    db   $04, $01, $02, $02, $01, $01, $04, $02        ;; 05:5b37 ????????
-    db   $01, $02, $0e, $01, $00, $04, $01, $01        ;; 05:5b3f ????????
-    db   $02, $01, $01, $04, $02, $02, $02, $0c        ;; 05:5b47 ????????
-    db   $09, $06, $05, $05, $01, $00, $04, $01        ;; 05:5b4f ????????
-    db   $02, $02, $01, $01, $04, $02, $01, $02        ;; 05:5b57 ????????
-    db   $02, $02, $14, $12, $0a, $10, $20, $02        ;; 05:5b5f ????????
-    db   $01, $01, $10, $10, $03, $02, $01, $01        ;; 05:5b67 ????????
-    db   $00, $00, $04, $04, $01, $10, $08, $03        ;; 05:5b6f ????????
-    db   $02, $01, $12, $0a, $09, $08, $01, $00        ;; 05:5b77 ????????
-    db   $00, $07, $07, $01, $25, $00, $12, $0a        ;; 05:5b7f ????????
-    db   $02, $03, $14, $0c, $05, $24, $00, $01        ;; 05:5b87 ????????
-    db   $03, $00, $12, $1e, $02, $04, $14, $15        ;; 05:5b8f ????????
-    db   $01, $12, $01, $00, $00, $01, $40, $01        ;; 05:5b97 ????????
-    db   $a8, $0e, $02, $4f, $01, $01, $20, $02        ;; 05:5b9f ????????
-    db   $02, $01, $10, $00, $02, $01, $01, $01        ;; 05:5ba7 ????????
-    db   $00, $38, $02, $02, $01, $01, $01, $38        ;; 05:5baf ????????
-    db   $02, $02, $01, $0e, $01, $00, $20, $02        ;; 05:5bb7 ????????
-    db   $02, $01, $01, $01, $38, $03, $03, $01        ;; 05:5bbf ????????
-    db   $03, $01, $12, $50, $01, $00, $28, $02        ;; 05:5bc7 ????????
-    db   $02, $01, $0e, $01, $00, $20, $03, $03        ;; 05:5bcf ????????
-    db   $01, $0e, $01, $00, $10, $02, $02, $01        ;; 05:5bd7 ????????
-    db   $12, $0a, $10, $08, $01, $00, $01, $12        ;; 05:5bdf ????????
-    db   $0a, $02, $05, $02, $06, $14, $12, $1e        ;; 05:5be7 ????????
-    db   $0c, $0f, $06, $05, $0a, $13, $01, $1e        ;; 05:5bef ????????
-    db   $12, $64, $08, $00, $8b, $00, $00, $11        ;; 05:5bf7 ????????
-    db   $00, $58, $00, $78, $04, $06, $03, $0a        ;; 05:5bff ????????
-    db   $0f, $01, $12, $32, $10, $20, $03, $02        ;; 05:5c07 ????????
-    db   $01, $10, $08, $03, $02, $01, $10, $18        ;; 05:5c0f ????????
-    db   $03, $02, $01, $10, $18, $01, $00, $01        ;; 05:5c17 ????????
-    db   $10, $08, $03, $02, $01, $12, $1e, $02        ;; 05:5c1f ????????
-    db   $07, $14, $12, $1e, $10, $20, $02, $01        ;; 05:5c27 ????????
-    db   $01, $10, $28, $03, $02, $01, $10, $28        ;; 05:5c2f ????????
-    db   $02, $01, $01, $10, $08, $03, $02, $01        ;; 05:5c37 ????????
-    db   $10, $08, $03, $02, $01, $10, $18, $03        ;; 05:5c3f ????????
-    db   $02, $01, $10, $40, $02, $01, $01, $10        ;; 05:5c47 ????????
-    db   $10, $04, $03, $01, $12, $1e, $1e, $0c        ;; 05:5c4f ????????
-    db   $0f, $06, $05, $0a, $08, $00, $84, $00        ;; 05:5c57 ????????
-    db   $01, $11, $00, $e8, $00, $48, $01, $12        ;; 05:5c5f ????????
-    db   $32, $06, $03, $0a, $0f, $01, $12, $0a        ;; 05:5c67 ????????
-    db   $02, $08, $02, $09, $02, $0a, $02, $0b        ;; 05:5c6f ????????
-    db   $02, $0c, $14, $0d, $0b, $00, $0c, $1b        ;; 05:5c77 ????????
-    db   $05, $32, $10, $28, $04, $03, $01, $0c        ;; 05:5c7f ????????
-    db   $92, $12, $01, $00, $01, $00, $78, $00        ;; 05:5c87 ????????
-    db   $38, $2c, $01, $a4, $10, $48, $02, $01        ;; 05:5c8f ????????
-    db   $01, $12, $14, $0c, $1b, $05, $32, $01        ;; 05:5c97 ????????
-    db   $00, $28, $02, $02, $01, $02, $00, $14        ;; 05:5c9f ????????
-    db   $10, $28, $02, $01, $01, $04, $01, $58        ;; 05:5ca7 ????????
-    db   $00, $00, $01, $12, $1e, $04, $00, $58        ;; 05:5caf ????????
-    db   $00, $00, $01, $01, $01, $30, $01, $01        ;; 05:5cb7 ????????
-    db   $01, $10, $20, $02, $01, $01, $01, $01        ;; 05:5cbf ????????
-    db   $20, $01, $01, $01, $10, $18, $03, $02        ;; 05:5cc7 ????????
-    db   $01, $01, $01, $18, $01, $01, $01, $09        ;; 05:5ccf ????????
-    db   $09, $12, $14, $0c, $05, $03, $01, $0c        ;; 05:5cd7 ????????
-    db   $97, $01, $00, $10, $02, $02, $01, $02        ;; 05:5cdf ????????
-    db   $01, $14, $10, $00, $01, $00, $01, $12        ;; 05:5ce7 ????????
-    db   $32, $1d, $01, $13, $01, $08, $00, $3e        ;; 05:5cef ????????
-    db   $00, $00, $11, $03, $78, $03, $78, $04        ;; 05:5cf7 ????????
-    db   $00, $00, $03, $c8, $03, $78, $2f, $02        ;; 05:5cff ????????
-    db   $a4, $01, $00, $50, $02, $02, $01, $1d        ;; 05:5d07 ????????
-    db   $00, $01, $00, $60, $03, $03, $01, $08        ;; 05:5d0f ????????
-    db   $00, $88, $00, $00, $11, $01, $d0, $01        ;; 05:5d17 ????????
-    db   $f0, $03, $00, $00, $01, $d0, $01, $f0        ;; 05:5d1f ????????
-    db   $01, $03, $02, $01, $00, $18, $03, $03        ;; 05:5d27 ????????
-    db   $01, $0f, $01, $10, $10, $03, $02, $01        ;; 05:5d2f ????????
-    db   $01, $00, $10, $03, $03, $01, $0e, $01        ;; 05:5d37 ????????
-    db   $00, $00, $04, $04, $01, $02, $02, $14        ;; 05:5d3f ????????
-    db   $01, $00, $30, $03, $03, $01, $0e, $01        ;; 05:5d47 ????????
-    db   $00, $30, $02, $02, $01, $0e, $01, $00        ;; 05:5d4f ????????
-    db   $28, $03, $03, $01, $0e, $01, $00, $08        ;; 05:5d57 ????????
-    db   $03, $03, $01, $03, $00, $10, $30, $03        ;; 05:5d5f ????????
-    db   $02, $01, $10, $30, $02, $01, $01, $10        ;; 05:5d67 ????????
-    db   $40, $03, $02, $01, $10, $08, $03, $02        ;; 05:5d6f ????????
-    db   $01, $10, $18, $03, $02, $01, $10, $10        ;; 05:5d77 ????????
-    db   $01, $00, $01, $10, $08, $03, $02, $01        ;; 05:5d7f ????????
-    db   $02, $03, $10, $00, $01, $01, $01, $01        ;; 05:5d87 ????????
-    db   $01, $00, $02, $02, $01, $02, $04, $01        ;; 05:5d8f ????????
-    db   $00, $00, $01, $01, $01, $02, $05, $10        ;; 05:5d97 ????????
-    db   $00, $03, $03, $01, $02, $06, $01, $00        ;; 05:5d9f ????????
-    db   $00, $04, $04, $01, $02, $07, $10, $00        ;; 05:5da7 ????????
-    db   $03, $03, $01, $02, $08, $02, $09, $12        ;; 05:5daf ????????
-    db   $05, $10, $00, $01, $00, $01, $02, $0a        ;; 05:5db7 ????????
-    db   $01, $00, $00, $01, $01, $01, $02, $0b        ;; 05:5dbf ????????
-    db   $10, $00, $03, $03, $01, $01, $00, $00        ;; 05:5dc7 ????????
-    db   $04, $04, $01, $02, $0c, $14, $01, $01        ;; 05:5dcf ????????
-    db   $00, $04, $04, $01, $0d, $0c, $00, $14        ;; 05:5dd7 ????????
-    db   $09, $0a, $25, $00, $12, $14, $0c, $05        ;; 05:5ddf ????????
-    db   $24, $00, $01, $03, $00, $02, $01, $14        ;; 05:5de7 ????????
-    db   $15, $02, $0d, $0d, $00, $10, $18, $03        ;; 05:5def ????????
-    db   $02, $01, $10, $10, $01, $00, $01, $10        ;; 05:5df7 ????????
-    db   $08, $03, $02, $01, $12, $0a, $10, $00        ;; 05:5dff ????????
-    db   $01, $02, $01, $01, $01, $00, $02, $02        ;; 05:5e07 ????????
-    db   $01, $02, $00, $12, $01, $10, $00, $03        ;; 05:5e0f ????????
-    db   $02, $01, $02, $01, $12, $01, $10, $00        ;; 05:5e17 ????????
-    db   $01, $02, $01, $02, $02, $01, $00, $00        ;; 05:5e1f ????????
-    db   $01, $01, $01, $02, $03, $12, $01, $10        ;; 05:5e27 ????????
-    db   $00, $03, $02, $01, $01, $00, $00, $04        ;; 05:5e2f ????????
-    db   $04, $01, $02, $04, $02, $05, $01, $00        ;; 05:5e37 ????????
-    db   $00, $01, $01, $01, $02, $06, $14, $01        ;; 05:5e3f ????????
-    db   $00, $10, $02, $02, $01, $0e, $01, $00        ;; 05:5e47 ????????
-    db   $08, $04, $04, $01, $0e, $01, $00, $20        ;; 05:5e4f ????????
-    db   $02, $02, $01, $0e, $01, $00, $10, $03        ;; 05:5e57 ????????
-    db   $03, $01, $03, $00, $10, $30, $02, $01        ;; 05:5e5f ????????
-    db   $01, $10, $18, $03, $02, $01, $00, $00        ;; 05:5e67 ????????
-    db   $00, $58, $00, $68, $09, $01, $3f, $10        ;; 05:5e6f ????????
-    db   $18, $03, $02, $01, $10, $20, $02, $01        ;; 05:5e77 ????????
-    db   $01, $10, $08, $04, $03, $01, $10, $20        ;; 05:5e7f ????????
-    db   $02, $01, $01, $02, $07, $14, $10, $10        ;; 05:5e87 ????????
-    db   $04, $03, $01, $12, $14, $0c, $0f, $06        ;; 05:5e8f ????????
-    db   $03, $0a, $13, $01, $03, $00, $1e, $12        ;; 05:5e97 ????????
-    db   $32, $08, $00, $8d, $01, $01, $11, $00        ;; 05:5e9f ????????
-    db   $60, $00, $70, $03, $10, $10, $03, $02        ;; 05:5ea7 ????????
-    db   $01, $10, $40, $01, $00, $01, $10, $30        ;; 05:5eaf ????????
-    db   $04, $03, $01, $10, $20, $01, $00, $01        ;; 05:5eb7 ????????
-    db   $10, $08, $04, $03, $01, $10, $10, $01        ;; 05:5ebf ????????
-    db   $00, $01, $01, $00, $00, $02, $02, $01        ;; 05:5ec7 ????????
-    db   $02, $08, $14, $12, $14, $0c, $0f, $06        ;; 05:5ecf ????????
-    db   $03, $0a, $08, $00, $5a, $01, $01, $11        ;; 05:5ed7 ????????
-    db   $00, $d8, $01, $a0, $03, $03, $03, $00        ;; 05:5edf ????????
-    db   $03, $00, $d8, $01, $20, $37, $04, $4f        ;; 05:5ee7 ????????
-    db   $10, $40, $03, $02, $01, $0e, $01, $03        ;; 05:5eef ????????
-    db   $20, $04, $04, $01, $02, $09, $14, $10        ;; 05:5ef7 ????????
-    db   $20, $03, $02, $01, $01, $03, $20, $03        ;; 05:5eff ????????
-    db   $03, $01, $12, $1e, $01, $03, $00, $05        ;; 05:5f07 ????????
-    db   $05, $01, $12, $96, $0c, $15, $06, $05        ;; 05:5f0f ????????
-    db   $0a, $08, $00, $5a, $01, $01, $11, $00        ;; 05:5f17 ????????
-    db   $d8, $01, $40, $03, $01, $03, $00, $04        ;; 05:5f1f ????????
-    db   $04, $01, $02, $0a, $14, $0d, $0e, $00        ;; 05:5f27 ????????
+    db   $03, $01, $0d, $01, $00                       ;; 05:517f ?????
+
+data_05_5184:
+    db   $12, $01, $00, $01, $00, $88, $01, $88        ;; 05:5184 ????????
+    db   $1f, $04, $1a, $10, $50, $03, $02, $01        ;; 05:518c ????????
+    db   $01, $01, $18, $01, $01, $01, $12, $01        ;; 05:5194 ????????
+    db   $10, $00, $02, $01, $01, $01, $01, $38        ;; 05:519c ????????
+    db   $01, $01, $01, $02, $00, $14, $10, $60        ;; 05:51a4 ????????
+    db   $03, $02, $01, $10, $48, $01, $00, $01        ;; 05:51ac ????????
+    db   $10, $78, $03, $02, $01, $10, $18, $01        ;; 05:51b4 ????????
+    db   $00, $01, $10, $30, $03, $02, $01, $10        ;; 05:51bc ????????
+    db   $08, $03, $02, $01, $10, $38, $03, $02        ;; 05:51c4 ????????
+    db   $01, $10, $18, $02, $01, $01, $10, $10        ;; 05:51cc ????????
+    db   $03, $02, $01, $12, $14, $02, $01, $14        ;; 05:51d4 ????????
+    db   $00, $01, $00, $88, $00, $c0, $1f, $03        ;; 05:51dc ????????
+    db   $1e, $01, $01, $60, $03, $03, $01, $0e        ;; 05:51e4 ????????
+    db   $12, $05, $01, $01, $08, $02, $02, $01        ;; 05:51ec ????????
+    db   $02, $02, $14, $01, $00, $00, $01, $01        ;; 05:51f4 ????????
+    db   $00, $12, $3c, $01, $00, $00, $04, $04        ;; 05:51fc ????????
+    db   $00, $12, $0a, $02, $03, $14, $10, $10        ;; 05:5204 ????????
+    db   $04, $03, $01, $10, $18, $01, $00, $01        ;; 05:520c ????????
+    db   $10, $40, $04, $03, $01, $13, $01, $12        ;; 05:5214 ????????
+    db   $32, $08, $00, $16, $01, $00, $11, $00        ;; 05:521c ????????
+    db   $a0, $00, $60, $04, $10, $40, $04, $03        ;; 05:5224 ????????
+    db   $01, $10, $50, $02, $01, $01, $10, $20        ;; 05:522c ????????
+    db   $03, $02, $01, $10, $18, $01, $00, $01        ;; 05:5234 ????????
+    db   $10, $38, $03, $02, $01, $12, $0a, $02        ;; 05:523c ????????
+    db   $04, $14, $12, $32, $02, $05, $14, $10        ;; 05:5244 ????????
+    db   $38, $04, $03, $01, $10, $28, $02, $01        ;; 05:524c ????????
+    db   $01, $10, $08, $04, $03, $01, $0d, $02        ;; 05:5254 ????????
+    db   $00                                           ;; 05:525c ?
+
+data_05_525d:
+    db   $18, $03, $12, $01, $03, $00, $00, $01        ;; 05:525d ????????
+    db   $00, $58, $00, $38, $00, $01, $01, $00        ;; 05:5265 ????????
+    db   $02, $00, $70, $00, $38, $22, $02, $38        ;; 05:526d ????????
+    db   $10, $40, $03, $02, $01, $10, $10, $02        ;; 05:5275 ????????
+    db   $01, $01, $04, $01, $14, $00, $00, $01        ;; 05:527d ????????
+    db   $04, $00, $00, $01, $58, $01, $02, $00        ;; 05:5285 ????????
+    db   $02, $01, $02, $02, $02, $03, $14, $12        ;; 05:528d ????????
+    db   $1e, $04, $00, $00, $00, $58, $01, $04        ;; 05:5295 ????????
+    db   $00, $14, $00, $00, $01, $12, $1e, $00        ;; 05:529d ????????
+    db   $03, $00, $98, $00, $e0, $1e, $03, $34        ;; 05:52a5 ????????
+    db   $01, $03, $50, $03, $03, $01, $0e, $10        ;; 05:52ad ????????
+    db   $00, $01, $00, $01, $01, $03, $00, $02        ;; 05:52b5 ????????
+    db   $02, $00, $02, $04, $14, $01, $03, $10        ;; 05:52bd ????????
+    db   $04, $04, $01, $10, $10, $01, $00, $01        ;; 05:52c5 ????????
+    db   $01, $03, $10, $04, $04, $01, $10, $18        ;; 05:52cd ????????
+    db   $04, $03, $01, $01, $03, $18, $04, $04        ;; 05:52d5 ????????
+    db   $01, $03, $03, $10, $30, $04, $03, $01        ;; 05:52dd ????????
+    db   $13, $01, $08, $00, $28, $01, $00, $11        ;; 05:52e5 ????????
+    db   $00, $70, $00, $d0, $04, $00, $00, $00        ;; 05:52ed ????????
+    db   $70, $00, $f0, $1e, $04, $34, $10, $60        ;; 05:52f5 ????????
+    db   $04, $03, $01, $01, $00, $60, $04, $04        ;; 05:52fd ????????
+    db   $01, $10, $18, $04, $03, $01, $01, $00        ;; 05:5305 ????????
+    db   $18, $01, $01, $01, $10, $38, $04, $03        ;; 05:530d ????????
+    db   $01, $01, $00, $00, $02, $02, $00, $10        ;; 05:5315 ????????
+    db   $10, $04, $03, $01, $00, $00, $00, $80        ;; 05:531d ????????
+    db   $00, $68, $0c, $04, $39, $00, $01, $00        ;; 05:5325 ????????
+    db   $90, $00, $88, $02, $02, $03, $10, $18        ;; 05:532d ????????
+    db   $04, $03, $01, $12, $01, $02, $05, $14        ;; 05:5335 ????????
+    db   $10, $20, $04, $03, $01, $12, $01, $02        ;; 05:533d ????????
+    db   $06, $14, $10, $18, $04, $03, $01, $10        ;; 05:5345 ????????
+    db   $30, $02, $01, $01, $12, $02, $10, $00        ;; 05:534d ????????
+    db   $03, $00, $01, $12, $32, $00, $02, $00        ;; 05:5355 ????????
+    db   $a8, $00, $50, $1e, $04, $34, $01, $02        ;; 05:535d ????????
+    db   $18, $04, $04, $01, $01, $00, $00, $01        ;; 05:5365 ????????
+    db   $01, $00, $01, $01, $00, $03, $03, $00        ;; 05:536d ????????
+    db   $02, $07, $14, $01, $02, $18, $03, $03        ;; 05:5375 ????????
+    db   $01, $01, $00, $18, $01, $01, $01, $01        ;; 05:537d ????????
+    db   $01, $18, $01, $01, $01, $0e, $01, $00        ;; 05:5385 ????????
+    db   $10, $01, $01, $01, $01, $01, $10, $03        ;; 05:538d ????????
+    db   $03, $01, $03, $02, $10, $30, $01, $00        ;; 05:5395 ????????
+    db   $01, $01, $00, $30, $03, $03, $01, $01        ;; 05:539d ????????
+    db   $01, $30, $03, $03, $01, $03, $01, $03        ;; 05:53a5 ????????
+    db   $00, $10, $58, $03, $02, $01, $10, $10        ;; 05:53ad ????????
+    db   $03, $02, $01, $10, $48, $03, $02, $01        ;; 05:53b5 ????????
+    db   $10, $88, $01, $00, $01, $10, $f0, $03        ;; 05:53bd ????????
+    db   $02, $01, $10, $08, $03, $02, $01, $00        ;; 05:53c5 ????????
+    db   $02, $00, $40, $00, $38, $00, $04, $01        ;; 05:53cd ????????
+    db   $0e, $00, $03, $00, $48, $00, $60, $02        ;; 05:53d5 ????????
+    db   $03, $03, $0e, $00, $04, $00, $58, $00        ;; 05:53dd ????????
+    db   $60, $0c, $03, $39, $10, $70, $03, $02        ;; 05:53e5 ????????
+    db   $01, $12, $14, $02, $08, $02, $09, $02        ;; 05:53ed ????????
+    db   $0a, $14, $1e, $0c, $10, $06, $0a, $0a        ;; 05:53f5 ????????
+    db   $10, $20, $01, $01, $02, $01, $01, $18        ;; 05:53fd ????????
+    db   $01, $02, $02, $01, $03, $1c, $02, $01        ;; 05:5405 ????????
+    db   $02, $01, $04, $1c, $02, $01, $02, $05        ;; 05:540d ????????
+    db   $05, $10, $00, $18, $01, $01, $01, $03        ;; 05:5415 ????????
+    db   $00, $08, $01, $01, $01, $04, $00, $08        ;; 05:541d ????????
+    db   $01, $01, $00, $05, $00, $50, $00, $60        ;; 05:5425 ????????
+    db   $13, $04, $3a, $0c, $92, $12, $14, $01        ;; 05:542d ????????
+    db   $01, $10, $01, $01, $01, $02, $0b, $14        ;; 05:5435 ????????
+    db   $01, $03, $00, $02, $02, $01, $01, $04        ;; 05:543d ????????
+    db   $00, $02, $02, $01, $01, $05, $00, $02        ;; 05:5445 ????????
+    db   $02, $01, $0e, $01, $05, $10, $02, $02        ;; 05:544d ????????
+    db   $01, $12, $14, $02, $0c, $02, $0d, $14        ;; 05:5455 ????????
+    db   $01, $05, $00, $03, $03, $01, $02, $0e        ;; 05:545d ????????
+    db   $02, $0f, $14, $01, $03, $0c, $02, $02        ;; 05:5465 ????????
+    db   $02, $01, $05, $00, $01, $01, $00, $02        ;; 05:546d ????????
+    db   $10, $14, $01, $03, $0c, $02, $02, $02        ;; 05:5475 ????????
+    db   $0e, $01, $05, $04, $01, $01, $02, $0c        ;; 05:547d ????????
+    db   $0b, $06, $03, $06, $01, $05, $08, $01        ;; 05:5485 ????????
+    db   $02, $01, $01, $03, $18, $02, $01, $02        ;; 05:548d ????????
+    db   $0c, $09, $01, $03, $20, $02, $01, $02        ;; 05:5495 ????????
+    db   $01, $04, $20, $02, $01, $02, $03, $03        ;; 05:549d ????????
+    db   $03, $04, $01, $01, $08, $01, $01, $02        ;; 05:54a5 ????????
+    db   $01, $05, $08, $03, $03, $02, $0e, $01        ;; 05:54ad ????????
+    db   $01, $02, $01, $01, $02, $01, $05, $02        ;; 05:54b5 ????????
+    db   $02, $02, $02, $06, $03, $06, $01, $01        ;; 05:54bd ????????
+    db   $10, $01, $02, $02, $01, $05, $02, $02        ;; 05:54c5 ????????
+    db   $01, $02, $0e, $01, $01, $00, $07, $02        ;; 05:54cd ????????
+    db   $02, $01, $05, $04, $03, $03, $02, $02        ;; 05:54d5 ????????
+    db   $11, $02, $12, $0c, $09, $03, $02, $14        ;; 05:54dd ????????
+    db   $01, $05, $00, $04, $04, $00, $12, $14        ;; 05:54e5 ????????
+    db   $02, $13, $14, $0c, $10, $06, $0a, $05        ;; 05:54ed ????????
+    db   $03, $05, $00, $06, $00, $40, $00, $50        ;; 05:54f5 ????????
+    db   $2c, $04, $a4, $00, $07, $00, $50, $00        ;; 05:54fd ????????
+    db   $60, $2c, $04, $a4, $00, $08, $00, $60        ;; 05:5505 ????????
+    db   $00, $50, $2c, $04, $a4, $12, $0a, $10        ;; 05:550d ????????
+    db   $40, $01, $00, $01, $10, $08, $03, $02        ;; 05:5515 ????????
+    db   $01, $01, $01, $08, $01, $01, $01, $09        ;; 05:551d ????????
+    db   $03, $12, $1e, $0c, $05, $03, $06, $03        ;; 05:5525 ????????
+    db   $07, $03, $08, $01, $00, $08, $04, $04        ;; 05:552d ????????
+    db   $01, $02, $14, $02, $15, $14, $12, $1e        ;; 05:5535 ????????
+    db   $10, $78, $04, $03, $01, $10, $10, $04        ;; 05:553d ????????
+    db   $03, $01, $0d, $03, $00                       ;; 05:5545 ?????
+
+data_05_554a:
+    db   $00, $00, $00, $78, $00, $88, $13, $04        ;; 05:554a ????????
+    db   $3a, $10, $30, $03, $02, $01, $0e, $01        ;; 05:5552 ????????
+    db   $00, $10, $04, $04, $01, $04, $00, $00        ;; 05:555a ????????
+    db   $01, $18, $01, $12, $0a, $02, $00, $14        ;; 05:5562 ????????
+    db   $12, $0a, $01, $00, $10, $04, $04, $01        ;; 05:556a ????????
+    db   $09, $04, $25, $00, $06, $01, $0a, $0c        ;; 05:5572 ????????
+    db   $05, $24, $00, $00, $03, $00, $00, $00        ;; 05:557a ????????
+    db   $00, $90, $00, $28, $00, $04, $01, $01        ;; 05:5582 ????????
+    db   $00, $58, $04, $04, $01, $10, $18, $03        ;; 05:558a ????????
+    db   $02, $01, $01, $00, $20, $04, $04, $01        ;; 05:5592 ????????
+    db   $10, $00, $01, $00, $01, $0e, $01, $00        ;; 05:559a ????????
+    db   $00, $02, $02, $01, $02, $01, $02, $02        ;; 05:55a2 ????????
+    db   $02, $03, $15, $00, $14, $10, $08, $04        ;; 05:55aa ????????
+    db   $03, $01, $10, $18, $04, $03, $01, $01        ;; 05:55b2 ????????
+    db   $00, $18, $02, $02, $01, $10, $30, $04        ;; 05:55ba ????????
+    db   $03, $01, $01, $00, $30, $04, $04, $01        ;; 05:55c2 ????????
+    db   $08, $00, $2b, $01, $01, $11, $00, $50        ;; 05:55ca ????????
+    db   $00, $60, $03, $0d, $04, $00                  ;; 05:55d2 ??????
+
+data_05_55d8:
+    db   $08, $00, $3b, $01, $01, $11, $01, $10        ;; 05:55d8 ????????
+    db   $05, $a8, $04, $10, $08, $04, $03, $01        ;; 05:55e0 ????????
+    db   $10, $08, $02, $01, $01, $0f, $00, $00        ;; 05:55e8 ????????
+    db   $01, $01, $10, $05, $a8, $25, $04, $3e        ;; 05:55f0 ????????
+    db   $12, $0a, $01, $01, $08, $04, $04, $01        ;; 05:55f8 ????????
+    db   $0e, $01, $01, $08, $02, $02, $01, $03        ;; 05:5600 ????????
+    db   $01, $1d, $01, $0c, $97, $01, $00, $20        ;; 05:5608 ????????
+    db   $02, $02, $01, $0e, $01, $00, $10, $03        ;; 05:5610 ????????
+    db   $03, $01, $0e, $01, $00, $20, $02, $02        ;; 05:5618 ????????
+    db   $01, $08, $00, $3e, $00, $00, $11, $03        ;; 05:5620 ????????
+    db   $78, $03, $78, $04, $00, $00, $03, $c8        ;; 05:5628 ????????
+    db   $03, $78, $2e, $02, $a4, $01, $00, $a0        ;; 05:5630 ????????
+    db   $02, $02, $01, $13, $01, $08, $00, $87        ;; 05:5638 ????????
+    db   $00, $00, $11, $00, $30, $00, $68, $01        ;; 05:5640 ????????
+    db   $00, $00, $00, $a0, $00, $50, $09, $01        ;; 05:5648 ????????
+    db   $3f, $00, $01, $00, $40, $00, $48, $25        ;; 05:5650 ????????
+    db   $02, $3e, $12, $32, $0f, $01, $12, $0a        ;; 05:5658 ????????
+    db   $10, $38, $01, $00, $01, $01, $00, $18        ;; 05:5660 ????????
+    db   $04, $04, $01, $0e, $01, $00, $10, $02        ;; 05:5668 ????????
+    db   $02, $01, $02, $00, $14, $01, $01, $20        ;; 05:5670 ????????
+    db   $01, $01, $01, $0e, $01, $01, $08, $04        ;; 05:5678 ????????
+    db   $04, $01, $10, $00, $03, $01, $01, $02        ;; 05:5680 ????????
+    db   $01, $14, $12, $14, $0c, $1b, $05, $1e        ;; 05:5688 ????????
+    db   $10, $00, $01, $00, $01, $01, $00, $00        ;; 05:5690 ????????
+    db   $01, $01, $01, $01, $01, $00, $02, $02        ;; 05:5698 ????????
+    db   $01, $12, $14, $10, $00, $02, $00, $01        ;; 05:56a0 ????????
+    db   $01, $00, $00, $02, $01, $01, $01, $01        ;; 05:56a8 ????????
+    db   $00, $01, $02, $01, $12, $14, $10, $00        ;; 05:56b0 ????????
+    db   $01, $00, $01, $01, $00, $00, $01, $01        ;; 05:56b8 ????????
+    db   $01, $01, $01, $00, $02, $02, $01, $12        ;; 05:56c0 ????????
+    db   $14, $10, $00, $04, $00, $01, $01, $00        ;; 05:56c8 ????????
+    db   $00, $04, $01, $01, $01, $01, $00, $04        ;; 05:56d0 ????????
+    db   $02, $01, $12, $14, $0c, $1b, $05, $1e        ;; 05:56d8 ????????
+    db   $13, $01, $0c, $91, $08, $00, $3e, $00        ;; 05:56e0 ????????
+    db   $00, $11, $03, $78, $03, $78, $04, $00        ;; 05:56e8 ????????
+    db   $00, $03, $c8, $03, $60, $2e, $02, $a4        ;; 05:56f0 ????????
+    db   $00, $01, $03, $88, $03, $28, $2f, $04        ;; 05:56f8 ????????
+    db   $a4, $01, $00, $10, $02, $02, $01, $0e        ;; 05:5700 ????????
+    db   $01, $00, $30, $02, $02, $01, $01, $01        ;; 05:5708 ????????
+    db   $30, $04, $04, $01, $0c, $1b, $05, $1e        ;; 05:5710 ????????
+    db   $13, $01, $08, $00, $87, $01, $00, $11        ;; 05:5718 ????????
+    db   $00, $68, $00, $68, $04, $00, $00, $00        ;; 05:5720 ????????
+    db   $90, $00, $68, $09, $04, $3f, $00, $01        ;; 05:5728 ????????
+    db   $00, $60, $00, $50, $25, $04, $3e, $0c        ;; 05:5730 ????????
+    db   $1b, $05, $1e, $10, $10, $01, $00, $01        ;; 05:5738 ????????
+    db   $10, $50, $04, $03, $01, $12, $01, $00        ;; 05:5740 ????????
+    db   $00, $00, $e0, $00, $38, $01, $01, $02        ;; 05:5748 ????????
+    db   $00, $01, $00, $d0, $00, $28, $28, $01        ;; 05:5750 ????????
+    db   $3d, $10, $78, $02, $01, $01, $12, $0a        ;; 05:5758 ????????
+    db   $02, $02, $14, $10, $20, $02, $01, $01        ;; 05:5760 ????????
+    db   $12, $01, $10, $00, $03, $02, $01, $01        ;; 05:5768 ????????
+    db   $00, $00, $04, $04, $01, $01, $01, $00        ;; 05:5770 ????????
+    db   $04, $04, $01, $12, $0a, $02, $03, $14        ;; 05:5778 ????????
+    db   $10, $10, $03, $02, $01, $12, $0a, $02        ;; 05:5780 ????????
+    db   $04, $14, $1d, $00, $12, $0a, $09, $05        ;; 05:5788 ????????
+    db   $1d, $01, $02, $05, $14, $12, $01, $00        ;; 05:5790 ????????
+    db   $02, $01, $60, $00, $60, $09, $04, $3f        ;; 05:5798 ????????
+    db   $01, $02, $28, $02, $02, $01, $0e, $01        ;; 05:57a0 ????????
+    db   $02, $10, $03, $03, $01, $0e, $01, $02        ;; 05:57a8 ????????
+    db   $48, $02, $02, $01, $0e, $01, $02, $00        ;; 05:57b0 ????????
+    db   $03, $03, $01, $02, $06, $14, $0c, $1b        ;; 05:57b8 ????????
+    db   $05, $14, $08, $00, $3e, $00, $00, $11        ;; 05:57c0 ????????
+    db   $03, $78, $03, $78, $04, $00, $00, $03        ;; 05:57c8 ????????
+    db   $88, $03, $60, $2e, $02, $a4, $00, $01        ;; 05:57d0 ????????
+    db   $03, $88, $03, $50, $2f, $04, $a4, $00        ;; 05:57d8 ????????
+    db   $02, $03, $c8, $03, $50, $31, $02, $a4        ;; 05:57e0 ????????
+    db   $01, $02, $30, $02, $02, $01, $0c, $1b        ;; 05:57e8 ????????
+    db   $05, $14, $02, $07, $14, $0c, $1c, $01        ;; 05:57f0 ????????
+    db   $01, $78, $04, $02, $01, $13, $01, $0c        ;; 05:57f8 ????????
+    db   $97, $08, $00, $86, $01, $00, $11, $00        ;; 05:5800 ????????
+    db   $e0, $00, $50, $03, $00, $00, $00, $f0        ;; 05:5808 ????????
+    db   $00, $50, $09, $03, $3f, $12, $14, $10        ;; 05:5810 ????????
+    db   $00, $01, $00, $01, $01, $00, $00, $02        ;; 05:5818 ????????
+    db   $02, $01, $02, $08, $14, $08, $00, $3e        ;; 05:5820 ????????
+    db   $00, $00, $11, $03, $78, $03, $78, $04        ;; 05:5828 ????????
+    db   $00, $00, $03, $c8, $03, $78, $2e, $02        ;; 05:5830 ????????
+    db   $a4, $01, $00, $a0, $02, $02, $01, $08        ;; 05:5838 ????????
+    db   $00, $3e, $00, $00, $11, $03, $c8, $01        ;; 05:5840 ????????
+    db   $98, $02, $00, $00, $03, $f0, $01, $f0        ;; 05:5848 ????????
+    db   $2e, $03, $a4, $01, $00, $20, $03, $03        ;; 05:5850 ????????
+    db   $01, $0e, $01, $00, $18, $02, $02, $01        ;; 05:5858 ????????
+    db   $0e, $01, $00, $38, $03, $03, $01, $12        ;; 05:5860 ????????
+    db   $0a, $0c, $81, $1d, $00, $0f, $01, $0d        ;; 05:5868 ????????
+    db   $05, $00                                      ;; 05:5870 ??
+
+data_05_5872:
+    db   $02, $01, $14, $0d, $06, $00                  ;; 05:5872 ??????
+
+data_05_5878:
+    db   $08, $00, $62, $01, $00, $11, $00, $68        ;; 05:5878 ????????
+    db   $00, $88, $01, $00, $00, $00, $78, $00        ;; 05:5880 ????????
+    db   $88, $0e, $02, $4f, $18, $06, $02, $05        ;; 05:5888 ????????
+    db   $14, $01, $00, $00, $03, $03, $01, $12        ;; 05:5890 ????????
+    db   $32, $0c, $1b, $05, $32, $12, $32, $10        ;; 05:5898 ????????
+    db   $10, $02, $01, $01, $10, $38, $04, $03        ;; 05:58a0 ????????
+    db   $01, $10, $48, $02, $01, $01, $10, $38        ;; 05:58a8 ????????
+    db   $04, $03, $01, $10, $c8, $01, $00, $01        ;; 05:58b0 ????????
+    db   $10, $d0, $03, $02, $01, $0d, $07, $00        ;; 05:58b8 ????????
+
+data_05_58c0:
+    db   $10, $20, $03, $02, $01, $10, $18, $02        ;; 05:58c0 ????????
+    db   $01, $01, $10, $48, $03, $02, $01, $10        ;; 05:58c8 ????????
+    db   $40, $01, $00, $01, $02, $00, $14, $0c        ;; 05:58d0 ????????
+    db   $1b, $05, $14, $0c, $1f, $0a, $09, $00        ;; 05:58d8 ????????
+    db   $10, $00, $02, $01, $01, $21, $01, $22        ;; 05:58e0 ????????
+    db   $10, $02, $21, $00, $02, $01, $0c, $1f        ;; 05:58e8 ????????
+    db   $0a, $02, $09, $0f, $00, $0a, $0a, $0b        ;; 05:58f0 ????????
+    db   $12, $1e, $13, $01, $1e, $12, $64, $08        ;; 05:58f8 ????????
+    db   $00, $8b, $01, $00, $11, $00, $a0, $00        ;; 05:5900 ????????
+    db   $c0, $14, $00, $00, $00, $60, $00, $60        ;; 05:5908 ????????
+    db   $2b, $04, $5f, $12, $50, $01, $00, $48        ;; 05:5910 ????????
+    db   $04, $04, $01, $0e, $01, $00, $18, $01        ;; 05:5918 ????????
+    db   $01, $01, $0e, $01, $00, $18, $04, $04        ;; 05:5920 ????????
+    db   $01, $0e, $01, $00, $10, $01, $01, $01        ;; 05:5928 ????????
+    db   $02, $02, $14, $06, $01, $0a, $06, $01        ;; 05:5930 ????????
+    db   $1e, $06, $01, $32, $10, $00, $02, $01        ;; 05:5938 ????????
+    db   $01, $12, $14, $10, $00, $01, $00, $01        ;; 05:5940 ????????
+    db   $12, $14, $10, $00, $02, $01, $01, $12        ;; 05:5948 ????????
+    db   $0a, $02, $03, $02, $04, $14, $01, $00        ;; 05:5950 ????????
+    db   $10, $02, $02, $01, $0e, $01, $00, $18        ;; 05:5958 ????????
+    db   $03, $03, $01, $0e, $01, $00, $00, $04        ;; 05:5960 ????????
+    db   $04, $01, $12, $1e, $10, $18, $02, $01        ;; 05:5968 ????????
+    db   $01, $01, $00, $18, $02, $02, $01, $10        ;; 05:5970 ????????
+    db   $10, $02, $01, $01, $01, $00, $10, $03        ;; 05:5978 ????????
+    db   $03, $01, $10, $18, $03, $02, $01, $01        ;; 05:5980 ????????
+    db   $00, $18, $03, $03, $01, $10, $18, $02        ;; 05:5988 ????????
+    db   $01, $01, $01, $00, $18, $03, $03, $01        ;; 05:5990 ????????
+    db   $10, $08, $03, $02, $01, $01, $00, $08        ;; 05:5998 ????????
+    db   $02, $02, $01, $10, $18, $03, $02, $01        ;; 05:59a0 ????????
+    db   $01, $00, $18, $03, $03, $01, $03, $00        ;; 05:59a8 ????????
+    db   $10, $20, $03, $02, $01, $10, $08, $02        ;; 05:59b0 ????????
+    db   $01, $01, $10, $10, $03, $02, $01, $01        ;; 05:59b8 ????????
+    db   $01, $00, $02, $02, $01, $10, $08, $03        ;; 05:59c0 ????????
+    db   $02, $01, $02, $05, $14, $10, $18, $03        ;; 05:59c8 ????????
+    db   $02, $01, $01, $01, $00, $04, $04, $01        ;; 05:59d0 ????????
+    db   $10, $18, $01, $00, $01, $10, $08, $03        ;; 05:59d8 ????????
+    db   $02, $01, $02, $06, $02, $07, $01, $01        ;; 05:59e0 ????????
+    db   $00, $02, $02, $01, $02, $08, $02, $09        ;; 05:59e8 ????????
+    db   $12, $01, $10, $00, $01, $02, $01, $02        ;; 05:59f0 ????????
+    db   $0a, $10, $00, $03, $02, $01, $02, $0b        ;; 05:59f8 ????????
+    db   $02, $0c, $14, $12, $32, $0c, $0f, $06        ;; 05:5a00 ????????
+    db   $03, $0a, $08, $00, $5a, $01, $01, $11        ;; 05:5a08 ????????
+    db   $00, $d8, $01, $e0, $03, $03, $03, $00        ;; 05:5a10 ????????
+    db   $03, $00, $d8, $01, $20, $37, $04, $4f        ;; 05:5a18 ????????
+    db   $06, $03, $0a, $12, $14, $10, $50, $03        ;; 05:5a20 ????????
+    db   $02, $01, $01, $03, $58, $04, $04, $01        ;; 05:5a28 ????????
+    db   $02, $0d, $02, $0e, $02, $0f, $14, $10        ;; 05:5a30 ????????
+    db   $50, $03, $02, $01, $01, $03, $50, $03        ;; 05:5a38 ????????
+    db   $03, $01, $12, $14, $01, $03, $08, $03        ;; 05:5a40 ????????
+    db   $03, $01, $12, $32, $01, $03, $00, $05        ;; 05:5a48 ????????
+    db   $05, $01, $12, $96, $0c, $15, $06, $05        ;; 05:5a50 ????????
+    db   $0a, $08, $00, $5a, $01, $01, $11, $00        ;; 05:5a58 ????????
+    db   $d8, $01, $40, $03, $01, $03, $10, $04        ;; 05:5a60 ????????
+    db   $04, $01, $02, $10, $14, $0d, $08, $00        ;; 05:5a68 ????????
+
+data_05_5a70:
+    db   $0c, $1b, $05, $1e, $10, $00, $02, $01        ;; 05:5a70 ????????
+    db   $01, $12, $14, $10, $00, $01, $00, $01        ;; 05:5a78 ????????
+    db   $12, $14, $10, $00, $02, $01, $01, $12        ;; 05:5a80 ????????
+    db   $0a, $0b, $00, $10, $00, $03, $02, $01        ;; 05:5a88 ????????
+    db   $12, $14, $21, $01, $22, $10, $02, $21        ;; 05:5a90 ????????
+    db   $00, $12, $1e, $02, $00, $14, $09, $06        ;; 05:5a98 ????????
+    db   $02, $01, $14, $0b, $01, $12, $32, $10        ;; 05:5aa0 ????????
+    db   $78, $03, $02, $01, $10, $08, $04, $03        ;; 05:5aa8 ????????
+    db   $01, $0d, $09, $00                            ;; 05:5ab0 ????
+
+data_05_5ab4:
+    db   $14, $09, $07, $12, $14, $02, $01, $14        ;; 05:5ab4 ????????
+    db   $01, $00, $10, $01, $01, $01, $0e, $01        ;; 05:5abc ????????
+    db   $00, $58, $04, $04, $01, $0e, $01, $00        ;; 05:5ac4 ????????
+    db   $78, $02, $02, $01, $03, $00, $0d, $0a        ;; 05:5acc ????????
+    db   $00                                           ;; 05:5ad4 ?
+
+data_05_5ad5:
+    db   $00, $00, $00, $90, $01, $78, $15, $01        ;; 05:5ad5 ????????
+    db   $6c, $00, $01, $00, $b0, $01, $78, $05        ;; 05:5add ????????
+    db   $02, $68, $04, $01, $50, $00, $00, $01        ;; 05:5ae5 ????????
+    db   $12, $32, $04, $00, $50, $00, $00, $01        ;; 05:5aed ????????
+    db   $12, $0a, $10, $60, $02, $01, $01, $10        ;; 05:5af5 ????????
+    db   $08, $03, $02, $01, $02, $00, $02, $01        ;; 05:5afd ????????
+    db   $14, $01, $00, $04, $01, $01, $02, $01        ;; 05:5b05 ????????
+    db   $01, $04, $02, $02, $02, $0c, $09, $06        ;; 05:5b0d ????????
+    db   $01, $05, $01, $00, $04, $01, $02, $02        ;; 05:5b15 ????????
+    db   $01, $01, $04, $02, $01, $02, $0e, $01        ;; 05:5b1d ????????
+    db   $00, $04, $01, $01, $02, $01, $01, $04        ;; 05:5b25 ????????
+    db   $02, $02, $02, $0c, $09, $06, $03, $05        ;; 05:5b2d ????????
+    db   $01, $00, $04, $01, $02, $02, $01, $01        ;; 05:5b35 ????????
+    db   $04, $02, $01, $02, $0e, $01, $00, $04        ;; 05:5b3d ????????
+    db   $01, $01, $02, $01, $01, $04, $02, $02        ;; 05:5b45 ????????
+    db   $02, $0c, $09, $06, $05, $05, $01, $00        ;; 05:5b4d ????????
+    db   $04, $01, $02, $02, $01, $01, $04, $02        ;; 05:5b55 ????????
+    db   $01, $02, $02, $02, $14, $12, $0a, $10        ;; 05:5b5d ????????
+    db   $20, $02, $01, $01, $10, $10, $03, $02        ;; 05:5b65 ????????
+    db   $01, $01, $00, $00, $04, $04, $01, $10        ;; 05:5b6d ????????
+    db   $08, $03, $02, $01, $12, $0a, $09, $08        ;; 05:5b75 ????????
+    db   $01, $00, $00, $07, $07, $01, $25, $00        ;; 05:5b7d ????????
+    db   $12, $0a, $02, $03, $14, $0c, $05, $24        ;; 05:5b85 ????????
+    db   $00, $01, $03, $00, $12, $1e, $02, $04        ;; 05:5b8d ????????
+    db   $14, $15, $01, $12, $01, $00, $00, $01        ;; 05:5b95 ????????
+    db   $40, $01, $a8, $0e, $02, $4f, $01, $01        ;; 05:5b9d ????????
+    db   $20, $02, $02, $01, $10, $00, $02, $01        ;; 05:5ba5 ????????
+    db   $01, $01, $00, $38, $02, $02, $01, $01        ;; 05:5bad ????????
+    db   $01, $38, $02, $02, $01, $0e, $01, $00        ;; 05:5bb5 ????????
+    db   $20, $02, $02, $01, $01, $01, $38, $03        ;; 05:5bbd ????????
+    db   $03, $01, $03, $01, $12, $50, $01, $00        ;; 05:5bc5 ????????
+    db   $28, $02, $02, $01, $0e, $01, $00, $20        ;; 05:5bcd ????????
+    db   $03, $03, $01, $0e, $01, $00, $10, $02        ;; 05:5bd5 ????????
+    db   $02, $01, $12, $0a, $10, $08, $01, $00        ;; 05:5bdd ????????
+    db   $01, $12, $0a, $02, $05, $02, $06, $14        ;; 05:5be5 ????????
+    db   $12, $1e, $0c, $0f, $06, $05, $0a, $13        ;; 05:5bed ????????
+    db   $01, $1e, $12, $64, $08, $00, $8b, $00        ;; 05:5bf5 ????????
+    db   $00, $11, $00, $58, $00, $78, $04, $06        ;; 05:5bfd ????????
+    db   $03, $0a, $0f, $01, $12, $32, $10, $20        ;; 05:5c05 ????????
+    db   $03, $02, $01, $10, $08, $03, $02, $01        ;; 05:5c0d ????????
+    db   $10, $18, $03, $02, $01, $10, $18, $01        ;; 05:5c15 ????????
+    db   $00, $01, $10, $08, $03, $02, $01, $12        ;; 05:5c1d ????????
+    db   $1e, $02, $07, $14, $12, $1e, $10, $20        ;; 05:5c25 ????????
+    db   $02, $01, $01, $10, $28, $03, $02, $01        ;; 05:5c2d ????????
+    db   $10, $28, $02, $01, $01, $10, $08, $03        ;; 05:5c35 ????????
+    db   $02, $01, $10, $08, $03, $02, $01, $10        ;; 05:5c3d ????????
+    db   $18, $03, $02, $01, $10, $40, $02, $01        ;; 05:5c45 ????????
+    db   $01, $10, $10, $04, $03, $01, $12, $1e        ;; 05:5c4d ????????
+    db   $1e, $0c, $0f, $06, $05, $0a, $08, $00        ;; 05:5c55 ????????
+    db   $84, $00, $01, $11, $00, $e8, $00, $48        ;; 05:5c5d ????????
+    db   $01, $12, $32, $06, $03, $0a, $0f, $01        ;; 05:5c65 ????????
+    db   $12, $0a, $02, $08, $02, $09, $02, $0a        ;; 05:5c6d ????????
+    db   $02, $0b, $02, $0c, $14, $0d, $0b, $00        ;; 05:5c75 ????????
+
+data_05_5c7d:
+    db   $0c, $1b, $05, $32, $10, $28, $04, $03        ;; 05:5c7d ????????
+    db   $01, $0c, $92, $12, $01, $00, $01, $00        ;; 05:5c85 ????????
+    db   $78, $00, $38, $2c, $01, $a4, $10, $48        ;; 05:5c8d ????????
+    db   $02, $01, $01, $12, $14, $0c, $1b, $05        ;; 05:5c95 ????????
+    db   $32, $01, $00, $28, $02, $02, $01, $02        ;; 05:5c9d ????????
+    db   $00, $14, $10, $28, $02, $01, $01, $04        ;; 05:5ca5 ????????
+    db   $01, $58, $00, $00, $01, $12, $1e, $04        ;; 05:5cad ????????
+    db   $00, $58, $00, $00, $01, $01, $01, $30        ;; 05:5cb5 ????????
+    db   $01, $01, $01, $10, $20, $02, $01, $01        ;; 05:5cbd ????????
+    db   $01, $01, $20, $01, $01, $01, $10, $18        ;; 05:5cc5 ????????
+    db   $03, $02, $01, $01, $01, $18, $01, $01        ;; 05:5ccd ????????
+    db   $01, $09, $09, $12, $14, $0c, $05, $03        ;; 05:5cd5 ????????
+    db   $01, $0c, $97, $01, $00, $10, $02, $02        ;; 05:5cdd ????????
+    db   $01, $02, $01, $14, $10, $00, $01, $00        ;; 05:5ce5 ????????
+    db   $01, $12, $32, $1d, $01, $13, $01, $08        ;; 05:5ced ????????
+    db   $00, $3e, $00, $00, $11, $03, $78, $03        ;; 05:5cf5 ????????
+    db   $78, $04, $00, $00, $03, $c8, $03, $78        ;; 05:5cfd ????????
+    db   $2f, $02, $a4, $01, $00, $50, $02, $02        ;; 05:5d05 ????????
+    db   $01, $1d, $00, $01, $00, $60, $03, $03        ;; 05:5d0d ????????
+    db   $01, $08, $00, $88, $00, $00, $11, $01        ;; 05:5d15 ????????
+    db   $d0, $01, $f0, $03, $00, $00, $01, $d0        ;; 05:5d1d ????????
+    db   $01, $f0, $01, $03, $02, $01, $00, $18        ;; 05:5d25 ????????
+    db   $03, $03, $01, $0f, $01, $10, $10, $03        ;; 05:5d2d ????????
+    db   $02, $01, $01, $00, $10, $03, $03, $01        ;; 05:5d35 ????????
+    db   $0e, $01, $00, $00, $04, $04, $01, $02        ;; 05:5d3d ????????
+    db   $02, $14, $01, $00, $30, $03, $03, $01        ;; 05:5d45 ????????
+    db   $0e, $01, $00, $30, $02, $02, $01, $0e        ;; 05:5d4d ????????
+    db   $01, $00, $28, $03, $03, $01, $0e, $01        ;; 05:5d55 ????????
+    db   $00, $08, $03, $03, $01, $03, $00, $10        ;; 05:5d5d ????????
+    db   $30, $03, $02, $01, $10, $30, $02, $01        ;; 05:5d65 ????????
+    db   $01, $10, $40, $03, $02, $01, $10, $08        ;; 05:5d6d ????????
+    db   $03, $02, $01, $10, $18, $03, $02, $01        ;; 05:5d75 ????????
+    db   $10, $10, $01, $00, $01, $10, $08, $03        ;; 05:5d7d ????????
+    db   $02, $01, $02, $03, $10, $00, $01, $01        ;; 05:5d85 ????????
+    db   $01, $01, $01, $00, $02, $02, $01, $02        ;; 05:5d8d ????????
+    db   $04, $01, $00, $00, $01, $01, $01, $02        ;; 05:5d95 ????????
+    db   $05, $10, $00, $03, $03, $01, $02, $06        ;; 05:5d9d ????????
+    db   $01, $00, $00, $04, $04, $01, $02, $07        ;; 05:5da5 ????????
+    db   $10, $00, $03, $03, $01, $02, $08, $02        ;; 05:5dad ????????
+    db   $09, $12, $05, $10, $00, $01, $00, $01        ;; 05:5db5 ????????
+    db   $02, $0a, $01, $00, $00, $01, $01, $01        ;; 05:5dbd ????????
+    db   $02, $0b, $10, $00, $03, $03, $01, $01        ;; 05:5dc5 ????????
+    db   $00, $00, $04, $04, $01, $02, $0c, $14        ;; 05:5dcd ????????
+    db   $01, $01, $00, $04, $04, $01, $0d, $0c        ;; 05:5dd5 ????????
+    db   $00                                           ;; 05:5ddd ?
+
+data_05_5dde:
+    db   $14, $09, $0a, $25, $00, $12, $14, $0c        ;; 05:5dde ????????
+    db   $05, $24, $00, $01, $03, $00, $02, $01        ;; 05:5de6 ????????
+    db   $14, $15, $02, $0d, $0d, $00                  ;; 05:5dee ??????
+
+data_05_5df4:
+    db   $10, $18, $03, $02, $01, $10, $10, $01        ;; 05:5df4 ????????
+    db   $00, $01, $10, $08, $03, $02, $01, $12        ;; 05:5dfc ????????
+    db   $0a, $10, $00, $01, $02, $01, $01, $01        ;; 05:5e04 ????????
+    db   $00, $02, $02, $01, $02, $00, $12, $01        ;; 05:5e0c ????????
+    db   $10, $00, $03, $02, $01, $02, $01, $12        ;; 05:5e14 ????????
+    db   $01, $10, $00, $01, $02, $01, $02, $02        ;; 05:5e1c ????????
+    db   $01, $00, $00, $01, $01, $01, $02, $03        ;; 05:5e24 ????????
+    db   $12, $01, $10, $00, $03, $02, $01, $01        ;; 05:5e2c ????????
+    db   $00, $00, $04, $04, $01, $02, $04, $02        ;; 05:5e34 ????????
+    db   $05, $01, $00, $00, $01, $01, $01, $02        ;; 05:5e3c ????????
+    db   $06, $14, $01, $00, $10, $02, $02, $01        ;; 05:5e44 ????????
+    db   $0e, $01, $00, $08, $04, $04, $01, $0e        ;; 05:5e4c ????????
+    db   $01, $00, $20, $02, $02, $01, $0e, $01        ;; 05:5e54 ????????
+    db   $00, $10, $03, $03, $01, $03, $00, $10        ;; 05:5e5c ????????
+    db   $30, $02, $01, $01, $10, $18, $03, $02        ;; 05:5e64 ????????
+    db   $01, $00, $00, $00, $58, $00, $68, $09        ;; 05:5e6c ????????
+    db   $01, $3f, $10, $18, $03, $02, $01, $10        ;; 05:5e74 ????????
+    db   $20, $02, $01, $01, $10, $08, $04, $03        ;; 05:5e7c ????????
+    db   $01, $10, $20, $02, $01, $01, $02, $07        ;; 05:5e84 ????????
+    db   $14, $10, $10, $04, $03, $01, $12, $14        ;; 05:5e8c ????????
+    db   $0c, $0f, $06, $03, $0a, $13, $01, $03        ;; 05:5e94 ????????
+    db   $00, $1e, $12, $32, $08, $00, $8d, $01        ;; 05:5e9c ????????
+    db   $01, $11, $00, $60, $00, $70, $03, $10        ;; 05:5ea4 ????????
+    db   $10, $03, $02, $01, $10, $40, $01, $00        ;; 05:5eac ????????
+    db   $01, $10, $30, $04, $03, $01, $10, $20        ;; 05:5eb4 ????????
+    db   $01, $00, $01, $10, $08, $04, $03, $01        ;; 05:5ebc ????????
+    db   $10, $10, $01, $00, $01, $01, $00, $00        ;; 05:5ec4 ????????
+    db   $02, $02, $01, $02, $08, $14, $12, $14        ;; 05:5ecc ????????
+    db   $0c, $0f, $06, $03, $0a, $08, $00, $5a        ;; 05:5ed4 ????????
+    db   $01, $01, $11, $00, $d8, $01, $a0, $03        ;; 05:5edc ????????
+    db   $03, $03, $00, $03, $00, $d8, $01, $20        ;; 05:5ee4 ????????
+    db   $37, $04, $4f, $10, $40, $03, $02, $01        ;; 05:5eec ????????
+    db   $0e, $01, $03, $20, $04, $04, $01, $02        ;; 05:5ef4 ????????
+    db   $09, $14, $10, $20, $03, $02, $01, $01        ;; 05:5efc ????????
+    db   $03, $20, $03, $03, $01, $12, $1e, $01        ;; 05:5f04 ????????
+    db   $03, $00, $05, $05, $01, $12, $96, $0c        ;; 05:5f0c ????????
+    db   $15, $06, $05, $0a, $08, $00, $5a, $01        ;; 05:5f14 ????????
+    db   $01, $11, $00, $d8, $01, $40, $03, $01        ;; 05:5f1c ????????
+    db   $03, $00, $04, $04, $01, $02, $0a, $14        ;; 05:5f24 ????????
+    db   $0d, $0e, $00                                 ;; 05:5f2c ???
+
+data_05_5f2f:
     db   $10, $08, $04, $03, $01, $12, $0a, $21        ;; 05:5f2f ????????
     db   $01, $22, $10, $02, $21, $00, $12, $14        ;; 05:5f37 ????????
     db   $00, $00, $01, $18, $01, $a0, $03, $04        ;; 05:5f3f ????????
@@ -2635,6 +2800,8 @@ data_05_4e7d:
     db   $00, $20, $01, $02, $01, $14, $12, $1e        ;; 05:5f9f ????????
     db   $06, $03, $0a, $03, $00, $04, $00, $00        ;; 05:5fa7 ????????
     db   $01, $20, $01, $0c, $94, $0d, $0f, $00        ;; 05:5faf ????????
+
+data_05_5fb7:
     db   $00, $00, $01, $50, $01, $60, $10, $03        ;; 05:5fb7 ????????
     db   $a2, $10, $40, $04, $03, $01, $12, $14        ;; 05:5fbf ????????
     db   $04, $00, $00, $00, $38, $01, $12, $32        ;; 05:5fc7 ????????
@@ -2642,710 +2809,732 @@ data_05_4e7d:
     db   $01, $12, $1e, $01, $00, $28, $03, $03        ;; 05:5fd7 ????????
     db   $01, $09, $0c, $25, $00, $12, $14, $0c        ;; 05:5fdf ????????
     db   $05, $24, $00, $00, $03, $00, $15, $03        ;; 05:5fe7 ????????
-    db   $0d, $10, $00, $08, $00, $82, $01, $00        ;; 05:5fef ????????
-    db   $11, $00, $e0, $00, $a8, $02, $00, $00        ;; 05:5ff7 ????????
-    db   $01, $00, $00, $a8, $04, $02, $04, $00        ;; 05:5fff ????????
-    db   $01, $00, $74, $00, $30, $11, $04, $9d        ;; 05:6007 ????????
-    db   $00, $02, $00, $50, $00, $68, $26, $03        ;; 05:600f ????????
-    db   $93, $00, $03, $00, $68, $00, $68, $26        ;; 05:6017 ????????
-    db   $03, $9f, $00, $04, $00, $80, $00, $68        ;; 05:601f ????????
-    db   $27, $03, $9e, $00, $05, $00, $98, $00        ;; 05:6027 ????????
-    db   $68, $27, $03, $94, $00, $06, $00, $50        ;; 05:602f ????????
-    db   $00, $80, $26, $03, $93, $00, $07, $00        ;; 05:6037 ????????
-    db   $68, $00, $80, $26, $03, $9f, $00, $08        ;; 05:603f ????????
-    db   $00, $80, $00, $80, $27, $03, $9e, $00        ;; 05:6047 ????????
-    db   $09, $00, $98, $00, $80, $27, $03, $94        ;; 05:604f ????????
-    db   $10, $10, $03, $02, $01, $10, $08, $02        ;; 05:6057 ????????
-    db   $01, $01, $04, $01, $34, $00, $00, $01        ;; 05:605f ????????
-    db   $04, $00, $00, $01, $69, $01, $02, $00        ;; 05:6067 ????????
-    db   $14, $04, $00, $00, $00, $28, $01, $02        ;; 05:606f ????????
-    db   $01, $14, $01, $00, $20, $02, $02, $01        ;; 05:6077 ????????
-    db   $04, $00, $00, $00, $51, $01, $04, $00        ;; 05:607f ????????
-    db   $34, $00, $00, $01, $10, $00, $04, $04        ;; 05:6087 ????????
-    db   $01, $01, $00, $00, $03, $03, $01, $02        ;; 05:608f ????????
-    db   $02, $14, $12, $1e, $13, $01, $1e, $12        ;; 05:6097 ????????
-    db   $32, $08, $00, $81, $01, $00, $11, $00        ;; 05:609f ????????
-    db   $48, $00, $78, $03, $00, $00, $00, $48        ;; 05:60a7 ????????
-    db   $00, $30, $03, $03, $60, $12, $32, $10        ;; 05:60af ????????
-    db   $28, $03, $02, $01, $12, $1e, $01, $00        ;; 05:60b7 ????????
-    db   $00, $04, $04, $01, $02, $03, $02, $04        ;; 05:60bf ????????
-    db   $01, $00, $00, $02, $02, $01, $02, $05        ;; 05:60c7 ????????
-    db   $01, $00, $00, $04, $04, $01, $02, $06        ;; 05:60cf ????????
-    db   $02, $07, $14, $01, $00, $08, $04, $04        ;; 05:60d7 ????????
-    db   $01, $12, $0a, $09, $13, $12, $0a, $02        ;; 05:60df ????????
-    db   $08, $14, $09, $0d, $01, $00, $00, $08        ;; 05:60e7 ????????
-    db   $04, $01, $12, $0a, $10, $08, $03, $02        ;; 05:60ef ????????
-    db   $01, $02, $09, $02, $0a, $02, $0b, $02        ;; 05:60f7 ????????
-    db   $0c, $02, $0d, $14, $12, $14, $02, $0e        ;; 05:60ff ????????
-    db   $14, $06, $01, $0a, $00, $01, $00, $48        ;; 05:6107 ????????
-    db   $00, $80, $11, $03, $9d, $00, $02, $00        ;; 05:610f ????????
-    db   $48, $00, $70, $12, $03, $a4, $01, $02        ;; 05:6117 ????????
-    db   $18, $03, $03, $01, $0c, $09, $06, $03        ;; 05:611f ????????
-    db   $05, $10, $10, $01, $01, $02, $05, $0a        ;; 05:6127 ????????
-    db   $10, $00, $13, $13, $02, $0c, $13, $01        ;; 05:612f ????????
-    db   $01, $20, $03, $03, $01, $01, $02, $10        ;; 05:6137 ????????
-    db   $03, $03, $01, $0e, $01, $01, $10, $01        ;; 05:613f ????????
-    db   $01, $01, $0e, $01, $01, $18, $03, $03        ;; 05:6147 ????????
-    db   $01, $0e, $01, $02, $00, $01, $01, $01        ;; 05:614f ????????
-    db   $02, $0f, $01, $01, $00, $02, $02, $01        ;; 05:6157 ????????
-    db   $02, $10, $02, $11, $14, $00, $03, $00        ;; 05:615f ????????
-    db   $48, $00, $80, $1e, $03, $a4, $01, $03        ;; 05:6167 ????????
-    db   $28, $03, $03, $01, $0e, $01, $03, $20        ;; 05:616f ????????
-    db   $02, $02, $01, $0e, $01, $03, $00, $03        ;; 05:6177 ????????
-    db   $03, $01, $02, $12, $14, $12, $32, $07        ;; 05:617f ????????
-    db   $00, $1e, $12, $64, $08, $00, $7f, $00        ;; 05:6187 ????????
-    db   $00, $11, $00, $78, $00, $60, $03, $00        ;; 05:618f ????????
-    db   $00, $00, $6c, $00, $48, $11, $04, $9d        ;; 05:6197 ????????
-    db   $00, $01, $00, $84, $00, $48, $12, $04        ;; 05:619f ????????
-    db   $a4, $00, $02, $00, $10, $00, $58, $27        ;; 05:61a7 ????????
-    db   $02, $9e, $00, $03, $00, $10, $00, $70        ;; 05:61af ????????
-    db   $27, $02, $9e, $1b, $12, $0a, $01, $01        ;; 05:61b7 ????????
-    db   $00, $02, $02, $01, $02, $13, $14, $10        ;; 05:61bf ????????
-    db   $18, $04, $03, $01, $10, $30, $02, $01        ;; 05:61c7 ????????
-    db   $01, $02, $14, $02, $15, $01, $00, $00        ;; 05:61cf ????????
-    db   $02, $02, $01, $02, $16, $02, $17, $01        ;; 05:61d7 ????????
-    db   $01, $00, $04, $04, $01, $02, $18, $14        ;; 05:61df ????????
-    db   $12, $14, $08, $00, $c5, $00, $00, $11        ;; 05:61e7 ????????
-    db   $00, $00, $00, $00, $03, $12, $32, $0c        ;; 05:61ef ????????
-    db   $1d, $13, $01, $08, $00, $c3, $00, $00        ;; 05:61f7 ????????
-    db   $11, $00, $00, $00, $00, $03, $0c, $06        ;; 05:61ff ????????
-    db   $12, $32, $0c, $1b, $05, $1e, $08, $00        ;; 05:6207 ????????
-    db   $7f, $00, $00, $11, $00, $78, $00, $60        ;; 05:620f ????????
-    db   $03, $00, $00, $00, $54, $00, $48, $04        ;; 05:6217 ????????
-    db   $02, $04, $00, $01, $00, $6c, $00, $48        ;; 05:621f ????????
-    db   $11, $02, $9d, $00, $02, $00, $84, $00        ;; 05:6227 ????????
-    db   $48, $12, $02, $a4, $00, $03, $00, $10        ;; 05:622f ????????
-    db   $00, $58, $27, $02, $9e, $00, $04, $00        ;; 05:6237 ????????
-    db   $10, $00, $70, $27, $02, $9e, $1b, $12        ;; 05:623f ????????
-    db   $0a, $02, $19, $14, $10, $18, $04, $03        ;; 05:6247 ????????
-    db   $01, $10, $30, $02, $01, $01, $02, $1a        ;; 05:624f ????????
-    db   $02, $1b, $02, $1c, $14, $13, $01, $08        ;; 05:6257 ????????
-    db   $00, $c4, $00, $00, $11, $00, $00, $00        ;; 05:625f ????????
-    db   $00, $03, $12, $32, $08, $00, $7f, $00        ;; 05:6267 ????????
-    db   $00, $11, $00, $50, $00, $78, $03, $00        ;; 05:626f ????????
-    db   $00, $00, $54, $00, $48, $04, $02, $04        ;; 05:6277 ????????
-    db   $00, $01, $00, $6c, $00, $48, $11, $02        ;; 05:627f ????????
-    db   $9d, $00, $02, $00, $84, $00, $48, $12        ;; 05:6287 ????????
-    db   $02, $a4, $00, $03, $00, $10, $00, $58        ;; 05:628f ????????
-    db   $27, $02, $9e, $00, $04, $00, $10, $00        ;; 05:6297 ????????
-    db   $70, $27, $02, $9e, $02, $1d, $02, $1e        ;; 05:629f ????????
-    db   $01, $00, $00, $04, $04, $01, $02, $1f        ;; 05:62a7 ????????
-    db   $01, $00, $00, $01, $01, $01, $02, $20        ;; 05:62af ????????
-    db   $14, $12, $0a, $13, $01, $1e, $12, $64        ;; 05:62b7 ????????
-    db   $08, $00, $83, $01, $00, $11, $00, $f0        ;; 05:62bf ????????
-    db   $00, $a0, $02, $00, $00, $00, $20, $00        ;; 05:62c7 ????????
-    db   $a0, $06, $01, $19, $00, $01, $00, $20        ;; 05:62cf ????????
-    db   $00, $90, $05, $01, $68, $00, $02, $00        ;; 05:62d7 ????????
-    db   $d8, $00, $a0, $26, $02, $a4, $10, $78        ;; 05:62df ????????
-    db   $02, $01, $01, $01, $02, $78, $02, $02        ;; 05:62e7 ????????
-    db   $01, $0c, $20, $02, $21, $14, $13, $01        ;; 05:62ef ????????
-    db   $01, $02, $00, $07, $07, $01, $12, $0a        ;; 05:62f7 ????????
-    db   $13, $00, $12, $0a, $03, $02, $01, $00        ;; 05:62ff ????????
-    db   $28, $01, $01, $01, $01, $01, $28, $01        ;; 05:6307 ????????
-    db   $01, $01, $02, $22, $02, $23, $02, $24        ;; 05:630f ????????
-    db   $01, $00, $00, $03, $03, $01, $12, $14        ;; 05:6317 ????????
-    db   $01, $00, $00, $01, $01, $01, $02, $25        ;; 05:631f ????????
-    db   $01, $01, $00, $04, $04, $01, $12, $14        ;; 05:6327 ????????
-    db   $01, $01, $00, $01, $01, $01, $02, $26        ;; 05:632f ????????
-    db   $02, $27, $14, $12, $14, $08, $00, $7f        ;; 05:6337 ????????
-    db   $00, $00, $11, $00, $d8, $00, $10, $11        ;; 05:633f ????????
-    db   $00, $00, $00, $6c, $00, $48, $11, $02        ;; 05:6347 ????????
-    db   $9d, $00, $01, $00, $84, $00, $48, $12        ;; 05:634f ????????
-    db   $02, $a4, $04, $01, $32, $00, $00, $01        ;; 05:6357 ????????
-    db   $12, $14, $04, $00, $32, $00, $00, $01        ;; 05:635f ????????
-    db   $12, $01, $00, $02, $00, $d8, $00, $00        ;; 05:6367 ????????
-    db   $05, $04, $68, $01, $02, $48, $04, $04        ;; 05:636f ????????
-    db   $01, $0e, $01, $02, $18, $02, $02, $01        ;; 05:6377 ????????
-    db   $04, $00, $00, $00, $08, $01, $12, $01        ;; 05:637f ????????
-    db   $02, $28, $14, $01, $00, $00, $01, $01        ;; 05:6387 ????????
-    db   $01, $01, $01, $00, $01, $01, $01, $04        ;; 05:638f ????????
-    db   $00, $00, $01, $08, $01, $0f, $01, $10        ;; 05:6397 ????????
-    db   $08, $04, $03, $01, $00, $03, $00, $d8        ;; 05:639f ????????
-    db   $00, $00, $06, $04, $19, $10, $20, $04        ;; 05:63a7 ????????
-    db   $03, $01, $01, $03, $20, $04, $04, $01        ;; 05:63af ????????
-    db   $10, $08, $02, $01, $01, $01, $03, $08        ;; 05:63b7 ????????
-    db   $04, $04, $01, $0e, $01, $03, $18, $02        ;; 05:63bf ????????
-    db   $02, $01, $04, $00, $00, $00, $08, $01        ;; 05:63c7 ????????
-    db   $02, $29, $02, $2a, $02, $2b, $02, $2c        ;; 05:63cf ????????
-    db   $02, $2d, $02, $2e, $14, $0c, $20, $06        ;; 05:63d7 ????????
-    db   $03, $0a, $01, $01, $14, $03, $03, $02        ;; 05:63df ????????
-    db   $25, $01, $24, $01, $01, $01, $00, $10        ;; 05:63e7 ????????
-    db   $01, $01, $01, $02, $2f, $14, $01, $03        ;; 05:63ef ????????
-    db   $0c, $02, $02, $02, $0e, $01, $03, $10        ;; 05:63f7 ????????
-    db   $04, $04, $02, $0c, $10, $06, $05, $0a        ;; 05:63ff ????????
-    db   $01, $03, $00, $01, $01, $01, $0c, $10        ;; 05:6407 ????????
-    db   $06, $05, $0a, $02, $30, $14, $12, $14        ;; 05:640f ????????
-    db   $07, $00, $1e, $12, $64, $08, $00, $8c        ;; 05:6417 ????????
-    db   $01, $01, $11, $00, $b8, $00, $58, $04        ;; 05:641f ????????
-    db   $1a, $1b, $06, $01, $0a, $06, $01, $1e        ;; 05:6427 ????????
-    db   $06, $01, $32, $01, $01, $10, $01, $01        ;; 05:642f ????????
-    db   $01, $0e, $01, $01, $08, $03, $03, $01        ;; 05:6437 ????????
-    db   $12, $14, $01, $01, $00, $02, $02, $01        ;; 05:643f ????????
-    db   $04, $00, $00, $01, $08, $01, $02, $31        ;; 05:6447 ????????
-    db   $14, $04, $00, $00, $00, $08, $01, $1c        ;; 05:644f ????????
-    db   $01, $10, $01, $00, $00, $01, $01, $01        ;; 05:6457 ????????
-    db   $10, $10, $04, $03, $01, $10, $08, $02        ;; 05:645f ????????
-    db   $01, $01, $04, $00, $00, $00, $08, $01        ;; 05:6467 ????????
-    db   $02, $32, $0c, $88, $02, $33, $02, $34        ;; 05:646f ????????
-    db   $02, $35, $02, $36, $02, $37, $02, $38        ;; 05:6477 ????????
-    db   $14, $12, $14, $0c, $0f, $07, $00, $1e        ;; 05:647f ????????
-    db   $12, $64, $08, $00, $00, $01, $00, $11        ;; 05:6487 ????????
-    db   $00, $20, $01, $28, $04, $00, $00, $00        ;; 05:648f ????????
-    db   $30, $00, $d8, $04, $01, $04, $00, $01        ;; 05:6497 ????????
-    db   $00, $a0, $01, $50, $00, $03, $01, $00        ;; 05:649f ????????
-    db   $02, $00, $b0, $01, $50, $05, $03, $68        ;; 05:64a7 ????????
-    db   $12, $32, $01, $00, $18, $04, $04, $01        ;; 05:64af ????????
-    db   $0e, $01, $00, $10, $02, $02, $01, $0e        ;; 05:64b7 ????????
-    db   $01, $00, $20, $04, $04, $01, $10, $00        ;; 05:64bf ????????
-    db   $03, $01, $01, $02, $39, $14, $01, $00        ;; 05:64c7 ????????
-    db   $20, $03, $03, $01, $0e, $01, $00, $10        ;; 05:64cf ????????
-    db   $02, $02, $01, $0e, $01, $00, $08, $03        ;; 05:64d7 ????????
-    db   $03, $01, $0e, $01, $00, $08, $03, $03        ;; 05:64df ????????
-    db   $01, $03, $00, $01, $01, $80, $02, $02        ;; 05:64e7 ????????
-    db   $01, $01, $02, $80, $02, $02, $01, $10        ;; 05:64ef ????????
-    db   $08, $04, $03, $01, $01, $01, $00, $03        ;; 05:64f7 ????????
-    db   $03, $01, $01, $02, $00, $03, $03, $01        ;; 05:64ff ????????
-    db   $04, $00, $00, $00, $20, $01, $01, $01        ;; 05:6507 ????????
-    db   $08, $03, $03, $01, $02, $3a, $01, $02        ;; 05:650f ????????
-    db   $08, $03, $03, $01, $02, $3b, $02, $3c        ;; 05:6517 ????????
-    db   $02, $3d, $14, $12, $0a, $04, $00, $00        ;; 05:651f ????????
-    db   $01, $20, $01, $10, $40, $03, $02, $01        ;; 05:6527 ????????
-    db   $10, $10, $02, $01, $01, $10, $08, $03        ;; 05:652f ????????
-    db   $02, $01, $10, $08, $03, $02, $01, $10        ;; 05:6537 ????????
-    db   $08, $02, $01, $01, $0d, $11, $00, $00        ;; 05:653f ????????
-    db   $00, $00, $78, $00, $e0, $00, $03, $01        ;; 05:6547 ????????
-    db   $00, $01, $00, $78, $00, $f0, $05, $03        ;; 05:654f ????????
-    db   $68, $10, $50, $03, $02, $01, $01, $00        ;; 05:6557 ????????
-    db   $58, $03, $03, $01, $01, $01, $58, $03        ;; 05:655f ????????
-    db   $03, $01, $0e, $01, $00, $10, $02, $02        ;; 05:6567 ????????
-    db   $01, $01, $01, $10, $03, $03, $01, $0e        ;; 05:656f ????????
-    db   $01, $00, $00, $03, $03, $01, $01, $01        ;; 05:6577 ????????
-    db   $10, $01, $01, $01, $0e, $01, $01, $00        ;; 05:657f ????????
-    db   $03, $03, $01, $12, $1e, $10, $00, $02        ;; 05:6587 ????????
-    db   $02, $01, $01, $00, $00, $02, $02, $01        ;; 05:658f ????????
-    db   $01, $01, $00, $01, $01, $01, $12, $0a        ;; 05:6597 ????????
-    db   $10, $00, $01, $01, $01, $01, $00, $00        ;; 05:659f ????????
-    db   $01, $01, $01, $01, $01, $00, $02, $02        ;; 05:65a7 ????????
-    db   $01, $12, $14, $10, $00, $02, $02, $01        ;; 05:65af ????????
-    db   $01, $00, $00, $02, $02, $01, $01, $01        ;; 05:65b7 ????????
-    db   $00, $01, $01, $01, $12, $14, $0c, $0f        ;; 05:65bf ????????
-    db   $06, $03, $0a, $00, $02, $00, $78, $00        ;; 05:65c7 ????????
-    db   $60, $14, $04, $80, $12, $14, $10, $00        ;; 05:65cf ????????
-    db   $03, $02, $01, $01, $00, $00, $03, $03        ;; 05:65d7 ????????
-    db   $01, $01, $01, $00, $03, $03, $01, $21        ;; 05:65df ????????
-    db   $01, $22, $08, $02, $21, $00, $12, $1e        ;; 05:65e7 ????????
-    db   $02, $00, $14, $09, $0e, $25, $02, $12        ;; 05:65ef ????????
-    db   $14, $0c, $05, $24, $02, $01, $03, $02        ;; 05:65f7 ????????
-    db   $12, $32, $10, $08, $04, $03, $01, $01        ;; 05:65ff ????????
-    db   $00, $00, $01, $01, $01, $01, $01, $00        ;; 05:6607 ????????
-    db   $02, $02, $01, $12, $14, $04, $00, $00        ;; 05:660f ????????
-    db   $00, $08, $01, $02, $01, $02, $02, $02        ;; 05:6617 ????????
-    db   $03, $14, $12, $14, $04, $00, $00, $01        ;; 05:661f ????????
-    db   $08, $01, $10, $60, $04, $03, $01, $0d        ;; 05:6627 ????????
-    db   $12, $00, $03, $00, $00, $00, $00, $60        ;; 05:662f ????????
-    db   $00, $70, $18, $04, $23, $10, $10, $03        ;; 05:6637 ????????
-    db   $02, $01, $00, $01, $00, $78, $00, $a8        ;; 05:663f ????????
-    db   $00, $03, $01, $10, $20, $03, $02, $01        ;; 05:6647 ????????
-    db   $01, $01, $20, $03, $03, $01, $10, $08        ;; 05:664f ????????
-    db   $02, $01, $01, $01, $01, $08, $03, $03        ;; 05:6657 ????????
-    db   $01, $0e, $01, $01, $18, $02, $02, $01        ;; 05:665f ????????
-    db   $0e, $01, $01, $00, $03, $03, $01, $02        ;; 05:6667 ????????
-    db   $00, $01, $00, $00, $01, $01, $01, $02        ;; 05:666f ????????
-    db   $01, $14, $01, $00, $10, $02, $02, $01        ;; 05:6677 ????????
-    db   $0e, $01, $00, $18, $03, $03, $01, $03        ;; 05:667f ????????
-    db   $00, $12, $fa, $00, $02, $00, $50, $00        ;; 05:6687 ????????
-    db   $58, $18, $04, $23, $01, $02, $18, $04        ;; 05:668f ????????
-    db   $04, $01, $0e, $01, $02, $10, $01, $01        ;; 05:6697 ????????
-    db   $01, $04, $00, $00, $00, $10, $01, $02        ;; 05:669f ????????
-    db   $02, $14, $12, $1e, $02, $03, $01, $01        ;; 05:66a7 ????????
-    db   $00, $01, $01, $01, $02, $04, $14, $04        ;; 05:66af ????????
-    db   $00, $00, $01, $10, $01, $10, $08, $01        ;; 05:66b7 ????????
-    db   $00, $01, $10, $38, $04, $03, $01, $0d        ;; 05:66bf ????????
-    db   $13, $00, $10, $00, $02, $01, $01, $12        ;; 05:66c7 ????????
-    db   $14, $10, $00, $01, $00, $01, $12, $14        ;; 05:66cf ????????
-    db   $10, $00, $02, $01, $01, $12, $14, $10        ;; 05:66d7 ????????
-    db   $00, $01, $00, $01, $12, $14, $10, $00        ;; 05:66df ????????
-    db   $02, $01, $01, $12, $0a, $0b, $00, $00        ;; 05:66e7 ????????
-    db   $05, $01, $48, $00, $c0, $05, $03, $68        ;; 05:66ef ????????
-    db   $10, $08, $03, $02, $01, $01, $05, $48        ;; 05:66f7 ????????
-    db   $03, $03, $01, $0e, $01, $05, $10, $02        ;; 05:66ff ????????
-    db   $02, $01, $0e, $01, $05, $08, $03, $03        ;; 05:6707 ????????
-    db   $01, $04, $00, $00, $00, $10, $01, $02        ;; 05:670f ????????
-    db   $00, $02, $01, $02, $02, $02, $03, $02        ;; 05:6717 ????????
-    db   $04, $14, $09, $0f, $02, $05, $14, $0b        ;; 05:671f ????????
-    db   $01, $12, $01, $00, $06, $01, $48, $00        ;; 05:6727 ????????
-    db   $d0, $00, $03, $01, $01, $06, $50, $03        ;; 05:672f ????????
-    db   $03, $01, $10, $10, $04, $03, $01, $01        ;; 05:6737 ????????
-    db   $05, $00, $01, $01, $01, $04, $00, $00        ;; 05:673f ????????
-    db   $00, $10, $01, $02, $07, $02, $08, $14        ;; 05:6747 ????????
-    db   $04, $00, $00, $01, $10, $01, $10, $78        ;; 05:674f ????????
-    db   $03, $02, $01, $10, $08, $04, $03, $01        ;; 05:6757 ????????
-    db   $0d, $14, $00, $10, $28, $03, $02, $01        ;; 05:675f ????????
-    db   $10, $08, $02, $01, $01, $01, $00, $00        ;; 05:6767 ????????
-    db   $01, $01, $01, $02, $00, $14, $01, $00        ;; 05:676f ????????
-    db   $00, $02, $02, $01, $0e, $01, $00, $10        ;; 05:6777 ????????
-    db   $02, $02, $01, $0e, $01, $00, $00, $03        ;; 05:677f ????????
-    db   $03, $01, $0e, $01, $00, $18, $03, $03        ;; 05:6787 ????????
-    db   $01, $03, $00, $12, $fa, $00, $01, $00        ;; 05:678f ????????
-    db   $50, $00, $58, $18, $04, $23, $01, $01        ;; 05:6797 ????????
-    db   $18, $04, $04, $01, $0e, $01, $01, $10        ;; 05:679f ????????
-    db   $01, $01, $01, $02, $01, $14, $10, $08        ;; 05:67a7 ????????
-    db   $01, $00, $01, $10, $30, $04, $03, $01        ;; 05:67af ????????
-    db   $08, $00, $1d, $01, $00, $11, $00, $18        ;; 05:67b7 ????????
-    db   $00, $78, $04, $00, $00, $00, $08, $00        ;; 05:67bf ????????
-    db   $98, $00, $01, $01, $00, $01, $00, $18        ;; 05:67c7 ????????
-    db   $00, $a8, $05, $03, $68, $00, $02, $00        ;; 05:67cf ????????
-    db   $a0, $00, $f0, $01, $03, $02, $10, $10        ;; 05:67d7 ????????
-    db   $04, $03, $01, $10, $10, $04, $03, $01        ;; 05:67df ????????
-    db   $12, $01, $10, $08, $02, $01, $01, $02        ;; 05:67e7 ????????
-    db   $02, $14, $12, $32, $02, $03, $14, $10        ;; 05:67ef ????????
-    db   $00, $01, $00, $01, $01, $01, $00, $01        ;; 05:67f7 ????????
-    db   $01, $01, $01, $02, $50, $03, $03, $01        ;; 05:67ff ????????
-    db   $0e, $01, $02, $00, $02, $02, $01, $0e        ;; 05:6807 ????????
-    db   $01, $02, $48, $02, $02, $01, $04, $00        ;; 05:680f ????????
-    db   $00, $00, $10, $01, $02, $04, $14, $12        ;; 05:6817 ????????
-    db   $0a, $13, $01, $1d, $01, $0c, $97, $08        ;; 05:681f ????????
-    db   $00, $3e, $00, $00, $11, $03, $78, $03        ;; 05:6827 ????????
-    db   $78, $04, $00, $00, $03, $c8, $03, $78        ;; 05:682f ????????
-    db   $2f, $02, $a4, $01, $00, $a0, $02, $02        ;; 05:6837 ????????
-    db   $01, $13, $01, $08, $00, $84, $01, $00        ;; 05:683f ????????
-    db   $11, $00, $78, $00, $20, $02, $00, $00        ;; 05:6847 ????????
-    db   $00, $78, $00, $40, $00, $02, $01, $00        ;; 05:684f ????????
-    db   $01, $00, $60, $00, $30, $01, $02, $02        ;; 05:6857 ????????
-    db   $00, $02, $00, $88, $00, $30, $05, $02        ;; 05:685f ????????
-    db   $68, $12, $32, $02, $05, $01, $00, $00        ;; 05:6867 ????????
-    db   $03, $03, $01, $02, $06, $01, $01, $00        ;; 05:686f ????????
-    db   $01, $01, $01, $02, $07, $14, $01, $00        ;; 05:6877 ????????
-    db   $00, $02, $02, $01, $01, $01, $00, $02        ;; 05:687f ????????
-    db   $02, $01, $12, $64, $08, $00, $3e, $00        ;; 05:6887 ????????
-    db   $00, $11, $03, $78, $03, $78, $04, $00        ;; 05:688f ????????
-    db   $00, $03, $c8, $03, $78, $2f, $02, $a4        ;; 05:6897 ????????
-    db   $01, $00, $a0, $02, $02, $01, $13, $01        ;; 05:689f ????????
-    db   $1d, $00, $08, $00, $88, $01, $00, $11        ;; 05:68a7 ????????
-    db   $01, $a0, $01, $b0, $03, $00, $00, $01        ;; 05:68af ????????
-    db   $c0, $01, $b0, $00, $03, $01, $00, $01        ;; 05:68b7 ????????
-    db   $01, $b0, $01, $a0, $01, $03, $02, $00        ;; 05:68bf ????????
-    db   $02, $01, $b0, $01, $c0, $05, $03, $68        ;; 05:68c7 ????????
-    db   $10, $10, $03, $02, $01, $01, $00, $10        ;; 05:68cf ????????
-    db   $03, $03, $01, $01, $01, $10, $03, $03        ;; 05:68d7 ????????
-    db   $01, $01, $02, $10, $03, $03, $01, $0e        ;; 05:68df ????????
-    db   $01, $01, $00, $04, $04, $01, $02, $08        ;; 05:68e7 ????????
-    db   $14, $08, $00, $88, $01, $00, $11, $00        ;; 05:68ef ????????
-    db   $f0, $00, $40, $01, $00, $00, $00, $d0        ;; 05:68f7 ????????
-    db   $00, $40, $00, $01, $01, $00, $01, $01        ;; 05:68ff ????????
-    db   $10, $00, $40, $01, $01, $02, $00, $02        ;; 05:6907 ????????
-    db   $00, $c0, $00, $40, $05, $01, $68, $00        ;; 05:690f ????????
-    db   $03, $01, $b0, $00, $58, $0e, $02, $4f        ;; 05:6917 ????????
-    db   $00, $04, $01, $50, $00, $40, $09, $02        ;; 05:691f ????????
-    db   $3f, $10, $20, $01, $00, $01, $01, $00        ;; 05:6927 ????????
-    db   $20, $01, $01, $01, $01, $01, $20, $01        ;; 05:692f ????????
-    db   $01, $01, $01, $02, $20, $01, $01, $01        ;; 05:6937 ????????
-    db   $04, $00, $24, $00, $00, $01, $02, $09        ;; 05:693f ????????
-    db   $14, $04, $01, $24, $00, $00, $01, $12        ;; 05:6947 ????????
-    db   $01, $10, $20, $01, $00, $01, $01, $00        ;; 05:694f ????????
-    db   $20, $01, $01, $01, $01, $01, $20, $01        ;; 05:6957 ????????
-    db   $01, $01, $01, $02, $20, $01, $01, $01        ;; 05:695f ????????
-    db   $01, $04, $20, $04, $04, $01, $10, $10        ;; 05:6967 ????????
-    db   $01, $00, $01, $01, $00, $10, $01, $01        ;; 05:696f ????????
-    db   $01, $01, $01, $10, $04, $04, $01, $01        ;; 05:6977 ????????
-    db   $02, $10, $01, $01, $01, $01, $04, $10        ;; 05:697f ????????
-    db   $04, $04, $01, $10, $08, $01, $00, $01        ;; 05:6987 ????????
-    db   $01, $00, $08, $01, $01, $01, $01, $01        ;; 05:698f ????????
-    db   $08, $04, $04, $01, $01, $02, $08, $01        ;; 05:6997 ????????
-    db   $01, $01, $01, $04, $00, $03, $03, $01        ;; 05:699f ????????
-    db   $10, $18, $04, $03, $01, $01, $00, $18        ;; 05:69a7 ????????
-    db   $01, $01, $01, $01, $01, $18, $01, $01        ;; 05:69af ????????
-    db   $01, $01, $02, $18, $01, $01, $01, $10        ;; 05:69b7 ????????
-    db   $08, $01, $00, $01, $01, $00, $08, $01        ;; 05:69bf ????????
-    db   $01, $01, $01, $01, $08, $01, $01, $01        ;; 05:69c7 ????????
-    db   $01, $02, $08, $01, $01, $01, $10, $10        ;; 05:69cf ????????
-    db   $01, $00, $01, $01, $00, $10, $04, $04        ;; 05:69d7 ????????
-    db   $01, $01, $01, $10, $03, $03, $01, $01        ;; 05:69df ????????
-    db   $02, $10, $01, $01, $01, $10, $08, $01        ;; 05:69e7 ????????
-    db   $00, $01, $01, $00, $08, $04, $04, $01        ;; 05:69ef ????????
-    db   $01, $01, $08, $01, $01, $01, $01, $02        ;; 05:69f7 ????????
-    db   $08, $01, $01, $01, $10, $08, $01, $00        ;; 05:69ff ????????
-    db   $01, $01, $00, $08, $01, $01, $01, $01        ;; 05:6a07 ????????
-    db   $01, $08, $01, $01, $01, $01, $02, $08        ;; 05:6a0f ????????
-    db   $04, $04, $01, $04, $00, $24, $00, $00        ;; 05:6a17 ????????
-    db   $01, $02, $0a, $14, $04, $01, $24, $00        ;; 05:6a1f ????????
-    db   $00, $01, $10, $10, $04, $03, $01, $01        ;; 05:6a27 ????????
-    db   $00, $10, $01, $01, $01, $01, $01, $10        ;; 05:6a2f ????????
-    db   $01, $01, $01, $10, $10, $01, $00, $01        ;; 05:6a37 ????????
-    db   $01, $00, $10, $01, $01, $01, $01, $01        ;; 05:6a3f ????????
-    db   $10, $04, $04, $01, $10, $08, $04, $03        ;; 05:6a47 ????????
-    db   $01, $01, $00, $00, $04, $04, $01, $0e        ;; 05:6a4f ????????
-    db   $01, $02, $08, $04, $04, $01, $01, $04        ;; 05:6a57 ????????
-    db   $08, $03, $03, $01, $0e, $01, $00, $00        ;; 05:6a5f ????????
-    db   $04, $04, $01, $01, $02, $00, $01, $01        ;; 05:6a67 ????????
-    db   $01, $01, $04, $00, $01, $01, $01, $12        ;; 05:6a6f ????????
-    db   $14, $02, $0b, $02, $0c, $14, $12, $32        ;; 05:6a77 ????????
-    db   $0c, $15, $06, $0a, $0a, $0c, $0f, $07        ;; 05:6a7f ????????
-    db   $00, $1e, $12, $64, $08, $00, $7f, $01        ;; 05:6a87 ????????
-    db   $00, $11, $00, $78, $00, $38, $04, $00        ;; 05:6a8f ????????
-    db   $00, $00, $68, $00, $28, $00, $04, $01        ;; 05:6a97 ????????
-    db   $00, $01, $00, $88, $00, $28, $01, $04        ;; 05:6a9f ????????
-    db   $02, $00, $02, $00, $e8, $00, $30, $17        ;; 05:6aa7 ????????
-    db   $04, $a0, $12, $14, $01, $00, $00, $01        ;; 05:6aaf ????????
-    db   $01, $01, $01, $01, $00, $02, $02, $01        ;; 05:6ab7 ????????
-    db   $10, $00, $03, $02, $01, $02, $0d, $02        ;; 05:6abf ????????
-    db   $0e, $02, $0f, $14, $0c, $92, $10, $00        ;; 05:6ac7 ????????
-    db   $01, $00, $01, $01, $01, $00, $01, $01        ;; 05:6acf ????????
-    db   $01, $01, $02, $38, $02, $02, $01, $02        ;; 05:6ad7 ????????
-    db   $10, $14, $10, $18, $01, $00, $01, $01        ;; 05:6adf ????????
-    db   $02, $10, $02, $02, $01, $09, $10, $25        ;; 05:6ae7 ????????
-    db   $02, $12, $0a, $0c, $05, $24, $02, $00        ;; 05:6aef ????????
-    db   $03, $02, $01, $00, $10, $04, $04, $01        ;; 05:6af7 ????????
-    db   $0e, $01, $00, $10, $01, $01, $01, $10        ;; 05:6aff ????????
-    db   $00, $02, $0a, $01, $01, $01, $00, $04        ;; 05:6b07 ????????
-    db   $04, $01, $02, $11, $14, $10, $48, $01        ;; 05:6b0f ????????
-    db   $00, $01, $10, $38, $03, $02, $01, $0d        ;; 05:6b17 ????????
-    db   $15, $00, $00, $00, $00, $48, $00, $20        ;; 05:6b1f ????????
-    db   $11, $04, $9d, $10, $08, $03, $02, $01        ;; 05:6b27 ????????
-    db   $00, $01, $00, $40, $00, $80, $00, $03        ;; 05:6b2f ????????
-    db   $01, $00, $02, $00, $50, $00, $80, $01        ;; 05:6b37 ????????
-    db   $03, $02, $10, $18, $02, $01, $01, $10        ;; 05:6b3f ????????
-    db   $10, $02, $01, $01, $01, $01, $10, $03        ;; 05:6b47 ????????
-    db   $03, $01, $01, $02, $10, $03, $03, $01        ;; 05:6b4f ????????
-    db   $10, $18, $02, $01, $01, $01, $01, $18        ;; 05:6b57 ????????
-    db   $02, $02, $01, $01, $02, $18, $02, $02        ;; 05:6b5f ????????
-    db   $01, $10, $20, $03, $02, $01, $01, $01        ;; 05:6b67 ????????
-    db   $20, $02, $02, $01, $01, $02, $20, $02        ;; 05:6b6f ????????
-    db   $02, $01, $10, $10, $03, $02, $01, $01        ;; 05:6b77 ????????
-    db   $01, $10, $03, $03, $01, $01, $02, $10        ;; 05:6b7f ????????
-    db   $02, $02, $01, $10, $20, $01, $00, $01        ;; 05:6b87 ????????
-    db   $01, $01, $20, $03, $03, $01, $01, $02        ;; 05:6b8f ????????
-    db   $20, $03, $03, $01, $10, $10, $01, $00        ;; 05:6b97 ????????
-    db   $01, $01, $01, $10, $01, $01, $01, $01        ;; 05:6b9f ????????
-    db   $02, $10, $03, $03, $01, $10, $10, $01        ;; 05:6ba7 ????????
-    db   $00, $01, $01, $01, $10, $01, $01, $01        ;; 05:6baf ????????
-    db   $01, $02, $10, $01, $01, $01, $12, $01        ;; 05:6bb7 ????????
-    db   $10, $00, $03, $02, $01, $01, $01, $10        ;; 05:6bbf ????????
-    db   $01, $01, $01, $01, $02, $10, $01, $01        ;; 05:6bc7 ????????
-    db   $01, $0e, $01, $01, $00, $03, $03, $01        ;; 05:6bcf ????????
-    db   $01, $02, $10, $03, $03, $01, $0e, $01        ;; 05:6bd7 ????????
-    db   $02, $00, $01, $01, $01, $12, $14, $02        ;; 05:6bdf ????????
-    db   $00, $02, $01, $02, $02, $14, $12, $14        ;; 05:6be7 ????????
-    db   $01, $00, $10, $04, $04, $01, $09, $11        ;; 05:6bef ????????
-    db   $25, $00, $12, $14, $0c, $05, $24, $00        ;; 05:6bf7 ????????
-    db   $01, $03, $00, $12, $14, $01, $01, $00        ;; 05:6bff ????????
-    db   $01, $01, $01, $02, $03, $02, $04, $14        ;; 05:6c07 ????????
-    db   $01, $01, $10, $03, $03, $01, $0e, $01        ;; 05:6c0f ????????
-    db   $01, $30, $01, $01, $01, $0e, $01, $01        ;; 05:6c17 ????????
-    db   $10, $03, $03, $01, $0e, $01, $01, $20        ;; 05:6c1f ????????
-    db   $01, $01, $01, $0e, $01, $01, $00, $02        ;; 05:6c27 ????????
-    db   $02, $01, $02, $05, $10, $00, $01, $00        ;; 05:6c2f ????????
-    db   $01, $02, $06, $14, $10, $10, $01, $00        ;; 05:6c37 ????????
-    db   $01, $01, $01, $10, $03, $03, $01, $10        ;; 05:6c3f ????????
-    db   $08, $01, $00, $01, $01, $01, $08, $03        ;; 05:6c47 ????????
-    db   $03, $01, $03, $01, $10, $20, $03, $02        ;; 05:6c4f ????????
-    db   $01, $10, $30, $01, $00, $01, $10, $10        ;; 05:6c57 ????????
-    db   $03, $02, $01, $10, $08, $03, $02, $01        ;; 05:6c5f ????????
-    db   $0d, $16, $00, $12, $32, $10, $10, $03        ;; 05:6c67 ????????
-    db   $02, $01, $01, $00, $00, $04, $04, $01        ;; 05:6c6f ????????
-    db   $01, $01, $10, $03, $03, $01, $01, $02        ;; 05:6c77 ????????
-    db   $10, $03, $03, $01, $0e, $01, $00, $10        ;; 05:6c7f ????????
-    db   $04, $04, $01, $0e, $10, $00, $01, $00        ;; 05:6c87 ????????
-    db   $01, $01, $00, $20, $02, $02, $01, $01        ;; 05:6c8f ????????
-    db   $02, $00, $01, $01, $01, $02, $00, $15        ;; 05:6c97 ????????
-    db   $04, $0c, $07, $02, $01, $01, $00, $00        ;; 05:6c9f ????????
-    db   $04, $04, $01, $02, $02, $02, $03, $02        ;; 05:6ca7 ????????
-    db   $04, $14, $10, $00, $03, $02, $01, $01        ;; 05:6caf ????????
-    db   $00, $a0, $03, $03, $01, $03, $00, $12        ;; 05:6cb7 ????????
-    db   $14, $10, $00, $04, $03, $01, $01, $01        ;; 05:6cbf ????????
-    db   $00, $02, $02, $01, $02, $05, $02, $06        ;; 05:6cc7 ????????
-    db   $14, $10, $80, $03, $02, $01, $01, $01        ;; 05:6ccf ????????
-    db   $80, $03, $03, $01, $01, $02, $80, $03        ;; 05:6cd7 ????????
-    db   $03, $01, $0c, $0f, $08, $00, $b8, $01        ;; 05:6cdf ????????
-    db   $00, $11, $00, $58, $01, $e0, $03, $0d        ;; 05:6ce7 ????????
-    db   $17, $00, $12, $14, $10, $20, $03, $02        ;; 05:6cef ????????
-    db   $01, $01, $01, $20, $03, $03, $01, $01        ;; 05:6cf7 ????????
-    db   $02, $20, $03, $03, $01, $0e, $01, $00        ;; 05:6cff ????????
-    db   $20, $04, $04, $01, $12, $1e, $02, $00        ;; 05:6d07 ????????
-    db   $14, $0c, $07, $15, $05, $12, $1e, $01        ;; 05:6d0f ????????
-    db   $00, $20, $01, $01, $01, $10, $20, $03        ;; 05:6d17 ????????
-    db   $02, $01, $01, $00, $00, $02, $02, $01        ;; 05:6d1f ????????
-    db   $01, $01, $20, $03, $03, $01, $01, $02        ;; 05:6d27 ????????
-    db   $20, $03, $03, $01, $12, $14, $10, $00        ;; 05:6d2f ????????
-    db   $02, $01, $01, $02, $01, $14, $01, $00        ;; 05:6d37 ????????
-    db   $00, $02, $02, $01, $10, $00, $04, $04        ;; 05:6d3f ????????
-    db   $01, $12, $14, $10, $00, $01, $01, $01        ;; 05:6d47 ????????
-    db   $12, $14, $10, $00, $04, $04, $01, $12        ;; 05:6d4f ????????
-    db   $1e, $10, $38, $03, $02, $01, $0d, $18        ;; 05:6d57 ????????
-    db   $00, $10, $18, $02, $01, $01, $10, $58        ;; 05:6d5f ????????
-    db   $03, $02, $01, $12, $14, $02, $00, $14        ;; 05:6d67 ????????
-    db   $09, $12, $0c, $1b, $05, $32, $02, $01        ;; 05:6d6f ????????
-    db   $14, $0c, $1b, $05, $64, $08, $00, $c1        ;; 05:6d77 ????????
-    db   $00, $00, $11, $00, $78, $00, $50, $03        ;; 05:6d7f ????????
-    db   $00, $00, $00, $88, $00, $50, $00, $03        ;; 05:6d87 ????????
-    db   $01, $00, $01, $00, $68, $00, $50, $01        ;; 05:6d8f ????????
-    db   $03, $02, $0c, $1b, $05, $32, $01, $01        ;; 05:6d97 ????????
-    db   $00, $01, $01, $01, $02, $02, $02, $03        ;; 05:6d9f ????????
-    db   $14, $01, $01, $00, $02, $02, $01, $12        ;; 05:6da7 ????????
-    db   $1e, $01, $01, $00, $01, $01, $01, $12        ;; 05:6daf ????????
-    db   $1e, $01, $01, $00, $02, $02, $01, $02        ;; 05:6db7 ????????
-    db   $04, $14, $01, $01, $00, $03, $03, $01        ;; 05:6dbf ????????
-    db   $0c, $1b, $05, $64, $08, $00, $c2, $00        ;; 05:6dc7 ????????
-    db   $00, $11, $00, $50, $00, $90, $03, $00        ;; 05:6dcf ????????
-    db   $00, $00, $30, $00, $90, $04, $03, $04        ;; 05:6dd7 ????????
-    db   $0c, $88, $0c, $1b, $05, $32, $01, $00        ;; 05:6ddf ????????
-    db   $00, $02, $02, $01, $12, $1e, $01, $00        ;; 05:6de7 ????????
-    db   $00, $01, $01, $01, $12, $1e, $01, $00        ;; 05:6def ????????
-    db   $00, $02, $02, $01, $12, $1e, $01, $00        ;; 05:6df7 ????????
-    db   $00, $01, $01, $01, $12, $1e, $01, $00        ;; 05:6dff ????????
-    db   $00, $02, $02, $01, $12, $1e, $01, $00        ;; 05:6e07 ????????
-    db   $00, $03, $03, $01, $02, $05, $14, $0c        ;; 05:6e0f ????????
-    db   $1b, $05, $32, $08, $00, $c4, $00, $00        ;; 05:6e17 ????????
-    db   $11, $00, $00, $00, $00, $03, $0c, $1b        ;; 05:6e1f ????????
-    db   $05, $64, $13, $01, $12, $64, $08, $00        ;; 05:6e27 ????????
-    db   $cf, $00, $00, $11, $00, $00, $00, $58        ;; 05:6e2f ????????
-    db   $03, $00, $00, $00, $18, $00, $00, $00        ;; 05:6e37 ????????
-    db   $08, $01, $00, $01, $00, $70, $00, $08        ;; 05:6e3f ????????
-    db   $01, $08, $02, $02, $06, $02, $07, $0c        ;; 05:6e47 ????????
-    db   $1c, $10, $05, $04, $03, $02, $01, $01        ;; 05:6e4f ????????
-    db   $05, $08, $04, $04, $10, $32, $04, $03        ;; 05:6e57 ????????
-    db   $02, $01, $00, $32, $08, $04, $02, $01        ;; 05:6e5f ????????
-    db   $01, $32, $08, $04, $04, $14, $10, $0f        ;; 05:6e67 ????????
-    db   $04, $03, $02, $01, $00, $3c, $08, $04        ;; 05:6e6f ????????
-    db   $04, $01, $01, $3c, $08, $04, $04, $03        ;; 05:6e77 ????????
-    db   $00, $03, $01, $12, $64, $07, $00, $1e        ;; 05:6e7f ????????
-    db   $12, $64, $0c, $95, $08, $00, $c6, $01        ;; 05:6e87 ????????
-    db   $00, $11, $00, $48, $00, $d8, $18, $00        ;; 05:6e8f ????????
-    db   $00, $00, $18, $00, $98, $00, $07, $01        ;; 05:6e97 ????????
-    db   $00, $01, $00, $70, $00, $b0, $01, $07        ;; 05:6e9f ????????
-    db   $02, $00, $02, $00, $b8, $00, $b0, $0d        ;; 05:6ea7 ????????
-    db   $03, $5e, $12, $32, $06, $01, $0a, $06        ;; 05:6eaf ????????
-    db   $01, $1e, $06, $01, $32, $01, $01, $00        ;; 05:6eb7 ????????
-    db   $02, $02, $12, $14, $01, $01, $00, $01        ;; 05:6ebf ????????
-    db   $01, $01, $12, $14, $01, $01, $00, $02        ;; 05:6ec7 ????????
-    db   $02, $01, $02, $08, $14, $01, $02, $38        ;; 05:6ecf ????????
-    db   $02, $02, $01, $01, $01, $00, $01, $01        ;; 05:6ed7 ????????
-    db   $01, $02, $09, $14, $06, $02, $0a, $03        ;; 05:6edf ????????
-    db   $02, $01, $00, $00, $02, $02, $01, $12        ;; 05:6ee7 ????????
-    db   $14, $01, $00, $00, $01, $01, $01, $12        ;; 05:6eef ????????
-    db   $14, $01, $00, $00, $02, $02, $01, $00        ;; 05:6ef7 ????????
-    db   $03, $00, $60, $01, $10, $09, $03, $3f        ;; 05:6eff ????????
-    db   $00, $04, $00, $28, $01, $10, $05, $03        ;; 05:6f07 ????????
-    db   $68, $01, $00, $38, $04, $04, $01, $01        ;; 05:6f0f ????????
-    db   $01, $20, $04, $04, $01, $01, $03, $30        ;; 05:6f17 ????????
-    db   $03, $03, $01, $01, $04, $30, $03, $03        ;; 05:6f1f ????????
-    db   $01, $0e, $01, $00, $18, $01, $01, $01        ;; 05:6f27 ????????
-    db   $01, $01, $10, $02, $02, $01, $01, $03        ;; 05:6f2f ????????
-    db   $00, $02, $02, $01, $01, $04, $00, $01        ;; 05:6f37 ????????
-    db   $01, $01, $02, $0a, $02, $0b, $02, $0c        ;; 05:6f3f ????????
-    db   $14, $10, $00, $02, $01, $01, $12, $0a        ;; 05:6f47 ????????
-    db   $10, $00, $01, $00, $01, $12, $0a, $10        ;; 05:6f4f ????????
-    db   $00, $02, $01, $01, $12, $1e, $10, $08        ;; 05:6f57 ????????
-    db   $03, $02, $01, $01, $00, $08, $01, $01        ;; 05:6f5f ????????
-    db   $01, $01, $01, $08, $02, $02, $01, $10        ;; 05:6f67 ????????
-    db   $60, $03, $02, $01, $01, $00, $60, $03        ;; 05:6f6f ????????
-    db   $03, $01, $01, $01, $60, $03, $03, $01        ;; 05:6f77 ????????
-    db   $01, $03, $60, $03, $03, $01, $01, $04        ;; 05:6f7f ????????
-    db   $60, $03, $03, $01, $10, $10, $03, $02        ;; 05:6f87 ????????
-    db   $01, $12, $0a, $04, $00, $00, $01, $20        ;; 05:6f8f ????????
-    db   $01, $12, $32, $02, $0d, $14, $12, $96        ;; 05:6f97 ????????
-    db   $13, $01, $12, $32, $1e, $12, $64, $0c        ;; 05:6f9f ????????
-    db   $8c, $1d, $01, $20, $01, $12, $32, $08        ;; 05:6fa7 ????????
-    db   $00, $43, $00, $00, $11, $00, $60, $00        ;; 05:6faf ????????
-    db   $00, $03, $00, $00, $01, $20, $00, $38        ;; 05:6fb7 ????????
-    db   $30, $02, $3f, $1b, $10, $50, $03, $03        ;; 05:6fbf ????????
-    db   $01, $10, $58, $00, $00, $01, $0e, $01        ;; 05:6fc7 ????????
-    db   $00, $c8, $02, $02, $01, $12, $14, $02        ;; 05:6fcf ????????
-    db   $0e, $08, $00, $65, $00, $00, $11, $01        ;; 05:6fd7 ????????
-    db   $20, $01, $00, $03, $00, $00, $01, $10        ;; 05:6fdf ????????
-    db   $00, $28, $1b, $04, $a4, $00, $01, $01        ;; 05:6fe7 ????????
-    db   $30, $00, $28, $1a, $02, $a4, $1b, $10        ;; 05:6fef ????????
-    db   $78, $02, $02, $01, $10, $20, $02, $02        ;; 05:6ff7 ????????
-    db   $01, $01, $00, $20, $04, $04, $01, $01        ;; 05:6fff ????????
-    db   $01, $20, $02, $02, $01, $10, $10, $02        ;; 05:7007 ????????
-    db   $02, $01, $01, $00, $20, $01, $01, $01        ;; 05:700f ????????
-    db   $01, $01, $20, $04, $04, $01, $0e, $01        ;; 05:7017 ????????
-    db   $00, $20, $03, $03, $01, $01, $01, $20        ;; 05:701f ????????
-    db   $01, $01, $01, $0e, $01, $00, $20, $02        ;; 05:7027 ????????
-    db   $02, $01, $01, $01, $20, $03, $03, $01        ;; 05:702f ????????
-    db   $0e, $01, $00, $20, $04, $04, $01, $01        ;; 05:7037 ????????
-    db   $01, $20, $02, $02, $01, $0e, $01, $00        ;; 05:703f ????????
-    db   $20, $01, $01, $01, $01, $01, $20, $04        ;; 05:7047 ????????
-    db   $04, $01, $0e, $01, $00, $20, $03, $03        ;; 05:704f ????????
-    db   $01, $01, $01, $20, $01, $01, $01, $0e        ;; 05:7057 ????????
-    db   $01, $00, $20, $02, $02, $01, $01, $01        ;; 05:705f ????????
-    db   $20, $03, $03, $01, $0e, $01, $00, $20        ;; 05:7067 ????????
-    db   $04, $04, $01, $01, $01, $20, $02, $02        ;; 05:706f ????????
-    db   $01, $0e, $02, $0f, $08, $00, $a8, $00        ;; 05:7077 ????????
-    db   $00, $11, $00, $80, $00, $70, $03, $1b        ;; 05:707f ????????
-    db   $12, $14, $00, $00, $00, $98, $00, $50        ;; 05:7087 ????????
-    db   $18, $04, $a4, $01, $00, $20, $04, $04        ;; 05:708f ????????
-    db   $01, $0e, $01, $00, $20, $02, $02, $01        ;; 05:7097 ????????
-    db   $00, $01, $00, $98, $00, $50, $1d, $04        ;; 05:709f ????????
-    db   $a4, $01, $01, $10, $04, $04, $01, $0e        ;; 05:70a7 ????????
-    db   $01, $01, $20, $02, $02, $01, $00, $02        ;; 05:70af ????????
-    db   $00, $78, $00, $00, $1e, $04, $a4, $01        ;; 05:70b7 ????????
-    db   $02, $10, $04, $04, $01, $12, $0a, $01        ;; 05:70bf ????????
-    db   $02, $20, $04, $04, $01, $0e, $01, $00        ;; 05:70c7 ????????
-    db   $00, $03, $03, $01, $01, $01, $00, $03        ;; 05:70cf ????????
-    db   $03, $01, $12, $14, $01, $01, $10, $03        ;; 05:70d7 ????????
-    db   $03, $01, $01, $02, $10, $04, $04, $01        ;; 05:70df ????????
-    db   $00, $03, $00, $e0, $00, $68, $21, $04        ;; 05:70e7 ????????
-    db   $a4, $00, $04, $00, $78, $00, $c0, $19        ;; 05:70ef ????????
-    db   $04, $a4, $01, $03, $20, $02, $02, $01        ;; 05:70f7 ????????
-    db   $01, $04, $20, $03, $03, $01, $01, $00        ;; 05:70ff ????????
-    db   $00, $01, $01, $01, $12, $0a, $01, $00        ;; 05:7107 ????????
-    db   $00, $04, $04, $01, $12, $0a, $01, $00        ;; 05:710f ????????
-    db   $00, $01, $01, $01, $12, $14, $02, $10        ;; 05:7117 ????????
-    db   $08, $00, $ac, $00, $00, $11, $00, $f8        ;; 05:711f ????????
-    db   $01, $d8, $03, $00, $00, $00, $f8, $01        ;; 05:7127 ????????
-    db   $f0, $05, $03, $68, $1b, $10, $c8, $03        ;; 05:712f ????????
-    db   $02, $01, $01, $00, $e0, $03, $03, $01        ;; 05:7137 ????????
-    db   $12, $0a, $00, $01, $01, $28, $01, $00        ;; 05:713f ????????
-    db   $18, $04, $a4, $01, $01, $10, $04, $04        ;; 05:7147 ????????
-    db   $01, $0e, $01, $01, $10, $02, $02, $01        ;; 05:714f ????????
-    db   $0e, $01, $00, $00, $01, $01, $01, $00        ;; 05:7157 ????????
-    db   $02, $00, $f8, $00, $b8, $19, $04, $a4        ;; 05:715f ????????
-    db   $00, $03, $00, $e0, $00, $b8, $1c, $04        ;; 05:7167 ????????
-    db   $a4, $00, $04, $00, $a0, $00, $e8, $24        ;; 05:716f ????????
-    db   $01, $a4, $00, $05, $01, $10, $01, $60        ;; 05:7177 ????????
-    db   $21, $03, $a4, $00, $06, $00, $e0, $01        ;; 05:717f ????????
-    db   $60, $22, $03, $a4, $01, $02, $28, $04        ;; 05:7187 ????????
-    db   $04, $01, $01, $03, $28, $04, $04, $01        ;; 05:718f ????????
-    db   $01, $04, $28, $01, $01, $01, $01, $05        ;; 05:7197 ????????
-    db   $28, $03, $03, $01, $01, $06, $28, $03        ;; 05:719f ????????
-    db   $03, $01, $0e, $01, $02, $10, $04, $04        ;; 05:71a7 ????????
-    db   $01, $01, $03, $10, $04, $04, $01, $01        ;; 05:71af ????????
-    db   $04, $20, $04, $04, $01, $01, $05, $10        ;; 05:71b7 ????????
-    db   $03, $03, $01, $01, $06, $10, $03, $03        ;; 05:71bf ????????
-    db   $01, $0e, $01, $04, $10, $01, $01, $01        ;; 05:71c7 ????????
-    db   $12, $0a, $01, $00, $00, $02, $02, $01        ;; 05:71cf ????????
-    db   $12, $0a, $01, $00, $00, $03, $03, $01        ;; 05:71d7 ????????
-    db   $12, $0a, $01, $00, $00, $04, $04, $01        ;; 05:71df ????????
-    db   $12, $0a, $01, $00, $00, $01, $01, $01        ;; 05:71e7 ????????
-    db   $12, $14, $02, $11, $02, $12, $02, $13        ;; 05:71ef ????????
-    db   $02, $14, $08, $00, $3e, $00, $00, $11        ;; 05:71f7 ????????
-    db   $03, $78, $03, $78, $04, $00, $00, $03        ;; 05:71ff ????????
-    db   $c8, $03, $78, $2e, $02, $a4, $01, $00        ;; 05:7207 ????????
-    db   $50, $02, $02, $01, $0e, $01, $00, $60        ;; 05:720f ????????
-    db   $03, $03, $01, $08, $00, $88, $00, $00        ;; 05:7217 ????????
-    db   $11, $01, $d0, $01, $c8, $03, $00, $00        ;; 05:721f ????????
-    db   $01, $d0, $01, $f0, $01, $03, $01, $00        ;; 05:7227 ????????
-    db   $01, $01, $d0, $01, $d0, $09, $03, $02        ;; 05:722f ????????
-    db   $1b, $01, $00, $10, $03, $03, $01, $01        ;; 05:7237 ????????
-    db   $01, $10, $03, $03, $01, $0e, $01, $01        ;; 05:723f ????????
-    db   $00, $04, $04, $01, $12, $32, $01, $00        ;; 05:7247 ????????
-    db   $20, $04, $04, $01, $03, $00, $10, $38        ;; 05:724f ????????
-    db   $02, $01, $01, $01, $01, $38, $02, $02        ;; 05:7257 ????????
-    db   $01, $0e, $01, $01, $00, $04, $04, $01        ;; 05:725f ????????
-    db   $12, $32, $00, $02, $01, $38, $01, $c0        ;; 05:7267 ????????
-    db   $31, $01, $02, $01, $02, $28, $01, $01        ;; 05:726f ????????
-    db   $01, $0e, $01, $01, $00, $02, $02, $01        ;; 05:7277 ????????
-    db   $12, $14, $10, $18, $02, $01, $01, $01        ;; 05:727f ????????
-    db   $01, $18, $02, $02, $01, $12, $32, $02        ;; 05:7287 ????????
-    db   $15, $08, $00, $3e, $00, $00, $11, $03        ;; 05:728f ????????
-    db   $78, $03, $78, $04, $00, $00, $03, $c8        ;; 05:7297 ????????
-    db   $03, $78, $2e, $02, $a4, $01, $00, $a0        ;; 05:729f ????????
-    db   $02, $02, $01, $08, $00, $84, $00, $00        ;; 05:72a7 ????????
-    db   $11, $00, $c8, $00, $28, $04, $00, $00        ;; 05:72af ????????
-    db   $00, $38, $00, $28, $01, $02, $02, $1b        ;; 05:72b7 ????????
-    db   $10, $80, $02, $01, $01, $12, $32, $02        ;; 05:72bf ????????
-    db   $16, $08, $00, $5a, $00, $00, $11, $00        ;; 05:72c7 ????????
-    db   $d8, $01, $30, $04, $00, $00, $00, $d8        ;; 05:72cf ????????
-    db   $01, $20, $37, $04, $4f, $01, $00, $00        ;; 05:72d7 ????????
-    db   $05, $05, $01, $12, $32, $00, $01, $00        ;; 05:72df ????????
-    db   $78, $01, $10, $18, $04, $a4, $00, $02        ;; 05:72e7 ????????
-    db   $01, $38, $01, $10, $1b, $04, $a4, $00        ;; 05:72ef ????????
-    db   $03, $00, $d8, $00, $c0, $1e, $04, $a4        ;; 05:72f7 ????????
-    db   $00, $04, $00, $d8, $00, $d0, $24, $04        ;; 05:72ff ????????
-    db   $a4, $01, $01, $20, $01, $01, $01, $01        ;; 05:7307 ????????
-    db   $02, $20, $02, $02, $01, $01, $03, $20        ;; 05:730f ????????
-    db   $04, $04, $01, $01, $04, $20, $04, $04        ;; 05:7317 ????????
-    db   $01, $0e, $01, $01, $20, $01, $01, $01        ;; 05:731f ????????
-    db   $01, $02, $20, $02, $02, $01, $01, $03        ;; 05:7327 ????????
-    db   $20, $01, $01, $01, $01, $04, $20, $02        ;; 05:732f ????????
-    db   $02, $01, $0e, $01, $01, $20, $04, $04        ;; 05:7337 ????????
-    db   $01, $01, $02, $20, $04, $04, $01, $01        ;; 05:733f ????????
-    db   $03, $40, $04, $04, $01, $01, $04, $30        ;; 05:7347 ????????
-    db   $04, $04, $01, $0e, $01, $01, $00, $01        ;; 05:734f ????????
-    db   $01, $01, $01, $02, $00, $02, $02, $01        ;; 05:7357 ????????
-    db   $01, $03, $00, $02, $02, $01, $01, $04        ;; 05:735f ????????
-    db   $00, $01, $01, $01, $12, $14, $01, $00        ;; 05:7367 ????????
-    db   $00, $01, $01, $01, $12, $14, $01, $00        ;; 05:736f ????????
-    db   $00, $02, $02, $01, $12, $14, $01, $00        ;; 05:7377 ????????
-    db   $00, $01, $01, $01, $12, $14, $01, $00        ;; 05:737f ????????
-    db   $00, $02, $02, $01, $12, $14, $01, $00        ;; 05:7387 ????????
-    db   $00, $04, $04, $01, $12, $14, $01, $00        ;; 05:738f ????????
-    db   $00, $05, $05, $01, $12, $c8, $02, $17        ;; 05:7397 ????????
-    db   $02, $18, $02, $19, $08, $00, $5a, $00        ;; 05:739f ????????
-    db   $00, $11, $00, $d8, $01, $a0, $04, $00        ;; 05:73a7 ????????
-    db   $00, $00, $d8, $01, $20, $37, $05, $4f        ;; 05:73af ????????
-    db   $00, $01, $00, $d8, $01, $f0, $38, $03        ;; 05:73b7 ????????
-    db   $4f, $01, $01, $38, $03, $03, $01, $10        ;; 05:73bf ????????
-    db   $78, $03, $02, $01, $01, $01, $78, $03        ;; 05:73c7 ????????
-    db   $03, $01, $12, $14, $01, $01, $10, $01        ;; 05:73cf ????????
-    db   $01, $01, $0e, $01, $01, $20, $03, $03        ;; 05:73d7 ????????
-    db   $01, $0e, $01, $00, $00, $01, $01, $00        ;; 05:73df ????????
-    db   $01, $01, $00, $02, $02, $00, $12, $32        ;; 05:73e7 ????????
-    db   $10, $10, $01, $00, $01, $01, $01, $10        ;; 05:73ef ????????
-    db   $01, $01, $01, $0e, $01, $01, $00, $05        ;; 05:73f7 ????????
-    db   $05, $01, $12, $c8, $01, $00, $00, $01        ;; 05:73ff ????????
-    db   $01, $00, $01, $01, $00, $02, $02, $00        ;; 05:7407 ????????
-    db   $12, $32, $01, $00, $00, $05, $05, $01        ;; 05:740f ????????
-    db   $01, $01, $00, $05, $05, $01, $12, $c8        ;; 05:7417 ????????
-    db   $02, $1a, $02, $1b, $02, $1c, $08, $00        ;; 05:741f ????????
-    db   $1d, $00, $00, $11, $01, $a0, $00, $78        ;; 05:7427 ????????
-    db   $04, $00, $00, $01, $a0, $00, $60, $00        ;; 05:742f ????????
-    db   $03, $01, $10, $38, $03, $02, $01, $01        ;; 05:7437 ????????
-    db   $00, $38, $03, $03, $01, $08, $00, $28        ;; 05:743f ????????
-    db   $00, $01, $11, $00, $f8, $01, $a8, $04        ;; 05:7447 ????????
-    db   $0e, $00, $02, $00, $f8, $01, $c0, $00        ;; 05:744f ????????
-    db   $03, $01, $10, $30, $03, $02, $01, $01        ;; 05:7457 ????????
-    db   $02, $38, $03, $03, $01, $0e, $01, $00        ;; 05:745f ????????
-    db   $00, $01, $01, $01, $01, $01, $00, $02        ;; 05:7467 ????????
-    db   $02, $01, $12, $14, $01, $01, $4c, $03        ;; 05:746f ????????
-    db   $03, $02, $00, $03, $00, $f8, $00, $f0        ;; 05:7477 ????????
-    db   $08, $03, $a4, $00, $04, $00, $e0, $00        ;; 05:747f ????????
-    db   $f0, $22, $03, $a4, $01, $01, $30, $04        ;; 05:7487 ????????
-    db   $04, $02, $01, $03, $30, $04, $04, $02        ;; 05:748f ????????
-    db   $01, $04, $30, $04, $04, $02, $12, $1e        ;; 05:7497 ????????
-    db   $01, $02, $10, $03, $03, $01, $01, $03        ;; 05:749f ????????
-    db   $10, $04, $04, $01, $12, $1e, $02, $1d        ;; 05:74a7 ????????
-    db   $08, $00, $00, $01, $00, $11, $00, $10        ;; 05:74af ????????
-    db   $00, $f0, $04, $00, $00, $00, $b8, $00        ;; 05:74b7 ????????
-    db   $28, $07, $04, $a4, $0e, $00, $01, $00        ;; 05:74bf ????????
-    db   $a8, $00, $28, $1f, $04, $a4, $00, $02        ;; 05:74c7 ????????
-    db   $00, $c8, $00, $28, $1f, $04, $a4, $00        ;; 05:74cf ????????
-    db   $03, $01, $10, $00, $f0, $1b, $03, $a4        ;; 05:74d7 ????????
-    db   $00, $04, $00, $a0, $01, $50, $1c, $03        ;; 05:74df ????????
-    db   $a4, $00, $05, $00, $b8, $01, $50, $22        ;; 05:74e7 ????????
-    db   $03, $a4, $00, $06, $00, $30, $00, $a0        ;; 05:74ef ????????
-    db   $18, $04, $a4, $10, $20, $01, $00, $01        ;; 05:74f7 ????????
-    db   $0e, $10, $00, $03, $02, $01, $01, $06        ;; 05:74ff ????????
-    db   $28, $04, $04, $01, $10, $10, $03, $02        ;; 05:7507 ????????
-    db   $01, $12, $1e, $10, $80, $01, $00, $01        ;; 05:750f ????????
-    db   $0e, $10, $08, $04, $03, $00, $12, $01        ;; 05:7517 ????????
-    db   $01, $04, $40, $03, $03, $01, $01, $05        ;; 05:751f ????????
-    db   $40, $03, $03, $01, $10, $10, $04, $03        ;; 05:7527 ????????
-    db   $01, $12, $1e, $10, $08, $01, $00, $00        ;; 05:752f ????????
-    db   $12, $01, $01, $03, $38, $02, $02, $01        ;; 05:7537 ????????
-    db   $10, $08, $01, $00, $01, $12, $1e, $10        ;; 05:753f ????????
-    db   $a8, $03, $02, $01, $12, $1e, $02, $1e        ;; 05:7547 ????????
-    db   $08, $00, $c6, $00, $00, $11, $00, $48        ;; 05:754f ????????
-    db   $00, $38, $04, $00, $00, $00, $48, $00        ;; 05:7557 ????????
-    db   $60, $04, $03, $a4, $1b, $12, $64, $01        ;; 05:755f ????????
-    db   $00, $00, $04, $04, $01, $12, $1e, $10        ;; 05:7567 ????????
-    db   $50, $04, $03, $01, $01, $00, $50, $04        ;; 05:756f ????????
-    db   $04, $01, $0e, $01, $00, $50, $04, $04        ;; 05:7577 ????????
-    db   $01, $12, $64, $08, $00, $c3, $00, $00        ;; 05:757f ????????
-    db   $11, $00, $48, $00, $28, $04, $12, $c8        ;; 05:7587 ????????
-    db   $00, $00, $00, $b0, $00, $28, $30, $02        ;; 05:758f ????????
-    db   $a4, $00, $01, $00, $a8, $00, $40, $30        ;; 05:7597 ????????
-    db   $02, $a4, $01, $00, $50, $02, $02, $01        ;; 05:759f ????????
-    db   $01, $01, $50, $02, $02, $01, $17, $00        ;; 05:75a7 ????????
-    db   $01, $20, $01, $20, $17, $00, $01, $20        ;; 05:75af ????????
-    db   $00, $00, $17, $00, $01, $20, $00, $00        ;; 05:75b7 ????????
-    db   $17, $01, $01, $20, $01, $20, $17, $01        ;; 05:75bf ????????
-    db   $01, $20, $00, $00, $17, $01, $01, $20        ;; 05:75c7 ????????
-    db   $00, $00, $03, $01, $03, $00, $12, $32        ;; 05:75cf ????????
-    db   $23, $12, $32, $1f, $12, $fa, $12, $fa        ;; 05:75d7 ????????
-    db   $12, $6e, $1d, $00, $1e, $12, $c8, $20        ;; 05:75df ????????
-    db   $00, $16                                      ;; 05:75e7 ??
+    db   $0d, $10, $00                                 ;; 05:5fef ???
+
+data_05_5ff2:
+    db   $08, $00, $82, $01, $00, $11, $00, $e0        ;; 05:5ff2 ????????
+    db   $00, $a8, $02, $00, $00, $01, $00, $00        ;; 05:5ffa ????????
+    db   $a8, $04, $02, $04, $00, $01, $00, $74        ;; 05:6002 ????????
+    db   $00, $30, $11, $04, $9d, $00, $02, $00        ;; 05:600a ????????
+    db   $50, $00, $68, $26, $03, $93, $00, $03        ;; 05:6012 ????????
+    db   $00, $68, $00, $68, $26, $03, $9f, $00        ;; 05:601a ????????
+    db   $04, $00, $80, $00, $68, $27, $03, $9e        ;; 05:6022 ????????
+    db   $00, $05, $00, $98, $00, $68, $27, $03        ;; 05:602a ????????
+    db   $94, $00, $06, $00, $50, $00, $80, $26        ;; 05:6032 ????????
+    db   $03, $93, $00, $07, $00, $68, $00, $80        ;; 05:603a ????????
+    db   $26, $03, $9f, $00, $08, $00, $80, $00        ;; 05:6042 ????????
+    db   $80, $27, $03, $9e, $00, $09, $00, $98        ;; 05:604a ????????
+    db   $00, $80, $27, $03, $94, $10, $10, $03        ;; 05:6052 ????????
+    db   $02, $01, $10, $08, $02, $01, $01, $04        ;; 05:605a ????????
+    db   $01, $34, $00, $00, $01, $04, $00, $00        ;; 05:6062 ????????
+    db   $01, $69, $01, $02, $00, $14, $04, $00        ;; 05:606a ????????
+    db   $00, $00, $28, $01, $02, $01, $14, $01        ;; 05:6072 ????????
+    db   $00, $20, $02, $02, $01, $04, $00, $00        ;; 05:607a ????????
+    db   $00, $51, $01, $04, $00, $34, $00, $00        ;; 05:6082 ????????
+    db   $01, $10, $00, $04, $04, $01, $01, $00        ;; 05:608a ????????
+    db   $00, $03, $03, $01, $02, $02, $14, $12        ;; 05:6092 ????????
+    db   $1e, $13, $01, $1e, $12, $32, $08, $00        ;; 05:609a ????????
+    db   $81, $01, $00, $11, $00, $48, $00, $78        ;; 05:60a2 ????????
+    db   $03, $00, $00, $00, $48, $00, $30, $03        ;; 05:60aa ????????
+    db   $03, $60, $12, $32, $10, $28, $03, $02        ;; 05:60b2 ????????
+    db   $01, $12, $1e, $01, $00, $00, $04, $04        ;; 05:60ba ????????
+    db   $01, $02, $03, $02, $04, $01, $00, $00        ;; 05:60c2 ????????
+    db   $02, $02, $01, $02, $05, $01, $00, $00        ;; 05:60ca ????????
+    db   $04, $04, $01, $02, $06, $02, $07, $14        ;; 05:60d2 ????????
+    db   $01, $00, $08, $04, $04, $01, $12, $0a        ;; 05:60da ????????
+    db   $09, $13, $12, $0a, $02, $08, $14, $09        ;; 05:60e2 ????????
+    db   $0d, $01, $00, $00, $08, $04, $01, $12        ;; 05:60ea ????????
+    db   $0a, $10, $08, $03, $02, $01, $02, $09        ;; 05:60f2 ????????
+    db   $02, $0a, $02, $0b, $02, $0c, $02, $0d        ;; 05:60fa ????????
+    db   $14, $12, $14, $02, $0e, $14, $06, $01        ;; 05:6102 ????????
+    db   $0a, $00, $01, $00, $48, $00, $80, $11        ;; 05:610a ????????
+    db   $03, $9d, $00, $02, $00, $48, $00, $70        ;; 05:6112 ????????
+    db   $12, $03, $a4, $01, $02, $18, $03, $03        ;; 05:611a ????????
+    db   $01, $0c, $09, $06, $03, $05, $10, $10        ;; 05:6122 ????????
+    db   $01, $01, $02, $05, $0a, $10, $00, $13        ;; 05:612a ????????
+    db   $13, $02, $0c, $13, $01, $01, $20, $03        ;; 05:6132 ????????
+    db   $03, $01, $01, $02, $10, $03, $03, $01        ;; 05:613a ????????
+    db   $0e, $01, $01, $10, $01, $01, $01, $0e        ;; 05:6142 ????????
+    db   $01, $01, $18, $03, $03, $01, $0e, $01        ;; 05:614a ????????
+    db   $02, $00, $01, $01, $01, $02, $0f, $01        ;; 05:6152 ????????
+    db   $01, $00, $02, $02, $01, $02, $10, $02        ;; 05:615a ????????
+    db   $11, $14, $00, $03, $00, $48, $00, $80        ;; 05:6162 ????????
+    db   $1e, $03, $a4, $01, $03, $28, $03, $03        ;; 05:616a ????????
+    db   $01, $0e, $01, $03, $20, $02, $02, $01        ;; 05:6172 ????????
+    db   $0e, $01, $03, $00, $03, $03, $01, $02        ;; 05:617a ????????
+    db   $12, $14, $12, $32, $07, $00, $1e, $12        ;; 05:6182 ????????
+    db   $64, $08, $00, $7f, $00, $00, $11, $00        ;; 05:618a ????????
+    db   $78, $00, $60, $03, $00, $00, $00, $6c        ;; 05:6192 ????????
+    db   $00, $48, $11, $04, $9d, $00, $01, $00        ;; 05:619a ????????
+    db   $84, $00, $48, $12, $04, $a4, $00, $02        ;; 05:61a2 ????????
+    db   $00, $10, $00, $58, $27, $02, $9e, $00        ;; 05:61aa ????????
+    db   $03, $00, $10, $00, $70, $27, $02, $9e        ;; 05:61b2 ????????
+    db   $1b, $12, $0a, $01, $01, $00, $02, $02        ;; 05:61ba ????????
+    db   $01, $02, $13, $14, $10, $18, $04, $03        ;; 05:61c2 ????????
+    db   $01, $10, $30, $02, $01, $01, $02, $14        ;; 05:61ca ????????
+    db   $02, $15, $01, $00, $00, $02, $02, $01        ;; 05:61d2 ????????
+    db   $02, $16, $02, $17, $01, $01, $00, $04        ;; 05:61da ????????
+    db   $04, $01, $02, $18, $14, $12, $14, $08        ;; 05:61e2 ????????
+    db   $00, $c5, $00, $00, $11, $00, $00, $00        ;; 05:61ea ????????
+    db   $00, $03, $12, $32, $0c, $1d, $13, $01        ;; 05:61f2 ????????
+    db   $08, $00, $c3, $00, $00, $11, $00, $00        ;; 05:61fa ????????
+    db   $00, $00, $03, $0c, $06, $12, $32, $0c        ;; 05:6202 ????????
+    db   $1b, $05, $1e, $08, $00, $7f, $00, $00        ;; 05:620a ????????
+    db   $11, $00, $78, $00, $60, $03, $00, $00        ;; 05:6212 ????????
+    db   $00, $54, $00, $48, $04, $02, $04, $00        ;; 05:621a ????????
+    db   $01, $00, $6c, $00, $48, $11, $02, $9d        ;; 05:6222 ????????
+    db   $00, $02, $00, $84, $00, $48, $12, $02        ;; 05:622a ????????
+    db   $a4, $00, $03, $00, $10, $00, $58, $27        ;; 05:6232 ????????
+    db   $02, $9e, $00, $04, $00, $10, $00, $70        ;; 05:623a ????????
+    db   $27, $02, $9e, $1b, $12, $0a, $02, $19        ;; 05:6242 ????????
+    db   $14, $10, $18, $04, $03, $01, $10, $30        ;; 05:624a ????????
+    db   $02, $01, $01, $02, $1a, $02, $1b, $02        ;; 05:6252 ????????
+    db   $1c, $14, $13, $01, $08, $00, $c4, $00        ;; 05:625a ????????
+    db   $00, $11, $00, $00, $00, $00, $03, $12        ;; 05:6262 ????????
+    db   $32, $08, $00, $7f, $00, $00, $11, $00        ;; 05:626a ????????
+    db   $50, $00, $78, $03, $00, $00, $00, $54        ;; 05:6272 ????????
+    db   $00, $48, $04, $02, $04, $00, $01, $00        ;; 05:627a ????????
+    db   $6c, $00, $48, $11, $02, $9d, $00, $02        ;; 05:6282 ????????
+    db   $00, $84, $00, $48, $12, $02, $a4, $00        ;; 05:628a ????????
+    db   $03, $00, $10, $00, $58, $27, $02, $9e        ;; 05:6292 ????????
+    db   $00, $04, $00, $10, $00, $70, $27, $02        ;; 05:629a ????????
+    db   $9e, $02, $1d, $02, $1e, $01, $00, $00        ;; 05:62a2 ????????
+    db   $04, $04, $01, $02, $1f, $01, $00, $00        ;; 05:62aa ????????
+    db   $01, $01, $01, $02, $20, $14, $12, $0a        ;; 05:62b2 ????????
+    db   $13, $01, $1e, $12, $64, $08, $00, $83        ;; 05:62ba ????????
+    db   $01, $00, $11, $00, $f0, $00, $a0, $02        ;; 05:62c2 ????????
+    db   $00, $00, $00, $20, $00, $a0, $06, $01        ;; 05:62ca ????????
+    db   $19, $00, $01, $00, $20, $00, $90, $05        ;; 05:62d2 ????????
+    db   $01, $68, $00, $02, $00, $d8, $00, $a0        ;; 05:62da ????????
+    db   $26, $02, $a4, $10, $78, $02, $01, $01        ;; 05:62e2 ????????
+    db   $01, $02, $78, $02, $02, $01, $0c, $20        ;; 05:62ea ????????
+    db   $02, $21, $14, $13, $01, $01, $02, $00        ;; 05:62f2 ????????
+    db   $07, $07, $01, $12, $0a, $13, $00, $12        ;; 05:62fa ????????
+    db   $0a, $03, $02, $01, $00, $28, $01, $01        ;; 05:6302 ????????
+    db   $01, $01, $01, $28, $01, $01, $01, $02        ;; 05:630a ????????
+    db   $22, $02, $23, $02, $24, $01, $00, $00        ;; 05:6312 ????????
+    db   $03, $03, $01, $12, $14, $01, $00, $00        ;; 05:631a ????????
+    db   $01, $01, $01, $02, $25, $01, $01, $00        ;; 05:6322 ????????
+    db   $04, $04, $01, $12, $14, $01, $01, $00        ;; 05:632a ????????
+    db   $01, $01, $01, $02, $26, $02, $27, $14        ;; 05:6332 ????????
+    db   $12, $14, $08, $00, $7f, $00, $00, $11        ;; 05:633a ????????
+    db   $00, $d8, $00, $10, $11, $00, $00, $00        ;; 05:6342 ????????
+    db   $6c, $00, $48, $11, $02, $9d, $00, $01        ;; 05:634a ????????
+    db   $00, $84, $00, $48, $12, $02, $a4, $04        ;; 05:6352 ????????
+    db   $01, $32, $00, $00, $01, $12, $14, $04        ;; 05:635a ????????
+    db   $00, $32, $00, $00, $01, $12, $01, $00        ;; 05:6362 ????????
+    db   $02, $00, $d8, $00, $00, $05, $04, $68        ;; 05:636a ????????
+    db   $01, $02, $48, $04, $04, $01, $0e, $01        ;; 05:6372 ????????
+    db   $02, $18, $02, $02, $01, $04, $00, $00        ;; 05:637a ????????
+    db   $00, $08, $01, $12, $01, $02, $28, $14        ;; 05:6382 ????????
+    db   $01, $00, $00, $01, $01, $01, $01, $01        ;; 05:638a ????????
+    db   $00, $01, $01, $01, $04, $00, $00, $01        ;; 05:6392 ????????
+    db   $08, $01, $0f, $01, $10, $08, $04, $03        ;; 05:639a ????????
+    db   $01, $00, $03, $00, $d8, $00, $00, $06        ;; 05:63a2 ????????
+    db   $04, $19, $10, $20, $04, $03, $01, $01        ;; 05:63aa ????????
+    db   $03, $20, $04, $04, $01, $10, $08, $02        ;; 05:63b2 ????????
+    db   $01, $01, $01, $03, $08, $04, $04, $01        ;; 05:63ba ????????
+    db   $0e, $01, $03, $18, $02, $02, $01, $04        ;; 05:63c2 ????????
+    db   $00, $00, $00, $08, $01, $02, $29, $02        ;; 05:63ca ????????
+    db   $2a, $02, $2b, $02, $2c, $02, $2d, $02        ;; 05:63d2 ????????
+    db   $2e, $14, $0c, $20, $06, $03, $0a, $01        ;; 05:63da ????????
+    db   $01, $14, $03, $03, $02, $25, $01, $24        ;; 05:63e2 ????????
+    db   $01, $01, $01, $00, $10, $01, $01, $01        ;; 05:63ea ????????
+    db   $02, $2f, $14, $01, $03, $0c, $02, $02        ;; 05:63f2 ????????
+    db   $02, $0e, $01, $03, $10, $04, $04, $02        ;; 05:63fa ????????
+    db   $0c, $10, $06, $05, $0a, $01, $03, $00        ;; 05:6402 ????????
+    db   $01, $01, $01, $0c, $10, $06, $05, $0a        ;; 05:640a ????????
+    db   $02, $30, $14, $12, $14, $07, $00, $1e        ;; 05:6412 ????????
+    db   $12, $64, $08, $00, $8c, $01, $01, $11        ;; 05:641a ????????
+    db   $00, $b8, $00, $58, $04, $1a, $1b, $06        ;; 05:6422 ????????
+    db   $01, $0a, $06, $01, $1e, $06, $01, $32        ;; 05:642a ????????
+    db   $01, $01, $10, $01, $01, $01, $0e, $01        ;; 05:6432 ????????
+    db   $01, $08, $03, $03, $01, $12, $14, $01        ;; 05:643a ????????
+    db   $01, $00, $02, $02, $01, $04, $00, $00        ;; 05:6442 ????????
+    db   $01, $08, $01, $02, $31, $14, $04, $00        ;; 05:644a ????????
+    db   $00, $00, $08, $01, $1c, $01, $10, $01        ;; 05:6452 ????????
+    db   $00, $00, $01, $01, $01, $10, $10, $04        ;; 05:645a ????????
+    db   $03, $01, $10, $08, $02, $01, $01, $04        ;; 05:6462 ????????
+    db   $00, $00, $00, $08, $01, $02, $32, $0c        ;; 05:646a ????????
+    db   $88, $02, $33, $02, $34, $02, $35, $02        ;; 05:6472 ????????
+    db   $36, $02, $37, $02, $38, $14, $12, $14        ;; 05:647a ????????
+    db   $0c, $0f, $07, $00, $1e, $12, $64, $08        ;; 05:6482 ????????
+    db   $00, $00, $01, $00, $11, $00, $20, $01        ;; 05:648a ????????
+    db   $28, $04, $00, $00, $00, $30, $00, $d8        ;; 05:6492 ????????
+    db   $04, $01, $04, $00, $01, $00, $a0, $01        ;; 05:649a ????????
+    db   $50, $00, $03, $01, $00, $02, $00, $b0        ;; 05:64a2 ????????
+    db   $01, $50, $05, $03, $68, $12, $32, $01        ;; 05:64aa ????????
+    db   $00, $18, $04, $04, $01, $0e, $01, $00        ;; 05:64b2 ????????
+    db   $10, $02, $02, $01, $0e, $01, $00, $20        ;; 05:64ba ????????
+    db   $04, $04, $01, $10, $00, $03, $01, $01        ;; 05:64c2 ????????
+    db   $02, $39, $14, $01, $00, $20, $03, $03        ;; 05:64ca ????????
+    db   $01, $0e, $01, $00, $10, $02, $02, $01        ;; 05:64d2 ????????
+    db   $0e, $01, $00, $08, $03, $03, $01, $0e        ;; 05:64da ????????
+    db   $01, $00, $08, $03, $03, $01, $03, $00        ;; 05:64e2 ????????
+    db   $01, $01, $80, $02, $02, $01, $01, $02        ;; 05:64ea ????????
+    db   $80, $02, $02, $01, $10, $08, $04, $03        ;; 05:64f2 ????????
+    db   $01, $01, $01, $00, $03, $03, $01, $01        ;; 05:64fa ????????
+    db   $02, $00, $03, $03, $01, $04, $00, $00        ;; 05:6502 ????????
+    db   $00, $20, $01, $01, $01, $08, $03, $03        ;; 05:650a ????????
+    db   $01, $02, $3a, $01, $02, $08, $03, $03        ;; 05:6512 ????????
+    db   $01, $02, $3b, $02, $3c, $02, $3d, $14        ;; 05:651a ????????
+    db   $12, $0a, $04, $00, $00, $01, $20, $01        ;; 05:6522 ????????
+    db   $10, $40, $03, $02, $01, $10, $10, $02        ;; 05:652a ????????
+    db   $01, $01, $10, $08, $03, $02, $01, $10        ;; 05:6532 ????????
+    db   $08, $03, $02, $01, $10, $08, $02, $01        ;; 05:653a ????????
+    db   $01, $0d, $11, $00                            ;; 05:6542 ????
+
+data_05_6546:
+    db   $00, $00, $00, $78, $00, $e0, $00, $03        ;; 05:6546 ????????
+    db   $01, $00, $01, $00, $78, $00, $f0, $05        ;; 05:654e ????????
+    db   $03, $68, $10, $50, $03, $02, $01, $01        ;; 05:6556 ????????
+    db   $00, $58, $03, $03, $01, $01, $01, $58        ;; 05:655e ????????
+    db   $03, $03, $01, $0e, $01, $00, $10, $02        ;; 05:6566 ????????
+    db   $02, $01, $01, $01, $10, $03, $03, $01        ;; 05:656e ????????
+    db   $0e, $01, $00, $00, $03, $03, $01, $01        ;; 05:6576 ????????
+    db   $01, $10, $01, $01, $01, $0e, $01, $01        ;; 05:657e ????????
+    db   $00, $03, $03, $01, $12, $1e, $10, $00        ;; 05:6586 ????????
+    db   $02, $02, $01, $01, $00, $00, $02, $02        ;; 05:658e ????????
+    db   $01, $01, $01, $00, $01, $01, $01, $12        ;; 05:6596 ????????
+    db   $0a, $10, $00, $01, $01, $01, $01, $00        ;; 05:659e ????????
+    db   $00, $01, $01, $01, $01, $01, $00, $02        ;; 05:65a6 ????????
+    db   $02, $01, $12, $14, $10, $00, $02, $02        ;; 05:65ae ????????
+    db   $01, $01, $00, $00, $02, $02, $01, $01        ;; 05:65b6 ????????
+    db   $01, $00, $01, $01, $01, $12, $14, $0c        ;; 05:65be ????????
+    db   $0f, $06, $03, $0a, $00, $02, $00, $78        ;; 05:65c6 ????????
+    db   $00, $60, $14, $04, $80, $12, $14, $10        ;; 05:65ce ????????
+    db   $00, $03, $02, $01, $01, $00, $00, $03        ;; 05:65d6 ????????
+    db   $03, $01, $01, $01, $00, $03, $03, $01        ;; 05:65de ????????
+    db   $21, $01, $22, $08, $02, $21, $00, $12        ;; 05:65e6 ????????
+    db   $1e, $02, $00, $14, $09, $0e, $25, $02        ;; 05:65ee ????????
+    db   $12, $14, $0c, $05, $24, $02, $01, $03        ;; 05:65f6 ????????
+    db   $02, $12, $32, $10, $08, $04, $03, $01        ;; 05:65fe ????????
+    db   $01, $00, $00, $01, $01, $01, $01, $01        ;; 05:6606 ????????
+    db   $00, $02, $02, $01, $12, $14, $04, $00        ;; 05:660e ????????
+    db   $00, $00, $08, $01, $02, $01, $02, $02        ;; 05:6616 ????????
+    db   $02, $03, $14, $12, $14, $04, $00, $00        ;; 05:661e ????????
+    db   $01, $08, $01, $10, $60, $04, $03, $01        ;; 05:6626 ????????
+    db   $0d, $12, $00                                 ;; 05:662e ???
+
+data_05_6631:
+    db   $03, $00, $00, $00, $00, $60, $00, $70        ;; 05:6631 ????????
+    db   $18, $04, $23, $10, $10, $03, $02, $01        ;; 05:6639 ????????
+    db   $00, $01, $00, $78, $00, $a8, $00, $03        ;; 05:6641 ????????
+    db   $01, $10, $20, $03, $02, $01, $01, $01        ;; 05:6649 ????????
+    db   $20, $03, $03, $01, $10, $08, $02, $01        ;; 05:6651 ????????
+    db   $01, $01, $01, $08, $03, $03, $01, $0e        ;; 05:6659 ????????
+    db   $01, $01, $18, $02, $02, $01, $0e, $01        ;; 05:6661 ????????
+    db   $01, $00, $03, $03, $01, $02, $00, $01        ;; 05:6669 ????????
+    db   $00, $00, $01, $01, $01, $02, $01, $14        ;; 05:6671 ????????
+    db   $01, $00, $10, $02, $02, $01, $0e, $01        ;; 05:6679 ????????
+    db   $00, $18, $03, $03, $01, $03, $00, $12        ;; 05:6681 ????????
+    db   $fa, $00, $02, $00, $50, $00, $58, $18        ;; 05:6689 ????????
+    db   $04, $23, $01, $02, $18, $04, $04, $01        ;; 05:6691 ????????
+    db   $0e, $01, $02, $10, $01, $01, $01, $04        ;; 05:6699 ????????
+    db   $00, $00, $00, $10, $01, $02, $02, $14        ;; 05:66a1 ????????
+    db   $12, $1e, $02, $03, $01, $01, $00, $01        ;; 05:66a9 ????????
+    db   $01, $01, $02, $04, $14, $04, $00, $00        ;; 05:66b1 ????????
+    db   $01, $10, $01, $10, $08, $01, $00, $01        ;; 05:66b9 ????????
+    db   $10, $38, $04, $03, $01, $0d, $13, $00        ;; 05:66c1 ????????
+
+data_05_66c9:
+    db   $10, $00, $02, $01, $01, $12, $14, $10        ;; 05:66c9 ????????
+    db   $00, $01, $00, $01, $12, $14, $10, $00        ;; 05:66d1 ????????
+    db   $02, $01, $01, $12, $14, $10, $00, $01        ;; 05:66d9 ????????
+    db   $00, $01, $12, $14, $10, $00, $02, $01        ;; 05:66e1 ????????
+    db   $01, $12, $0a, $0b, $00, $00, $05, $01        ;; 05:66e9 ????????
+    db   $48, $00, $c0, $05, $03, $68, $10, $08        ;; 05:66f1 ????????
+    db   $03, $02, $01, $01, $05, $48, $03, $03        ;; 05:66f9 ????????
+    db   $01, $0e, $01, $05, $10, $02, $02, $01        ;; 05:6701 ????????
+    db   $0e, $01, $05, $08, $03, $03, $01, $04        ;; 05:6709 ????????
+    db   $00, $00, $00, $10, $01, $02, $00, $02        ;; 05:6711 ????????
+    db   $01, $02, $02, $02, $03, $02, $04, $14        ;; 05:6719 ????????
+    db   $09, $0f, $02, $05, $14, $0b, $01, $12        ;; 05:6721 ????????
+    db   $01, $00, $06, $01, $48, $00, $d0, $00        ;; 05:6729 ????????
+    db   $03, $01, $01, $06, $50, $03, $03, $01        ;; 05:6731 ????????
+    db   $10, $10, $04, $03, $01, $01, $05, $00        ;; 05:6739 ????????
+    db   $01, $01, $01, $04, $00, $00, $00, $10        ;; 05:6741 ????????
+    db   $01, $02, $07, $02, $08, $14, $04, $00        ;; 05:6749 ????????
+    db   $00, $01, $10, $01, $10, $78, $03, $02        ;; 05:6751 ????????
+    db   $01, $10, $08, $04, $03, $01, $0d, $14        ;; 05:6759 ????????
+    db   $00                                           ;; 05:6761 ?
+
+data_05_6762:
+    db   $10, $28, $03, $02, $01, $10, $08, $02        ;; 05:6762 ????????
+    db   $01, $01, $01, $00, $00, $01, $01, $01        ;; 05:676a ????????
+    db   $02, $00, $14, $01, $00, $00, $02, $02        ;; 05:6772 ????????
+    db   $01, $0e, $01, $00, $10, $02, $02, $01        ;; 05:677a ????????
+    db   $0e, $01, $00, $00, $03, $03, $01, $0e        ;; 05:6782 ????????
+    db   $01, $00, $18, $03, $03, $01, $03, $00        ;; 05:678a ????????
+    db   $12, $fa, $00, $01, $00, $50, $00, $58        ;; 05:6792 ????????
+    db   $18, $04, $23, $01, $01, $18, $04, $04        ;; 05:679a ????????
+    db   $01, $0e, $01, $01, $10, $01, $01, $01        ;; 05:67a2 ????????
+    db   $02, $01, $14, $10, $08, $01, $00, $01        ;; 05:67aa ????????
+    db   $10, $30, $04, $03, $01, $08, $00, $1d        ;; 05:67b2 ????????
+    db   $01, $00, $11, $00, $18, $00, $78, $04        ;; 05:67ba ????????
+    db   $00, $00, $00, $08, $00, $98, $00, $01        ;; 05:67c2 ????????
+    db   $01, $00, $01, $00, $18, $00, $a8, $05        ;; 05:67ca ????????
+    db   $03, $68, $00, $02, $00, $a0, $00, $f0        ;; 05:67d2 ????????
+    db   $01, $03, $02, $10, $10, $04, $03, $01        ;; 05:67da ????????
+    db   $10, $10, $04, $03, $01, $12, $01, $10        ;; 05:67e2 ????????
+    db   $08, $02, $01, $01, $02, $02, $14, $12        ;; 05:67ea ????????
+    db   $32, $02, $03, $14, $10, $00, $01, $00        ;; 05:67f2 ????????
+    db   $01, $01, $01, $00, $01, $01, $01, $01        ;; 05:67fa ????????
+    db   $02, $50, $03, $03, $01, $0e, $01, $02        ;; 05:6802 ????????
+    db   $00, $02, $02, $01, $0e, $01, $02, $48        ;; 05:680a ????????
+    db   $02, $02, $01, $04, $00, $00, $00, $10        ;; 05:6812 ????????
+    db   $01, $02, $04, $14, $12, $0a, $13, $01        ;; 05:681a ????????
+    db   $1d, $01, $0c, $97, $08, $00, $3e, $00        ;; 05:6822 ????????
+    db   $00, $11, $03, $78, $03, $78, $04, $00        ;; 05:682a ????????
+    db   $00, $03, $c8, $03, $78, $2f, $02, $a4        ;; 05:6832 ????????
+    db   $01, $00, $a0, $02, $02, $01, $13, $01        ;; 05:683a ????????
+    db   $08, $00, $84, $01, $00, $11, $00, $78        ;; 05:6842 ????????
+    db   $00, $20, $02, $00, $00, $00, $78, $00        ;; 05:684a ????????
+    db   $40, $00, $02, $01, $00, $01, $00, $60        ;; 05:6852 ????????
+    db   $00, $30, $01, $02, $02, $00, $02, $00        ;; 05:685a ????????
+    db   $88, $00, $30, $05, $02, $68, $12, $32        ;; 05:6862 ????????
+    db   $02, $05, $01, $00, $00, $03, $03, $01        ;; 05:686a ????????
+    db   $02, $06, $01, $01, $00, $01, $01, $01        ;; 05:6872 ????????
+    db   $02, $07, $14, $01, $00, $00, $02, $02        ;; 05:687a ????????
+    db   $01, $01, $01, $00, $02, $02, $01, $12        ;; 05:6882 ????????
+    db   $64, $08, $00, $3e, $00, $00, $11, $03        ;; 05:688a ????????
+    db   $78, $03, $78, $04, $00, $00, $03, $c8        ;; 05:6892 ????????
+    db   $03, $78, $2f, $02, $a4, $01, $00, $a0        ;; 05:689a ????????
+    db   $02, $02, $01, $13, $01, $1d, $00, $08        ;; 05:68a2 ????????
+    db   $00, $88, $01, $00, $11, $01, $a0, $01        ;; 05:68aa ????????
+    db   $b0, $03, $00, $00, $01, $c0, $01, $b0        ;; 05:68b2 ????????
+    db   $00, $03, $01, $00, $01, $01, $b0, $01        ;; 05:68ba ????????
+    db   $a0, $01, $03, $02, $00, $02, $01, $b0        ;; 05:68c2 ????????
+    db   $01, $c0, $05, $03, $68, $10, $10, $03        ;; 05:68ca ????????
+    db   $02, $01, $01, $00, $10, $03, $03, $01        ;; 05:68d2 ????????
+    db   $01, $01, $10, $03, $03, $01, $01, $02        ;; 05:68da ????????
+    db   $10, $03, $03, $01, $0e, $01, $01, $00        ;; 05:68e2 ????????
+    db   $04, $04, $01, $02, $08, $14, $08, $00        ;; 05:68ea ????????
+    db   $88, $01, $00, $11, $00, $f0, $00, $40        ;; 05:68f2 ????????
+    db   $01, $00, $00, $00, $d0, $00, $40, $00        ;; 05:68fa ????????
+    db   $01, $01, $00, $01, $01, $10, $00, $40        ;; 05:6902 ????????
+    db   $01, $01, $02, $00, $02, $00, $c0, $00        ;; 05:690a ????????
+    db   $40, $05, $01, $68, $00, $03, $01, $b0        ;; 05:6912 ????????
+    db   $00, $58, $0e, $02, $4f, $00, $04, $01        ;; 05:691a ????????
+    db   $50, $00, $40, $09, $02, $3f, $10, $20        ;; 05:6922 ????????
+    db   $01, $00, $01, $01, $00, $20, $01, $01        ;; 05:692a ????????
+    db   $01, $01, $01, $20, $01, $01, $01, $01        ;; 05:6932 ????????
+    db   $02, $20, $01, $01, $01, $04, $00, $24        ;; 05:693a ????????
+    db   $00, $00, $01, $02, $09, $14, $04, $01        ;; 05:6942 ????????
+    db   $24, $00, $00, $01, $12, $01, $10, $20        ;; 05:694a ????????
+    db   $01, $00, $01, $01, $00, $20, $01, $01        ;; 05:6952 ????????
+    db   $01, $01, $01, $20, $01, $01, $01, $01        ;; 05:695a ????????
+    db   $02, $20, $01, $01, $01, $01, $04, $20        ;; 05:6962 ????????
+    db   $04, $04, $01, $10, $10, $01, $00, $01        ;; 05:696a ????????
+    db   $01, $00, $10, $01, $01, $01, $01, $01        ;; 05:6972 ????????
+    db   $10, $04, $04, $01, $01, $02, $10, $01        ;; 05:697a ????????
+    db   $01, $01, $01, $04, $10, $04, $04, $01        ;; 05:6982 ????????
+    db   $10, $08, $01, $00, $01, $01, $00, $08        ;; 05:698a ????????
+    db   $01, $01, $01, $01, $01, $08, $04, $04        ;; 05:6992 ????????
+    db   $01, $01, $02, $08, $01, $01, $01, $01        ;; 05:699a ????????
+    db   $04, $00, $03, $03, $01, $10, $18, $04        ;; 05:69a2 ????????
+    db   $03, $01, $01, $00, $18, $01, $01, $01        ;; 05:69aa ????????
+    db   $01, $01, $18, $01, $01, $01, $01, $02        ;; 05:69b2 ????????
+    db   $18, $01, $01, $01, $10, $08, $01, $00        ;; 05:69ba ????????
+    db   $01, $01, $00, $08, $01, $01, $01, $01        ;; 05:69c2 ????????
+    db   $01, $08, $01, $01, $01, $01, $02, $08        ;; 05:69ca ????????
+    db   $01, $01, $01, $10, $10, $01, $00, $01        ;; 05:69d2 ????????
+    db   $01, $00, $10, $04, $04, $01, $01, $01        ;; 05:69da ????????
+    db   $10, $03, $03, $01, $01, $02, $10, $01        ;; 05:69e2 ????????
+    db   $01, $01, $10, $08, $01, $00, $01, $01        ;; 05:69ea ????????
+    db   $00, $08, $04, $04, $01, $01, $01, $08        ;; 05:69f2 ????????
+    db   $01, $01, $01, $01, $02, $08, $01, $01        ;; 05:69fa ????????
+    db   $01, $10, $08, $01, $00, $01, $01, $00        ;; 05:6a02 ????????
+    db   $08, $01, $01, $01, $01, $01, $08, $01        ;; 05:6a0a ????????
+    db   $01, $01, $01, $02, $08, $04, $04, $01        ;; 05:6a12 ????????
+    db   $04, $00, $24, $00, $00, $01, $02, $0a        ;; 05:6a1a ????????
+    db   $14, $04, $01, $24, $00, $00, $01, $10        ;; 05:6a22 ????????
+    db   $10, $04, $03, $01, $01, $00, $10, $01        ;; 05:6a2a ????????
+    db   $01, $01, $01, $01, $10, $01, $01, $01        ;; 05:6a32 ????????
+    db   $10, $10, $01, $00, $01, $01, $00, $10        ;; 05:6a3a ????????
+    db   $01, $01, $01, $01, $01, $10, $04, $04        ;; 05:6a42 ????????
+    db   $01, $10, $08, $04, $03, $01, $01, $00        ;; 05:6a4a ????????
+    db   $00, $04, $04, $01, $0e, $01, $02, $08        ;; 05:6a52 ????????
+    db   $04, $04, $01, $01, $04, $08, $03, $03        ;; 05:6a5a ????????
+    db   $01, $0e, $01, $00, $00, $04, $04, $01        ;; 05:6a62 ????????
+    db   $01, $02, $00, $01, $01, $01, $01, $04        ;; 05:6a6a ????????
+    db   $00, $01, $01, $01, $12, $14, $02, $0b        ;; 05:6a72 ????????
+    db   $02, $0c, $14, $12, $32, $0c, $15, $06        ;; 05:6a7a ????????
+    db   $0a, $0a, $0c, $0f, $07, $00, $1e, $12        ;; 05:6a82 ????????
+    db   $64, $08, $00, $7f, $01, $00, $11, $00        ;; 05:6a8a ????????
+    db   $78, $00, $38, $04, $00, $00, $00, $68        ;; 05:6a92 ????????
+    db   $00, $28, $00, $04, $01, $00, $01, $00        ;; 05:6a9a ????????
+    db   $88, $00, $28, $01, $04, $02, $00, $02        ;; 05:6aa2 ????????
+    db   $00, $e8, $00, $30, $17, $04, $a0, $12        ;; 05:6aaa ????????
+    db   $14, $01, $00, $00, $01, $01, $01, $01        ;; 05:6ab2 ????????
+    db   $01, $00, $02, $02, $01, $10, $00, $03        ;; 05:6aba ????????
+    db   $02, $01, $02, $0d, $02, $0e, $02, $0f        ;; 05:6ac2 ????????
+    db   $14, $0c, $92, $10, $00, $01, $00, $01        ;; 05:6aca ????????
+    db   $01, $01, $00, $01, $01, $01, $01, $02        ;; 05:6ad2 ????????
+    db   $38, $02, $02, $01, $02, $10, $14, $10        ;; 05:6ada ????????
+    db   $18, $01, $00, $01, $01, $02, $10, $02        ;; 05:6ae2 ????????
+    db   $02, $01, $09, $10, $25, $02, $12, $0a        ;; 05:6aea ????????
+    db   $0c, $05, $24, $02, $00, $03, $02, $01        ;; 05:6af2 ????????
+    db   $00, $10, $04, $04, $01, $0e, $01, $00        ;; 05:6afa ????????
+    db   $10, $01, $01, $01, $10, $00, $02, $0a        ;; 05:6b02 ????????
+    db   $01, $01, $01, $00, $04, $04, $01, $02        ;; 05:6b0a ????????
+    db   $11, $14, $10, $48, $01, $00, $01, $10        ;; 05:6b12 ????????
+    db   $38, $03, $02, $01, $0d, $15, $00             ;; 05:6b1a ???????
+
+data_05_6b21:
+    db   $00, $00, $00, $48, $00, $20, $11, $04        ;; 05:6b21 ????????
+    db   $9d, $10, $08, $03, $02, $01, $00, $01        ;; 05:6b29 ????????
+    db   $00, $40, $00, $80, $00, $03, $01, $00        ;; 05:6b31 ????????
+    db   $02, $00, $50, $00, $80, $01, $03, $02        ;; 05:6b39 ????????
+    db   $10, $18, $02, $01, $01, $10, $10, $02        ;; 05:6b41 ????????
+    db   $01, $01, $01, $01, $10, $03, $03, $01        ;; 05:6b49 ????????
+    db   $01, $02, $10, $03, $03, $01, $10, $18        ;; 05:6b51 ????????
+    db   $02, $01, $01, $01, $01, $18, $02, $02        ;; 05:6b59 ????????
+    db   $01, $01, $02, $18, $02, $02, $01, $10        ;; 05:6b61 ????????
+    db   $20, $03, $02, $01, $01, $01, $20, $02        ;; 05:6b69 ????????
+    db   $02, $01, $01, $02, $20, $02, $02, $01        ;; 05:6b71 ????????
+    db   $10, $10, $03, $02, $01, $01, $01, $10        ;; 05:6b79 ????????
+    db   $03, $03, $01, $01, $02, $10, $02, $02        ;; 05:6b81 ????????
+    db   $01, $10, $20, $01, $00, $01, $01, $01        ;; 05:6b89 ????????
+    db   $20, $03, $03, $01, $01, $02, $20, $03        ;; 05:6b91 ????????
+    db   $03, $01, $10, $10, $01, $00, $01, $01        ;; 05:6b99 ????????
+    db   $01, $10, $01, $01, $01, $01, $02, $10        ;; 05:6ba1 ????????
+    db   $03, $03, $01, $10, $10, $01, $00, $01        ;; 05:6ba9 ????????
+    db   $01, $01, $10, $01, $01, $01, $01, $02        ;; 05:6bb1 ????????
+    db   $10, $01, $01, $01, $12, $01, $10, $00        ;; 05:6bb9 ????????
+    db   $03, $02, $01, $01, $01, $10, $01, $01        ;; 05:6bc1 ????????
+    db   $01, $01, $02, $10, $01, $01, $01, $0e        ;; 05:6bc9 ????????
+    db   $01, $01, $00, $03, $03, $01, $01, $02        ;; 05:6bd1 ????????
+    db   $10, $03, $03, $01, $0e, $01, $02, $00        ;; 05:6bd9 ????????
+    db   $01, $01, $01, $12, $14, $02, $00, $02        ;; 05:6be1 ????????
+    db   $01, $02, $02, $14, $12, $14, $01, $00        ;; 05:6be9 ????????
+    db   $10, $04, $04, $01, $09, $11, $25, $00        ;; 05:6bf1 ????????
+    db   $12, $14, $0c, $05, $24, $00, $01, $03        ;; 05:6bf9 ????????
+    db   $00, $12, $14, $01, $01, $00, $01, $01        ;; 05:6c01 ????????
+    db   $01, $02, $03, $02, $04, $14, $01, $01        ;; 05:6c09 ????????
+    db   $10, $03, $03, $01, $0e, $01, $01, $30        ;; 05:6c11 ????????
+    db   $01, $01, $01, $0e, $01, $01, $10, $03        ;; 05:6c19 ????????
+    db   $03, $01, $0e, $01, $01, $20, $01, $01        ;; 05:6c21 ????????
+    db   $01, $0e, $01, $01, $00, $02, $02, $01        ;; 05:6c29 ????????
+    db   $02, $05, $10, $00, $01, $00, $01, $02        ;; 05:6c31 ????????
+    db   $06, $14, $10, $10, $01, $00, $01, $01        ;; 05:6c39 ????????
+    db   $01, $10, $03, $03, $01, $10, $08, $01        ;; 05:6c41 ????????
+    db   $00, $01, $01, $01, $08, $03, $03, $01        ;; 05:6c49 ????????
+    db   $03, $01, $10, $20, $03, $02, $01, $10        ;; 05:6c51 ????????
+    db   $30, $01, $00, $01, $10, $10, $03, $02        ;; 05:6c59 ????????
+    db   $01, $10, $08, $03, $02, $01, $0d, $16        ;; 05:6c61 ????????
+    db   $00                                           ;; 05:6c69 ?
+
+data_05_6c6a:
+    db   $12, $32, $10, $10, $03, $02, $01, $01        ;; 05:6c6a ????????
+    db   $00, $00, $04, $04, $01, $01, $01, $10        ;; 05:6c72 ????????
+    db   $03, $03, $01, $01, $02, $10, $03, $03        ;; 05:6c7a ????????
+    db   $01, $0e, $01, $00, $10, $04, $04, $01        ;; 05:6c82 ????????
+    db   $0e, $10, $00, $01, $00, $01, $01, $00        ;; 05:6c8a ????????
+    db   $20, $02, $02, $01, $01, $02, $00, $01        ;; 05:6c92 ????????
+    db   $01, $01, $02, $00, $15, $04, $0c, $07        ;; 05:6c9a ????????
+    db   $02, $01, $01, $00, $00, $04, $04, $01        ;; 05:6ca2 ????????
+    db   $02, $02, $02, $03, $02, $04, $14, $10        ;; 05:6caa ????????
+    db   $00, $03, $02, $01, $01, $00, $a0, $03        ;; 05:6cb2 ????????
+    db   $03, $01, $03, $00, $12, $14, $10, $00        ;; 05:6cba ????????
+    db   $04, $03, $01, $01, $01, $00, $02, $02        ;; 05:6cc2 ????????
+    db   $01, $02, $05, $02, $06, $14, $10, $80        ;; 05:6cca ????????
+    db   $03, $02, $01, $01, $01, $80, $03, $03        ;; 05:6cd2 ????????
+    db   $01, $01, $02, $80, $03, $03, $01, $0c        ;; 05:6cda ????????
+    db   $0f, $08, $00, $b8, $01, $00, $11, $00        ;; 05:6ce2 ????????
+    db   $58, $01, $e0, $03, $0d, $17, $00             ;; 05:6cea ???????
+
+data_05_6cf1:
+    db   $12, $14, $10, $20, $03, $02, $01, $01        ;; 05:6cf1 ????????
+    db   $01, $20, $03, $03, $01, $01, $02, $20        ;; 05:6cf9 ????????
+    db   $03, $03, $01, $0e, $01, $00, $20, $04        ;; 05:6d01 ????????
+    db   $04, $01, $12, $1e, $02, $00, $14, $0c        ;; 05:6d09 ????????
+    db   $07, $15, $05, $12, $1e, $01, $00, $20        ;; 05:6d11 ????????
+    db   $01, $01, $01, $10, $20, $03, $02, $01        ;; 05:6d19 ????????
+    db   $01, $00, $00, $02, $02, $01, $01, $01        ;; 05:6d21 ????????
+    db   $20, $03, $03, $01, $01, $02, $20, $03        ;; 05:6d29 ????????
+    db   $03, $01, $12, $14, $10, $00, $02, $01        ;; 05:6d31 ????????
+    db   $01, $02, $01, $14, $01, $00, $00, $02        ;; 05:6d39 ????????
+    db   $02, $01, $10, $00, $04, $04, $01, $12        ;; 05:6d41 ????????
+    db   $14, $10, $00, $01, $01, $01, $12, $14        ;; 05:6d49 ????????
+    db   $10, $00, $04, $04, $01, $12, $1e, $10        ;; 05:6d51 ????????
+    db   $38, $03, $02, $01, $0d, $18, $00             ;; 05:6d59 ???????
+
+data_05_6d60:
+    db   $10, $18, $02, $01, $01, $10, $58, $03        ;; 05:6d60 ????????
+    db   $02, $01, $12, $14, $02, $00, $14, $09        ;; 05:6d68 ????????
+    db   $12, $0c, $1b, $05, $32, $02, $01, $14        ;; 05:6d70 ????????
+    db   $0c, $1b, $05, $64, $08, $00, $c1, $00        ;; 05:6d78 ????????
+    db   $00, $11, $00, $78, $00, $50, $03, $00        ;; 05:6d80 ????????
+    db   $00, $00, $88, $00, $50, $00, $03, $01        ;; 05:6d88 ????????
+    db   $00, $01, $00, $68, $00, $50, $01, $03        ;; 05:6d90 ????????
+    db   $02, $0c, $1b, $05, $32, $01, $01, $00        ;; 05:6d98 ????????
+    db   $01, $01, $01, $02, $02, $02, $03, $14        ;; 05:6da0 ????????
+    db   $01, $01, $00, $02, $02, $01, $12, $1e        ;; 05:6da8 ????????
+    db   $01, $01, $00, $01, $01, $01, $12, $1e        ;; 05:6db0 ????????
+    db   $01, $01, $00, $02, $02, $01, $02, $04        ;; 05:6db8 ????????
+    db   $14, $01, $01, $00, $03, $03, $01, $0c        ;; 05:6dc0 ????????
+    db   $1b, $05, $64, $08, $00, $c2, $00, $00        ;; 05:6dc8 ????????
+    db   $11, $00, $50, $00, $90, $03, $00, $00        ;; 05:6dd0 ????????
+    db   $00, $30, $00, $90, $04, $03, $04, $0c        ;; 05:6dd8 ????????
+    db   $88, $0c, $1b, $05, $32, $01, $00, $00        ;; 05:6de0 ????????
+    db   $02, $02, $01, $12, $1e, $01, $00, $00        ;; 05:6de8 ????????
+    db   $01, $01, $01, $12, $1e, $01, $00, $00        ;; 05:6df0 ????????
+    db   $02, $02, $01, $12, $1e, $01, $00, $00        ;; 05:6df8 ????????
+    db   $01, $01, $01, $12, $1e, $01, $00, $00        ;; 05:6e00 ????????
+    db   $02, $02, $01, $12, $1e, $01, $00, $00        ;; 05:6e08 ????????
+    db   $03, $03, $01, $02, $05, $14, $0c, $1b        ;; 05:6e10 ????????
+    db   $05, $32, $08, $00, $c4, $00, $00, $11        ;; 05:6e18 ????????
+    db   $00, $00, $00, $00, $03, $0c, $1b, $05        ;; 05:6e20 ????????
+    db   $64, $13, $01, $12, $64, $08, $00, $cf        ;; 05:6e28 ????????
+    db   $00, $00, $11, $00, $00, $00, $58, $03        ;; 05:6e30 ????????
+    db   $00, $00, $00, $18, $00, $00, $00, $08        ;; 05:6e38 ????????
+    db   $01, $00, $01, $00, $70, $00, $08, $01        ;; 05:6e40 ????????
+    db   $08, $02, $02, $06, $02, $07, $0c, $1c        ;; 05:6e48 ????????
+    db   $10, $05, $04, $03, $02, $01, $01, $05        ;; 05:6e50 ????????
+    db   $08, $04, $04, $10, $32, $04, $03, $02        ;; 05:6e58 ????????
+    db   $01, $00, $32, $08, $04, $02, $01, $01        ;; 05:6e60 ????????
+    db   $32, $08, $04, $04, $14, $10, $0f, $04        ;; 05:6e68 ????????
+    db   $03, $02, $01, $00, $3c, $08, $04, $04        ;; 05:6e70 ????????
+    db   $01, $01, $3c, $08, $04, $04, $03, $00        ;; 05:6e78 ????????
+    db   $03, $01, $12, $64, $07, $00, $1e, $12        ;; 05:6e80 ????????
+    db   $64, $0c, $95, $08, $00, $c6, $01, $00        ;; 05:6e88 ????????
+    db   $11, $00, $48, $00, $d8, $18, $00, $00        ;; 05:6e90 ????????
+    db   $00, $18, $00, $98, $00, $07, $01, $00        ;; 05:6e98 ????????
+    db   $01, $00, $70, $00, $b0, $01, $07, $02        ;; 05:6ea0 ????????
+    db   $00, $02, $00, $b8, $00, $b0, $0d, $03        ;; 05:6ea8 ????????
+    db   $5e, $12, $32, $06, $01, $0a, $06, $01        ;; 05:6eb0 ????????
+    db   $1e, $06, $01, $32, $01, $01, $00, $02        ;; 05:6eb8 ????????
+    db   $02, $12, $14, $01, $01, $00, $01, $01        ;; 05:6ec0 ????????
+    db   $01, $12, $14, $01, $01, $00, $02, $02        ;; 05:6ec8 ????????
+    db   $01, $02, $08, $14, $01, $02, $38, $02        ;; 05:6ed0 ????????
+    db   $02, $01, $01, $01, $00, $01, $01, $01        ;; 05:6ed8 ????????
+    db   $02, $09, $14, $06, $02, $0a, $03, $02        ;; 05:6ee0 ????????
+    db   $01, $00, $00, $02, $02, $01, $12, $14        ;; 05:6ee8 ????????
+    db   $01, $00, $00, $01, $01, $01, $12, $14        ;; 05:6ef0 ????????
+    db   $01, $00, $00, $02, $02, $01, $00, $03        ;; 05:6ef8 ????????
+    db   $00, $60, $01, $10, $09, $03, $3f, $00        ;; 05:6f00 ????????
+    db   $04, $00, $28, $01, $10, $05, $03, $68        ;; 05:6f08 ????????
+    db   $01, $00, $38, $04, $04, $01, $01, $01        ;; 05:6f10 ????????
+    db   $20, $04, $04, $01, $01, $03, $30, $03        ;; 05:6f18 ????????
+    db   $03, $01, $01, $04, $30, $03, $03, $01        ;; 05:6f20 ????????
+    db   $0e, $01, $00, $18, $01, $01, $01, $01        ;; 05:6f28 ????????
+    db   $01, $10, $02, $02, $01, $01, $03, $00        ;; 05:6f30 ????????
+    db   $02, $02, $01, $01, $04, $00, $01, $01        ;; 05:6f38 ????????
+    db   $01, $02, $0a, $02, $0b, $02, $0c, $14        ;; 05:6f40 ????????
+    db   $10, $00, $02, $01, $01, $12, $0a, $10        ;; 05:6f48 ????????
+    db   $00, $01, $00, $01, $12, $0a, $10, $00        ;; 05:6f50 ????????
+    db   $02, $01, $01, $12, $1e, $10, $08, $03        ;; 05:6f58 ????????
+    db   $02, $01, $01, $00, $08, $01, $01, $01        ;; 05:6f60 ????????
+    db   $01, $01, $08, $02, $02, $01, $10, $60        ;; 05:6f68 ????????
+    db   $03, $02, $01, $01, $00, $60, $03, $03        ;; 05:6f70 ????????
+    db   $01, $01, $01, $60, $03, $03, $01, $01        ;; 05:6f78 ????????
+    db   $03, $60, $03, $03, $01, $01, $04, $60        ;; 05:6f80 ????????
+    db   $03, $03, $01, $10, $10, $03, $02, $01        ;; 05:6f88 ????????
+    db   $12, $0a, $04, $00, $00, $01, $20, $01        ;; 05:6f90 ????????
+    db   $12, $32, $02, $0d, $14, $12, $96, $13        ;; 05:6f98 ????????
+    db   $01, $12, $32, $1e, $12, $64, $0c, $8c        ;; 05:6fa0 ????????
+    db   $1d, $01, $20, $01, $12, $32, $08, $00        ;; 05:6fa8 ????????
+    db   $43, $00, $00, $11, $00, $60, $00, $00        ;; 05:6fb0 ????????
+    db   $03, $00, $00, $01, $20, $00, $38, $30        ;; 05:6fb8 ????????
+    db   $02, $3f, $1b, $10, $50, $03, $03, $01        ;; 05:6fc0 ????????
+    db   $10, $58, $00, $00, $01, $0e, $01, $00        ;; 05:6fc8 ????????
+    db   $c8, $02, $02, $01, $12, $14, $02, $0e        ;; 05:6fd0 ????????
+    db   $08, $00, $65, $00, $00, $11, $01, $20        ;; 05:6fd8 ????????
+    db   $01, $00, $03, $00, $00, $01, $10, $00        ;; 05:6fe0 ????????
+    db   $28, $1b, $04, $a4, $00, $01, $01, $30        ;; 05:6fe8 ????????
+    db   $00, $28, $1a, $02, $a4, $1b, $10, $78        ;; 05:6ff0 ????????
+    db   $02, $02, $01, $10, $20, $02, $02, $01        ;; 05:6ff8 ????????
+    db   $01, $00, $20, $04, $04, $01, $01, $01        ;; 05:7000 ????????
+    db   $20, $02, $02, $01, $10, $10, $02, $02        ;; 05:7008 ????????
+    db   $01, $01, $00, $20, $01, $01, $01, $01        ;; 05:7010 ????????
+    db   $01, $20, $04, $04, $01, $0e, $01, $00        ;; 05:7018 ????????
+    db   $20, $03, $03, $01, $01, $01, $20, $01        ;; 05:7020 ????????
+    db   $01, $01, $0e, $01, $00, $20, $02, $02        ;; 05:7028 ????????
+    db   $01, $01, $01, $20, $03, $03, $01, $0e        ;; 05:7030 ????????
+    db   $01, $00, $20, $04, $04, $01, $01, $01        ;; 05:7038 ????????
+    db   $20, $02, $02, $01, $0e, $01, $00, $20        ;; 05:7040 ????????
+    db   $01, $01, $01, $01, $01, $20, $04, $04        ;; 05:7048 ????????
+    db   $01, $0e, $01, $00, $20, $03, $03, $01        ;; 05:7050 ????????
+    db   $01, $01, $20, $01, $01, $01, $0e, $01        ;; 05:7058 ????????
+    db   $00, $20, $02, $02, $01, $01, $01, $20        ;; 05:7060 ????????
+    db   $03, $03, $01, $0e, $01, $00, $20, $04        ;; 05:7068 ????????
+    db   $04, $01, $01, $01, $20, $02, $02, $01        ;; 05:7070 ????????
+    db   $0e, $02, $0f, $08, $00, $a8, $00, $00        ;; 05:7078 ????????
+    db   $11, $00, $80, $00, $70, $03, $1b, $12        ;; 05:7080 ????????
+    db   $14, $00, $00, $00, $98, $00, $50, $18        ;; 05:7088 ????????
+    db   $04, $a4, $01, $00, $20, $04, $04, $01        ;; 05:7090 ????????
+    db   $0e, $01, $00, $20, $02, $02, $01, $00        ;; 05:7098 ????????
+    db   $01, $00, $98, $00, $50, $1d, $04, $a4        ;; 05:70a0 ????????
+    db   $01, $01, $10, $04, $04, $01, $0e, $01        ;; 05:70a8 ????????
+    db   $01, $20, $02, $02, $01, $00, $02, $00        ;; 05:70b0 ????????
+    db   $78, $00, $00, $1e, $04, $a4, $01, $02        ;; 05:70b8 ????????
+    db   $10, $04, $04, $01, $12, $0a, $01, $02        ;; 05:70c0 ????????
+    db   $20, $04, $04, $01, $0e, $01, $00, $00        ;; 05:70c8 ????????
+    db   $03, $03, $01, $01, $01, $00, $03, $03        ;; 05:70d0 ????????
+    db   $01, $12, $14, $01, $01, $10, $03, $03        ;; 05:70d8 ????????
+    db   $01, $01, $02, $10, $04, $04, $01, $00        ;; 05:70e0 ????????
+    db   $03, $00, $e0, $00, $68, $21, $04, $a4        ;; 05:70e8 ????????
+    db   $00, $04, $00, $78, $00, $c0, $19, $04        ;; 05:70f0 ????????
+    db   $a4, $01, $03, $20, $02, $02, $01, $01        ;; 05:70f8 ????????
+    db   $04, $20, $03, $03, $01, $01, $00, $00        ;; 05:7100 ????????
+    db   $01, $01, $01, $12, $0a, $01, $00, $00        ;; 05:7108 ????????
+    db   $04, $04, $01, $12, $0a, $01, $00, $00        ;; 05:7110 ????????
+    db   $01, $01, $01, $12, $14, $02, $10, $08        ;; 05:7118 ????????
+    db   $00, $ac, $00, $00, $11, $00, $f8, $01        ;; 05:7120 ????????
+    db   $d8, $03, $00, $00, $00, $f8, $01, $f0        ;; 05:7128 ????????
+    db   $05, $03, $68, $1b, $10, $c8, $03, $02        ;; 05:7130 ????????
+    db   $01, $01, $00, $e0, $03, $03, $01, $12        ;; 05:7138 ????????
+    db   $0a, $00, $01, $01, $28, $01, $00, $18        ;; 05:7140 ????????
+    db   $04, $a4, $01, $01, $10, $04, $04, $01        ;; 05:7148 ????????
+    db   $0e, $01, $01, $10, $02, $02, $01, $0e        ;; 05:7150 ????????
+    db   $01, $00, $00, $01, $01, $01, $00, $02        ;; 05:7158 ????????
+    db   $00, $f8, $00, $b8, $19, $04, $a4, $00        ;; 05:7160 ????????
+    db   $03, $00, $e0, $00, $b8, $1c, $04, $a4        ;; 05:7168 ????????
+    db   $00, $04, $00, $a0, $00, $e8, $24, $01        ;; 05:7170 ????????
+    db   $a4, $00, $05, $01, $10, $01, $60, $21        ;; 05:7178 ????????
+    db   $03, $a4, $00, $06, $00, $e0, $01, $60        ;; 05:7180 ????????
+    db   $22, $03, $a4, $01, $02, $28, $04, $04        ;; 05:7188 ????????
+    db   $01, $01, $03, $28, $04, $04, $01, $01        ;; 05:7190 ????????
+    db   $04, $28, $01, $01, $01, $01, $05, $28        ;; 05:7198 ????????
+    db   $03, $03, $01, $01, $06, $28, $03, $03        ;; 05:71a0 ????????
+    db   $01, $0e, $01, $02, $10, $04, $04, $01        ;; 05:71a8 ????????
+    db   $01, $03, $10, $04, $04, $01, $01, $04        ;; 05:71b0 ????????
+    db   $20, $04, $04, $01, $01, $05, $10, $03        ;; 05:71b8 ????????
+    db   $03, $01, $01, $06, $10, $03, $03, $01        ;; 05:71c0 ????????
+    db   $0e, $01, $04, $10, $01, $01, $01, $12        ;; 05:71c8 ????????
+    db   $0a, $01, $00, $00, $02, $02, $01, $12        ;; 05:71d0 ????????
+    db   $0a, $01, $00, $00, $03, $03, $01, $12        ;; 05:71d8 ????????
+    db   $0a, $01, $00, $00, $04, $04, $01, $12        ;; 05:71e0 ????????
+    db   $0a, $01, $00, $00, $01, $01, $01, $12        ;; 05:71e8 ????????
+    db   $14, $02, $11, $02, $12, $02, $13, $02        ;; 05:71f0 ????????
+    db   $14, $08, $00, $3e, $00, $00, $11, $03        ;; 05:71f8 ????????
+    db   $78, $03, $78, $04, $00, $00, $03, $c8        ;; 05:7200 ????????
+    db   $03, $78, $2e, $02, $a4, $01, $00, $50        ;; 05:7208 ????????
+    db   $02, $02, $01, $0e, $01, $00, $60, $03        ;; 05:7210 ????????
+    db   $03, $01, $08, $00, $88, $00, $00, $11        ;; 05:7218 ????????
+    db   $01, $d0, $01, $c8, $03, $00, $00, $01        ;; 05:7220 ????????
+    db   $d0, $01, $f0, $01, $03, $01, $00, $01        ;; 05:7228 ????????
+    db   $01, $d0, $01, $d0, $09, $03, $02, $1b        ;; 05:7230 ????????
+    db   $01, $00, $10, $03, $03, $01, $01, $01        ;; 05:7238 ????????
+    db   $10, $03, $03, $01, $0e, $01, $01, $00        ;; 05:7240 ????????
+    db   $04, $04, $01, $12, $32, $01, $00, $20        ;; 05:7248 ????????
+    db   $04, $04, $01, $03, $00, $10, $38, $02        ;; 05:7250 ????????
+    db   $01, $01, $01, $01, $38, $02, $02, $01        ;; 05:7258 ????????
+    db   $0e, $01, $01, $00, $04, $04, $01, $12        ;; 05:7260 ????????
+    db   $32, $00, $02, $01, $38, $01, $c0, $31        ;; 05:7268 ????????
+    db   $01, $02, $01, $02, $28, $01, $01, $01        ;; 05:7270 ????????
+    db   $0e, $01, $01, $00, $02, $02, $01, $12        ;; 05:7278 ????????
+    db   $14, $10, $18, $02, $01, $01, $01, $01        ;; 05:7280 ????????
+    db   $18, $02, $02, $01, $12, $32, $02, $15        ;; 05:7288 ????????
+    db   $08, $00, $3e, $00, $00, $11, $03, $78        ;; 05:7290 ????????
+    db   $03, $78, $04, $00, $00, $03, $c8, $03        ;; 05:7298 ????????
+    db   $78, $2e, $02, $a4, $01, $00, $a0, $02        ;; 05:72a0 ????????
+    db   $02, $01, $08, $00, $84, $00, $00, $11        ;; 05:72a8 ????????
+    db   $00, $c8, $00, $28, $04, $00, $00, $00        ;; 05:72b0 ????????
+    db   $38, $00, $28, $01, $02, $02, $1b, $10        ;; 05:72b8 ????????
+    db   $80, $02, $01, $01, $12, $32, $02, $16        ;; 05:72c0 ????????
+    db   $08, $00, $5a, $00, $00, $11, $00, $d8        ;; 05:72c8 ????????
+    db   $01, $30, $04, $00, $00, $00, $d8, $01        ;; 05:72d0 ????????
+    db   $20, $37, $04, $4f, $01, $00, $00, $05        ;; 05:72d8 ????????
+    db   $05, $01, $12, $32, $00, $01, $00, $78        ;; 05:72e0 ????????
+    db   $01, $10, $18, $04, $a4, $00, $02, $01        ;; 05:72e8 ????????
+    db   $38, $01, $10, $1b, $04, $a4, $00, $03        ;; 05:72f0 ????????
+    db   $00, $d8, $00, $c0, $1e, $04, $a4, $00        ;; 05:72f8 ????????
+    db   $04, $00, $d8, $00, $d0, $24, $04, $a4        ;; 05:7300 ????????
+    db   $01, $01, $20, $01, $01, $01, $01, $02        ;; 05:7308 ????????
+    db   $20, $02, $02, $01, $01, $03, $20, $04        ;; 05:7310 ????????
+    db   $04, $01, $01, $04, $20, $04, $04, $01        ;; 05:7318 ????????
+    db   $0e, $01, $01, $20, $01, $01, $01, $01        ;; 05:7320 ????????
+    db   $02, $20, $02, $02, $01, $01, $03, $20        ;; 05:7328 ????????
+    db   $01, $01, $01, $01, $04, $20, $02, $02        ;; 05:7330 ????????
+    db   $01, $0e, $01, $01, $20, $04, $04, $01        ;; 05:7338 ????????
+    db   $01, $02, $20, $04, $04, $01, $01, $03        ;; 05:7340 ????????
+    db   $40, $04, $04, $01, $01, $04, $30, $04        ;; 05:7348 ????????
+    db   $04, $01, $0e, $01, $01, $00, $01, $01        ;; 05:7350 ????????
+    db   $01, $01, $02, $00, $02, $02, $01, $01        ;; 05:7358 ????????
+    db   $03, $00, $02, $02, $01, $01, $04, $00        ;; 05:7360 ????????
+    db   $01, $01, $01, $12, $14, $01, $00, $00        ;; 05:7368 ????????
+    db   $01, $01, $01, $12, $14, $01, $00, $00        ;; 05:7370 ????????
+    db   $02, $02, $01, $12, $14, $01, $00, $00        ;; 05:7378 ????????
+    db   $01, $01, $01, $12, $14, $01, $00, $00        ;; 05:7380 ????????
+    db   $02, $02, $01, $12, $14, $01, $00, $00        ;; 05:7388 ????????
+    db   $04, $04, $01, $12, $14, $01, $00, $00        ;; 05:7390 ????????
+    db   $05, $05, $01, $12, $c8, $02, $17, $02        ;; 05:7398 ????????
+    db   $18, $02, $19, $08, $00, $5a, $00, $00        ;; 05:73a0 ????????
+    db   $11, $00, $d8, $01, $a0, $04, $00, $00        ;; 05:73a8 ????????
+    db   $00, $d8, $01, $20, $37, $05, $4f, $00        ;; 05:73b0 ????????
+    db   $01, $00, $d8, $01, $f0, $38, $03, $4f        ;; 05:73b8 ????????
+    db   $01, $01, $38, $03, $03, $01, $10, $78        ;; 05:73c0 ????????
+    db   $03, $02, $01, $01, $01, $78, $03, $03        ;; 05:73c8 ????????
+    db   $01, $12, $14, $01, $01, $10, $01, $01        ;; 05:73d0 ????????
+    db   $01, $0e, $01, $01, $20, $03, $03, $01        ;; 05:73d8 ????????
+    db   $0e, $01, $00, $00, $01, $01, $00, $01        ;; 05:73e0 ????????
+    db   $01, $00, $02, $02, $00, $12, $32, $10        ;; 05:73e8 ????????
+    db   $10, $01, $00, $01, $01, $01, $10, $01        ;; 05:73f0 ????????
+    db   $01, $01, $0e, $01, $01, $00, $05, $05        ;; 05:73f8 ????????
+    db   $01, $12, $c8, $01, $00, $00, $01, $01        ;; 05:7400 ????????
+    db   $00, $01, $01, $00, $02, $02, $00, $12        ;; 05:7408 ????????
+    db   $32, $01, $00, $00, $05, $05, $01, $01        ;; 05:7410 ????????
+    db   $01, $00, $05, $05, $01, $12, $c8, $02        ;; 05:7418 ????????
+    db   $1a, $02, $1b, $02, $1c, $08, $00, $1d        ;; 05:7420 ????????
+    db   $00, $00, $11, $01, $a0, $00, $78, $04        ;; 05:7428 ????????
+    db   $00, $00, $01, $a0, $00, $60, $00, $03        ;; 05:7430 ????????
+    db   $01, $10, $38, $03, $02, $01, $01, $00        ;; 05:7438 ????????
+    db   $38, $03, $03, $01, $08, $00, $28, $00        ;; 05:7440 ????????
+    db   $01, $11, $00, $f8, $01, $a8, $04, $0e        ;; 05:7448 ????????
+    db   $00, $02, $00, $f8, $01, $c0, $00, $03        ;; 05:7450 ????????
+    db   $01, $10, $30, $03, $02, $01, $01, $02        ;; 05:7458 ????????
+    db   $38, $03, $03, $01, $0e, $01, $00, $00        ;; 05:7460 ????????
+    db   $01, $01, $01, $01, $01, $00, $02, $02        ;; 05:7468 ????????
+    db   $01, $12, $14, $01, $01, $4c, $03, $03        ;; 05:7470 ????????
+    db   $02, $00, $03, $00, $f8, $00, $f0, $08        ;; 05:7478 ????????
+    db   $03, $a4, $00, $04, $00, $e0, $00, $f0        ;; 05:7480 ????????
+    db   $22, $03, $a4, $01, $01, $30, $04, $04        ;; 05:7488 ????????
+    db   $02, $01, $03, $30, $04, $04, $02, $01        ;; 05:7490 ????????
+    db   $04, $30, $04, $04, $02, $12, $1e, $01        ;; 05:7498 ????????
+    db   $02, $10, $03, $03, $01, $01, $03, $10        ;; 05:74a0 ????????
+    db   $04, $04, $01, $12, $1e, $02, $1d, $08        ;; 05:74a8 ????????
+    db   $00, $00, $01, $00, $11, $00, $10, $00        ;; 05:74b0 ????????
+    db   $f0, $04, $00, $00, $00, $b8, $00, $28        ;; 05:74b8 ????????
+    db   $07, $04, $a4, $0e, $00, $01, $00, $a8        ;; 05:74c0 ????????
+    db   $00, $28, $1f, $04, $a4, $00, $02, $00        ;; 05:74c8 ????????
+    db   $c8, $00, $28, $1f, $04, $a4, $00, $03        ;; 05:74d0 ????????
+    db   $01, $10, $00, $f0, $1b, $03, $a4, $00        ;; 05:74d8 ????????
+    db   $04, $00, $a0, $01, $50, $1c, $03, $a4        ;; 05:74e0 ????????
+    db   $00, $05, $00, $b8, $01, $50, $22, $03        ;; 05:74e8 ????????
+    db   $a4, $00, $06, $00, $30, $00, $a0, $18        ;; 05:74f0 ????????
+    db   $04, $a4, $10, $20, $01, $00, $01, $0e        ;; 05:74f8 ????????
+    db   $10, $00, $03, $02, $01, $01, $06, $28        ;; 05:7500 ????????
+    db   $04, $04, $01, $10, $10, $03, $02, $01        ;; 05:7508 ????????
+    db   $12, $1e, $10, $80, $01, $00, $01, $0e        ;; 05:7510 ????????
+    db   $10, $08, $04, $03, $00, $12, $01, $01        ;; 05:7518 ????????
+    db   $04, $40, $03, $03, $01, $01, $05, $40        ;; 05:7520 ????????
+    db   $03, $03, $01, $10, $10, $04, $03, $01        ;; 05:7528 ????????
+    db   $12, $1e, $10, $08, $01, $00, $00, $12        ;; 05:7530 ????????
+    db   $01, $01, $03, $38, $02, $02, $01, $10        ;; 05:7538 ????????
+    db   $08, $01, $00, $01, $12, $1e, $10, $a8        ;; 05:7540 ????????
+    db   $03, $02, $01, $12, $1e, $02, $1e, $08        ;; 05:7548 ????????
+    db   $00, $c6, $00, $00, $11, $00, $48, $00        ;; 05:7550 ????????
+    db   $38, $04, $00, $00, $00, $48, $00, $60        ;; 05:7558 ????????
+    db   $04, $03, $a4, $1b, $12, $64, $01, $00        ;; 05:7560 ????????
+    db   $00, $04, $04, $01, $12, $1e, $10, $50        ;; 05:7568 ????????
+    db   $04, $03, $01, $01, $00, $50, $04, $04        ;; 05:7570 ????????
+    db   $01, $0e, $01, $00, $50, $04, $04, $01        ;; 05:7578 ????????
+    db   $12, $64, $08, $00, $c3, $00, $00, $11        ;; 05:7580 ????????
+    db   $00, $48, $00, $28, $04, $12, $c8, $00        ;; 05:7588 ????????
+    db   $00, $00, $b0, $00, $28, $30, $02, $a4        ;; 05:7590 ????????
+    db   $00, $01, $00, $a8, $00, $40, $30, $02        ;; 05:7598 ????????
+    db   $a4, $01, $00, $50, $02, $02, $01, $01        ;; 05:75a0 ????????
+    db   $01, $50, $02, $02, $01, $17, $00, $01        ;; 05:75a8 ????????
+    db   $20, $01, $20, $17, $00, $01, $20, $00        ;; 05:75b0 ????????
+    db   $00, $17, $00, $01, $20, $00, $00, $17        ;; 05:75b8 ????????
+    db   $01, $01, $20, $01, $20, $17, $01, $01        ;; 05:75c0 ????????
+    db   $20, $00, $00, $17, $01, $01, $20, $00        ;; 05:75c8 ????????
+    db   $00, $03, $01, $03, $00, $12, $32, $23        ;; 05:75d0 ????????
+    db   $12, $32, $1f, $12, $fa, $12, $fa, $12        ;; 05:75d8 ????????
+    db   $6e, $1d, $00, $1e, $12, $c8, $20, $00        ;; 05:75e0 ????????
+    db   $16                                           ;; 05:75e8 ?
 
 data_05_75e9:
     db   $75, $ed, $76, $75, $0c, $1b, $05, $1e        ;; 05:75e9 ????????
