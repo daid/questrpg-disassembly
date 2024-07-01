@@ -19,9 +19,13 @@ INSTR_SIZE = {
     0x02: 2, # Show message
     0x03: 2, # Destroy NPC?
     0x04: 6, # Scroll map?
+    0x05: 2,
     0x06: 3,
     0x07: 2,
     0x08: 5, # load map?
+    0x09: 2,
+    0x0A: 3,
+    0x0B: 2, # This can "call" one of two specific script functions or return from them, depending on the parameter.
     0x0C: 2,
     0x0D: 3, # End of script?
     0x0E: 1,
@@ -31,22 +35,39 @@ INSTR_SIZE = {
     0x12: 2, # Delay?
     0x13: 2,
     0x14: 1,
+    0x15: 2,
+    0x16: 1, # Resets the game
+    0x17: 6,
+    0x18: 2,
+    0x19: 2,
     0x1A: 1,
     0x1B: 1,
     0x1C: 3,
     0x1D: 2,
     0x1E: 1,
+    0x1F: 1,
+    0x20: 2,
     0x21: 2,
     0x22: 3,
+    0x23: 1,
+    0x24: 3,
+    0x25: 2,
+    #0x26: 0,
+    #0x27: 0,
 }
 
 class ScriptBlock(Block):
     def __init__(self, memory, addr):
         size = 0
+        done = False
         while memory.byte(addr+size) in INSTR_SIZE:
             size += INSTR_SIZE[memory.byte(addr+size)]
-            if memory.byte(addr+size) == 0x0D:
+            if memory.byte(addr+size) == 0x0D or memory.byte(addr+size) == 0x16 or (memory.byte(addr+size) == 0x0B and memory.byte(addr+size) >= 0x02):
+                size += INSTR_SIZE[memory.byte(addr+size)]
+                done = True
                 break
+        if not done:
+            print(f"Unknown script opcode: {memory.byte(addr+size):02x}")
         super().__init__(memory, addr, size=size)
     
     def export(self, file):
