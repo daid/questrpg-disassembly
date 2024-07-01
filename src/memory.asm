@@ -279,7 +279,7 @@ wC46A:
 wC46B:
     ds 1                                               ;; c46b
 
-wC46C:
+wHidePlayer:
     ds 1                                               ;; c46c
 
 wC46D:
@@ -1420,7 +1420,7 @@ wD2D3:
 wD2D4:
     ds 1                                               ;; d2d4
 
-wD2D5:
+wScriptDelay:
     ds 1                                               ;; d2d5
 
 wD2D6:

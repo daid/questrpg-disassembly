@@ -3,7 +3,7 @@
 
 ;@scriptTable amount=26
 scriptTable01:
-    data_P data_05_4e92                                ;; 05:4e49 .. $00
+    data_P introSequenceScript                         ;; 05:4e49 .. $00
     data_P data_05_5157                                ;; 05:4e4b ?? $01
     data_P data_05_5184                                ;; 05:4e4d ?? $02
     data_P data_05_525d                                ;; 05:4e4f ?? $03
@@ -38,7 +38,7 @@ data_05_4e7d:
     db   $6f, $a3, $4e, $87, $1b, $21, $01, $22        ;; 05:4e83 ????????
     db   $10, $01, $21, $00, $0d, $00, $00             ;; 05:4e8b ???????
 
-data_05_4e92:
+introSequenceScript:
     db   $0c, $93                                      ;; 05:4e92 ..
     db   $1d, $01                                      ;; 05:4e94 ..
     db   $08, $00, $18, $00, $00                       ;; 05:4e96 .Ww..

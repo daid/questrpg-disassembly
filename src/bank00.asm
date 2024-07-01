@@ -5139,7 +5139,7 @@ call_00_2379:
     ret                                                ;; 00:24c0 $c9
 
 call_00_24c1:
-    ld   A, [wC46C]                                    ;; 00:24c1 $fa $6c $c4
+    ld   A, [wHidePlayer]                              ;; 00:24c1 $fa $6c $c4
     and  A, A                                          ;; 00:24c4 $a7
     jr   Z, .jr_00_24d2                                ;; 00:24c5 $28 $0b
     ld   HL, wC469                                     ;; 00:24c7 $21 $69 $c4
@@ -6407,13 +6407,13 @@ call_00_2bc4:
     ld   [$2000], A                                    ;; 00:2d87 $ea $00 $20
     call call_04_613a                                  ;; 00:2d8a $cd $3a $61
     call call_04_61b1                                  ;; 00:2d8d $cd $b1 $61
-    ld   A, [wC46C]                                    ;; 00:2d90 $fa $6c $c4
+    ld   A, [wHidePlayer]                              ;; 00:2d90 $fa $6c $c4
     ld   [wD837], A                                    ;; 00:2d93 $ea $37 $d8
     xor  A, A                                          ;; 00:2d96 $af
-    ld   [wC46C], A                                    ;; 00:2d97 $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 00:2d97 $ea $6c $c4
     call call_00_24c1                                  ;; 00:2d9a $cd $c1 $24
     ld   A, [wD837]                                    ;; 00:2d9d $fa $37 $d8
-    ld   [wC46C], A                                    ;; 00:2da0 $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 00:2da0 $ea $6c $c4
     call call_00_24c1                                  ;; 00:2da3 $cd $c1 $24
     ld   A, $01                                        ;; 00:2da6 $3e $01
     ld   [wD5C5], A                                    ;; 00:2da8 $ea $c5 $d5

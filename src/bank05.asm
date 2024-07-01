@@ -25,7 +25,7 @@ startScript:
     ld   [wD2D8], A                                    ;; 05:401d $ea $d8 $d2
     ld   [wD2D3], A                                    ;; 05:4020 $ea $d3 $d2
     ld   [wD2D4], A                                    ;; 05:4023 $ea $d4 $d2
-    ld   [wD2D5], A                                    ;; 05:4026 $ea $d5 $d2
+    ld   [wScriptDelay], A                             ;; 05:4026 $ea $d5 $d2
     ld   [wD310], A                                    ;; 05:4029 $ea $10 $d3
     ld   [wD2D6], A                                    ;; 05:402c $ea $d6 $d2
     ld   [wD30D], A                                    ;; 05:402f $ea $0d $d3
@@ -43,7 +43,7 @@ call_05_403e:
     ld   [wD2D8], A                                    ;; 05:4048 $ea $d8 $d2
     ld   [wD2D3], A                                    ;; 05:404b $ea $d3 $d2
     ld   [wD2D4], A                                    ;; 05:404e $ea $d4 $d2
-    ld   [wD2D5], A                                    ;; 05:4051 $ea $d5 $d2
+    ld   [wScriptDelay], A                             ;; 05:4051 $ea $d5 $d2
     ld   [wD310], A                                    ;; 05:4054 $ea $10 $d3
     ld   [wD2D6], A                                    ;; 05:4057 $ea $d6 $d2
     ld   [wD30D], A                                    ;; 05:405a $ea $0d $d3
@@ -115,12 +115,12 @@ call_05_40cb:
     ld   A, [wC557]                                    ;; 05:40d5 $fa $57 $c5
     and  A, A                                          ;; 05:40d8 $a7
     ret  NZ                                            ;; 05:40d9 $c0
-    ld   A, [wD2D5]                                    ;; 05:40da $fa $d5 $d2
+    ld   A, [wScriptDelay]                             ;; 05:40da $fa $d5 $d2
     and  A, A                                          ;; 05:40dd $a7
     jr   Z, .jr_05_40e8                                ;; 05:40de $28 $08
-    ld   A, [wD2D5]                                    ;; 05:40e0 $fa $d5 $d2
+    ld   A, [wScriptDelay]                             ;; 05:40e0 $fa $d5 $d2
     dec  A                                             ;; 05:40e3 $3d
-    ld   [wD2D5], A                                    ;; 05:40e4 $ea $d5 $d2
+    ld   [wScriptDelay], A                             ;; 05:40e4 $ea $d5 $d2
     ret                                                ;; 05:40e7 $c9
 .jr_05_40e8:
     ld   A, [wD2C7]                                    ;; 05:40e8 $fa $c7 $d2
@@ -960,11 +960,11 @@ script_opcode_08:
     cp   A, $00                                        ;; 05:46cb $fe $00
     jr   NZ, .jr_05_46d6                               ;; 05:46cd $20 $07
     ld   A, $01                                        ;; 05:46cf $3e $01
-    ld   [wC46C], A                                    ;; 05:46d1 $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 05:46d1 $ea $6c $c4
     jr   .jr_05_46db                                   ;; 05:46d4 $18 $05
 .jr_05_46d6:
     ld   A, $00                                        ;; 05:46d6 $3e $00
-    ld   [wC46C], A                                    ;; 05:46d8 $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 05:46d8 $ea $6c $c4
 .jr_05_46db:
     ld   A, [HL+]                                      ;; 05:46db $2a
     and  A, A                                          ;; 05:46dc $a7
@@ -1156,11 +1156,11 @@ script_opcode_0F:
     cp   A, $00                                        ;; 05:4820 $fe $00
     jr   NZ, .jr_05_482b                               ;; 05:4822 $20 $07
     ld   A, $01                                        ;; 05:4824 $3e $01
-    ld   [wC46C], A                                    ;; 05:4826 $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 05:4826 $ea $6c $c4
     jr   .jr_05_4830                                   ;; 05:4829 $18 $05
 .jr_05_482b:
     ld   A, $00                                        ;; 05:482b $3e $00
-    ld   [wC46C], A                                    ;; 05:482d $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 05:482d $ea $6c $c4
 .jr_05_4830:
     ld   A, H                                          ;; 05:4830 $7c
     ld   [wScriptPointer], A                           ;; 05:4831 $ea $c5 $d2
@@ -1218,7 +1218,7 @@ script_opcode_11:
 
 script_opcode_12:
     ld   A, [HL+]                                      ;; 05:488e $2a
-    ld   [wD2D5], A                                    ;; 05:488f $ea $d5 $d2
+    ld   [wScriptDelay], A                             ;; 05:488f $ea $d5 $d2
     ld   A, H                                          ;; 05:4892 $7c
     ld   [wScriptPointer], A                           ;; 05:4893 $ea $c5 $d2
     ld   A, L                                          ;; 05:4896 $7d
@@ -1645,11 +1645,11 @@ script_opcode_27:
     cp   A, $00                                        ;; 05:4b48 $fe $00
     jr   NZ, .jr_05_4b53                               ;; 05:4b4a $20 $07
     ld   A, $01                                        ;; 05:4b4c $3e $01
-    ld   [wC46C], A                                    ;; 05:4b4e $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 05:4b4e $ea $6c $c4
     jr   .jr_05_4b58                                   ;; 05:4b51 $18 $05
 .jr_05_4b53:
     ld   A, $00                                        ;; 05:4b53 $3e $00
-    ld   [wC46C], A                                    ;; 05:4b55 $ea $6c $c4
+    ld   [wHidePlayer], A                              ;; 05:4b55 $ea $6c $c4
 .jr_05_4b58:
     ld   A, [HL+]                                      ;; 05:4b58 $2a
     and  A, A                                          ;; 05:4b59 $a7

@@ -16,23 +16,23 @@ def scriptTable(memory, addr, *, amount: int):
 INSTR_SIZE = {
     0x00: 9,
     0x01: 6, # move/spawn NPC?
-    0x02: 2, # Show message
+    0x02: 2, # Show message [message index, specific for this script]
     0x03: 2, # Destroy NPC?
     0x04: 6, # Scroll map?
     0x05: 2,
-    0x06: 3,
+    0x06: 3, # Screen flash [?] [?]
     0x07: 2,
-    0x08: 5, # load map?
+    0x08: 5, # load map [mapnr 16bit] [show_player] [load_default_npcs]
     0x09: 2,
     0x0A: 3,
     0x0B: 2, # This can "call" one of two specific script functions or return from them, depending on the parameter.
-    0x0C: 2,
-    0x0D: 3, # End of script?
-    0x0E: 1,
-    0x0F: 2,
-    0x10: 5, # Scroll map? Walk?
-    0x11: 6, # Set player position
-    0x12: 2, # Delay?
+    0x0C: 2, # SFX [sfx number]
+    0x0D: 3, # End of script [?] [?]
+    0x0E: 1, # Do nothing.
+    0x0F: 2, # Show/Hide player [show=1,hide=0]
+    0x10: 5, # Walk: [Pixels] [?] [direction?]
+    0x11: 6, # Set player position [x 16bit] [y 16bit] [direction]
+    0x12: 2, # Delay [frames]
     0x13: 2,
     0x14: 1,
     0x15: 2,
