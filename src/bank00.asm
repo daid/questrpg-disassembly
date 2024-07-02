@@ -2317,7 +2317,7 @@ call_00_0fac:
     ldh  [rNR52], A                                    ;; 00:0fbf $e0 $26
     jp   jp_00_015d                                    ;; 00:0fc1 $c3 $5d $01
 
-call_00_0fc4:
+deref_de_current_map_get_ptr_from_bank_3:
     ld   A, $03                                        ;; 00:0fc4 $3e $03
     ld   [wBackupRomBank], A                           ;; 00:0fc6 $ea $b5 $d5
     ld   [wCurrentRomBank], A                          ;; 00:0fc9 $ea $b7 $d5
@@ -2505,7 +2505,7 @@ call_00_10f1:
     ld   C, A                                          ;; 00:10f9 $4f
     ld   B, $00                                        ;; 00:10fa $06 $00
     ld   DE, data_03_6681 ;@=ptr bank=3                ;; 00:10fc $11 $81 $66
-    call call_00_0fc4                                  ;; 00:10ff $cd $c4 $0f
+    call deref_de_current_map_get_ptr_from_bank_3      ;; 00:10ff $cd $c4 $0f
     add  HL, BC                                        ;; 00:1102 $09
     ld   DE, wCurrentMap                               ;; 00:1103 $11 $42 $c1
     ld   B, $06                                        ;; 00:1106 $06 $06
@@ -2562,7 +2562,7 @@ call_00_1156:
     ld   C, A                                          ;; 00:1166 $4f
     ld   B, $00                                        ;; 00:1167 $06 $00
     ld   DE, data_03_609a ;@=ptr bank=3                ;; 00:1169 $11 $9a $60
-    call call_00_0fc4                                  ;; 00:116c $cd $c4 $0f
+    call deref_de_current_map_get_ptr_from_bank_3      ;; 00:116c $cd $c4 $0f
     add  HL, BC                                        ;; 00:116f $09
     ld   C, [HL]                                       ;; 00:1170 $4e
     ld   B, $00                                        ;; 00:1171 $06 $00
@@ -6256,7 +6256,7 @@ call_00_2bc4:
     jr   NZ, .jr_00_2c15                               ;; 00:2c40 $20 $d3
 .jr_00_2c42:
     ld   DE, data_03_40ea ;@=ptr bank=3                ;; 00:2c42 $11 $ea $40
-    call call_00_0fc4                                  ;; 00:2c45 $cd $c4 $0f
+    call deref_de_current_map_get_ptr_from_bank_3      ;; 00:2c45 $cd $c4 $0f
     ld   A, [wD5B9]                                    ;; 00:2c48 $fa $b9 $d5
     and  A, A                                          ;; 00:2c4b $a7
     jr   Z, .jr_00_2c51                                ;; 00:2c4c $28 $03
@@ -6298,7 +6298,7 @@ call_00_2bc4:
     add  A, A                                          ;; 00:2c96 $87
     ld   C, A                                          ;; 00:2c97 $4f
     ld   B, $00                                        ;; 00:2c98 $06 $00
-    ld   HL, data_35_4000 ;@=ptr bank=35               ;; 00:2c9a $21 $00 $40
+    ld   HL, gfx_35_4000 ;@=ptr bank=35                ;; 00:2c9a $21 $00 $40
     add  HL, BC                                        ;; 00:2c9d $09
     ld   A, [HL+]                                      ;; 00:2c9e $2a
     ld   [wD5CF], A                                    ;; 00:2c9f $ea $cf $d5
